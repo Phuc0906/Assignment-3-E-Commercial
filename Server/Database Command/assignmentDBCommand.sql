@@ -1,0 +1,8 @@
+CREATE DATABASE ass3;
+
+USE ass3;
+
+CREATE TABLE user(
+    userid INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(100),
+)
