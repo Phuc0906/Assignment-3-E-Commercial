@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
@@ -68,6 +67,13 @@ public class MainActivity extends AppCompatActivity {
                     seekBar.setProgress(0);
                 } else {
                     startActivity(new Intent(MainActivity.this, HomePage.class));
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            seekBar.setProgress(0);
+                        }
+                    }, 300);
                 }
             }
         });

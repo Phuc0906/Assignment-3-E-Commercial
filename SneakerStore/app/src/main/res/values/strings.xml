@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Sneaker Store</string>
+    <string name="homePage">Home Page</string>
+    <string name="explorePage">Explore</string>
+    <string name="shoppingPage">Cart</string>
+    <string name="profile">User Profile</string>
+    <string name="search">Searching</string>
+    <string name="newest">Newest shoes</string>
+    <string name="more">see more</string>
 </resources>
