@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".HomeFragment">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <EditText
+            android:id="@+id/searchBar"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:height="50dp"
+            android:background="@drawable/custom_searching"
+            android:ems="10"
+            android:hint="@string/search"
+            android:inputType="textPersonName"
+            android:paddingStart="12dp"
+            android:textStyle="italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="@+id/searchBar"
+            app:layout_constraintHorizontal_bias="0.473"
+            app:layout_constraintStart_toStartOf="@+id/searchBar"
+            app:layout_constraintTop_toBottomOf="@+id/searchBar"
+            app:srcCompat="@drawable/advertisement" />
+
+        <RelativeLayout
+            android:id="@+id/newestSection"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView4">
+
+            <TextView
+                android:id="@+id/newestTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="12dp"
+                android:text="@string/newest"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="17sp"
+                />
+
+            <TextView
+                android:id="@+id/seeMore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+
+                android:layout_alignTop="@+id/newestTitle"
+                android:layout_alignBottom="@+id/newestTitle"
+                android:layout_alignParentEnd="true"
+
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="4dp"
+                android:text="@string/more"
+                android:textColor="@color/yellow"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
