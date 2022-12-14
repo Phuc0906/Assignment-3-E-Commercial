@@ -64,7 +64,7 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
-        bottomNavigation.setCount(2, "10");
+        bottomNavigation.setCount(3, "10");
 
 
     }

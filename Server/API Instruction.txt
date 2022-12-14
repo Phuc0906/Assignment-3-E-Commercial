@@ -1,0 +1,11 @@
+PRODUCT
+/: get all product (GET method)
+/product/latest: get all product ordered by dated added (GET method)
+/product/search/category?category=<integer>: search product by category (GET method);  
+/product/search/name?name=<product name>:  search product by name (GET method);  
+/product/search/brand?brand<brand id>:search product by brand (GET method);  
+/product/cart: later (GET)
+/product/cart: later (LATER)
+/product/wishlist: later (GET)
+/product/wishlist: later (POST)
+/product/wishlist: later (DELETE)
