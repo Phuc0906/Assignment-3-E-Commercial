@@ -2,6 +2,7 @@ package com.example.sneakerstore;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.Window;
@@ -52,7 +53,6 @@ public class HomePage extends AppCompatActivity {
         bottomNavigation.setOnClickMenuListener(new MeowBottomNavigation.ClickListener() {
             @Override
             public void onClickItem(MeowBottomNavigation.Model item) {
-
                 Toast.makeText(getApplicationContext(), "You click " + item.getId(), Toast.LENGTH_LONG);
             }
         });
@@ -65,7 +65,6 @@ public class HomePage extends AppCompatActivity {
         });
 
         bottomNavigation.setCount(3, "10");
-
 
     }
 

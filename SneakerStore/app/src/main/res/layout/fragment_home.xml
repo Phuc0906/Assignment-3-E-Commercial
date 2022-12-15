@@ -44,48 +44,14 @@
             app:layout_constraintTop_toBottomOf="@+id/searchBar"
             app:srcCompat="@drawable/advertisement" />
 
-        <RelativeLayout
-            android:id="@+id/newestSection"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerList"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView4">
-
-            <TextView
-                android:id="@+id/newestTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="12dp"
-                android:layout_marginStart="12dp"
-                android:text="@string/newest"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="17sp"
-                />
-
-            <TextView
-                android:id="@+id/seeMore"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-
-                android:layout_alignTop="@+id/newestTitle"
-                android:layout_alignBottom="@+id/newestTitle"
-                android:layout_alignParentEnd="true"
-
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginBottom="4dp"
-                android:text="@string/more"
-                android:textColor="@color/yellow"
-                android:textStyle="bold" />
-        </RelativeLayout>
+            app:layout_constraintTop_toBottomOf="@+id/imageView4" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
