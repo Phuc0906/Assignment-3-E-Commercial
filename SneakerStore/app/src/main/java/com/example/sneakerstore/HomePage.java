@@ -39,7 +39,7 @@ public class HomePage extends AppCompatActivity {
                 }else if (item.getId() == 2) {
                     fragment = new CartFragment();
                 }else if (item.getId() == 3) {
-                    fragment = new HomeFragment();
+                    fragment = new CartFragment();
                 }else {
                     fragment = new HomeFragment();
                 }

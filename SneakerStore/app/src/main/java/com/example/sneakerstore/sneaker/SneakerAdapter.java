@@ -40,6 +40,8 @@ public class SneakerAdapter extends RecyclerView.Adapter<SneakerAdapter.sneakerH
         if (sneaker != null) {
             holder.sneakerName.setText(sneaker.getName());
             holder.brandName.setText(sneaker.getBrand());
+
+            // convert bitmap image here ---------------------------------------
             holder.sneakerImage.setImageResource(sneaker.getResourceImage());
         }
     }
