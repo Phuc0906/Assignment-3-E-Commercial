@@ -10,48 +10,59 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+
         <EditText
             android:id="@+id/searchBar"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:height="50dp"
+            android:height="30dp"
             android:background="@drawable/custom_searching"
             android:ems="10"
-            android:hint="@string/search"
             android:inputType="textPersonName"
             android:paddingStart="12dp"
             android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-
-
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
         <ImageView
             android:id="@+id/imageView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="@+id/searchBar"
             app:layout_constraintHorizontal_bias="0.473"
             app:layout_constraintStart_toStartOf="@+id/searchBar"
             app:layout_constraintTop_toBottomOf="@+id/searchBar"
             app:srcCompat="@drawable/advertisement" />
 
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:paddingHorizontal="130dp"
+            android:paddingVertical="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+            app:layout_constraintTop_toBottomOf="@+id/viewPager2" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

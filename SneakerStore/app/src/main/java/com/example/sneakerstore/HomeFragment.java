@@ -7,11 +7,21 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.example.sneakerstore.logo.Logo;
+import com.example.sneakerstore.logo.LogoAdapter;
 import com.example.sneakerstore.sneaker.Category;
 import com.example.sneakerstore.sneaker.CategoryAdapter;
 import com.example.sneakerstore.sneaker.Sneaker;
@@ -22,12 +32,26 @@ import java.util.List;
 public class HomeFragment extends Fragment {
     RecyclerView rcList;
     CategoryAdapter adapter;
+    ViewPager2 viewPager2;
+    LogoAdapter logoAdapter;
+    Handler handler = new Handler(Looper.getMainLooper());
+    EditText search;
+    final int startPosition = 1;
+
+    Runnable lRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (viewPager2.getCurrentItem() == getLogoList().size() - 1) {
+                viewPager2.setCurrentItem(0);
+            } else {
+                viewPager2.setCurrentItem(viewPager2.getCurrentItem() + 1);
+            }
+        }
+    };
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
-
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
@@ -39,12 +63,41 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         rcList = view.findViewById(R.id.recyclerList);
         adapter = new CategoryAdapter(getContext());
+        viewPager2 = view.findViewById(R.id.viewPager2);
+        logoAdapter = new LogoAdapter(getLogoList());
+
+        viewPager2.setOffscreenPageLimit(3);
+        viewPager2.setClipToPadding(false);
+        viewPager2.setClipChildren(false);
+
+        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
+        compositePageTransformer.addTransformer(new MarginPageTransformer(120));
+        viewPager2.setPageTransformer(compositePageTransformer);
+        viewPager2.setAdapter(logoAdapter);
+
+
+        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                handler.removeCallbacks(lRunnable);
+                handler.postDelayed(lRunnable, 5000);
+            }
+        });
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rcList.setLayoutManager(linearLayoutManager);
 
         adapter.setData(getCategoryList());
         rcList.setAdapter(adapter);
+
+        search = view.findViewById(R.id.searchBar);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                handler.removeCallbacks(lRunnable);
+            }
+        });
     }
 
     private List<Category> getCategoryList() {
@@ -63,5 +116,43 @@ public class HomeFragment extends Fragment {
         list.add(new Category("Popular", sneakerList1));
 
         return list;
+    }
+
+    private List<Logo> getLogoList() {
+        List<Logo> photoList = new ArrayList<>();
+        photoList.add(new Logo(R.drawable.adidas_logo));
+        photoList.add(new Logo(R.drawable.nike_logo));
+        photoList.add(new Logo(R.drawable.asics_logo));
+        photoList.add(new Logo(R.drawable.puma_logo));
+        photoList.add(new Logo(R.drawable.adidas_logo));
+        photoList.add(new Logo(R.drawable.nike_logo));
+        photoList.add(new Logo(R.drawable.asics_logo));
+        photoList.add(new Logo(R.drawable.puma_logo));
+        return photoList;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        handler.postDelayed(lRunnable, 5000);
+
+        Runnable setDefault = new Runnable() {
+            @Override
+            public void run() {
+                viewPager2.setCurrentItem(startPosition, false);
+                Log.d("AAA", "HEllo");
+
+            }
+        };
+
+        Handler h = new Handler();
+        h.post(setDefault);
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        handler.removeCallbacks(lRunnable);
     }
 }
