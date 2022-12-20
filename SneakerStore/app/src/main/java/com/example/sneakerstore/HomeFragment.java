@@ -71,7 +71,6 @@ public class HomeFragment extends Fragment {
         viewPager2.setClipChildren(false);
 
         CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
-        compositePageTransformer.addTransformer(new MarginPageTransformer(120));
         viewPager2.setPageTransformer(compositePageTransformer);
         viewPager2.setAdapter(logoAdapter);
 
@@ -115,6 +114,12 @@ public class HomeFragment extends Fragment {
         sneakerList1.add(new Sneaker(R.drawable.zoom_fly, "Nike", "Zoom fly 5"));
         list.add(new Category("Popular", sneakerList1));
 
+        List<Sneaker> sneakerList2 = new ArrayList<>();
+        sneakerList2.add(new Sneaker(R.drawable.air_max, "Nike", "Air max 1"));
+        sneakerList2.add(new Sneaker(R.drawable.zoom_fly, "Nike", "Zoom fly 5"));
+
+
+        list.add(new Category("Daily Life", sneakerList2));
         return list;
     }
 
@@ -140,8 +145,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void run() {
                 viewPager2.setCurrentItem(startPosition, false);
-                Log.d("AAA", "HEllo");
-
             }
         };
 
