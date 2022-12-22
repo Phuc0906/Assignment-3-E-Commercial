@@ -29,6 +29,7 @@ public class HomePage extends AppCompatActivity {
         bottomNavigation.add(new MeowBottomNavigation.Model(3, R.drawable.cart_icon));
         bottomNavigation.add(new MeowBottomNavigation.Model(4, R.drawable.user_icon));
 
+
         bottomNavigation.setOnShowListener(new MeowBottomNavigation.ShowListener() {
             @Override
             public void onShowItem(MeowBottomNavigation.Model item) {
@@ -41,7 +42,7 @@ public class HomePage extends AppCompatActivity {
                 }else if (item.getId() == 3) {
                     fragment = new CartFragment();
                 }else {
-                    fragment = new HomeFragment();
+                    fragment = new PersonalFragment();
                 }
 
                 loadFragment(fragment);
