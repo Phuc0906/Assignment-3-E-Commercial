@@ -35,7 +35,6 @@ public class HomeFragment extends Fragment {
     ViewPager2 viewPager2;
     LogoAdapter logoAdapter;
     Handler handler = new Handler(Looper.getMainLooper());
-    EditText search;
     final int startPosition = 1;
 
     Runnable lRunnable = new Runnable() {
@@ -90,13 +89,6 @@ public class HomeFragment extends Fragment {
         adapter.setData(getCategoryList());
         rcList.setAdapter(adapter);
 
-        search = view.findViewById(R.id.searchBar);
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handler.removeCallbacks(lRunnable);
-            }
-        });
     }
 
     private List<Category> getCategoryList() {
