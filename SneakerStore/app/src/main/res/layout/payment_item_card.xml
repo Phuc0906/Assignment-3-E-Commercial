@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="5dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginRight="30dp"
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="10dp"
+    android:elevation="50dp"
+    >
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="#FCFCFC"
+        android:padding="10dp"
+        android:outlineSpotShadowColor="@color/black"
+        android:outlineAmbientShadowColor="@color/black"
+        android:background="@drawable/checkout_img_bg"
+
+        >
+
+        <ImageView
+            android:id="@+id/shoesCheckOutImg"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:srcCompat="@drawable/air_max"
+
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:outlineAmbientShadowColor="@color/black"
+            />
+
+        <TextView
+            android:id="@+id/sneakerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_toRightOf="@+id/shoesCheckOutImg"
+            android:fontFamily="sans-serif"
+            android:text="Sneaker Name"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sneakerPrice"
+            android:text="Price"
+            android:layout_toRightOf="@+id/shoesCheckOutImg"
+            android:layout_below="@+id/sneakerName"
+            android:layout_marginLeft="10dp"
+            android:textSize="18dp"
+            android:layout_marginTop="8dp"
+            android:textColor="#484A4B"/>
+
+        <TextView
+            android:id="@+id/quantityView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quantity: 1"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:layout_toRightOf="@+id/shoesCheckOutImg"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_below="@+id/shoesSize"
+            />
+
+        <TextView
+            android:id="@+id/shoesSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:text="Size 8 US"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:textSize="15sp"
+            android:textColor="#484A4B"
+            android:layout_toRightOf="@+id/shoesCheckOutImg"
+            android:layout_below="@+id/sneakerPrice"/>
+
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

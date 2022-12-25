@@ -44,8 +44,14 @@ public class CartFragment extends Fragment {
         cartItemList.add(new CartSneaker(R.drawable.zoom_fly, "Nike", "Zoom fly 5", 0, 3000000));
         cartItemList.add(new CartSneaker(R.drawable.air_max, "Nike", "Air max 1", 0, 3000000));
         cartItemList.add(new CartSneaker(R.drawable.zoom_fly, "Nike", "Zoom fly 5", 0, 3000000));
+        cartItemList.add(new CartSneaker(R.drawable.air_max, "Nike", "Air max 1", 0, 3000000));
+        cartItemList.add(new CartSneaker(R.drawable.zoom_fly, "Nike", "Zoom fly 5", 0, 3000000));
+        cartItemList.add(new CartSneaker(R.drawable.air_max, "Nike", "Air max 1", 0, 3000000));
+        cartItemList.add(new CartSneaker(R.drawable.zoom_fly, "Nike", "Zoom fly 5", 0, 3000000));
+
 
         adapter.setData(cartItemList);
+        cartRc.setNestedScrollingEnabled(false);
         cartRc.setAdapter(adapter);
 
     }
