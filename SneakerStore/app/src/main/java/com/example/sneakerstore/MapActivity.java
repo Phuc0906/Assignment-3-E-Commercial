@@ -1,10 +1,5 @@
 package com.example.sneakerstore;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,6 +14,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -50,7 +50,6 @@ public class MapActivity extends AppCompatActivity {
     ListView locationList;
 
 
-
     double shopLatitude;
     double shopLongitude;
 
@@ -75,14 +74,13 @@ public class MapActivity extends AppCompatActivity {
                 placeName = place.getName();
 
                 locationCoordinator = place.getLatLng();
-            }else if (requestCode == AutocompleteActivity.RESULT_ERROR) {
+            } else if (requestCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
                 Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_LONG).show();
             }
         }
 
     }
-
 
 
     @Override
@@ -117,19 +115,13 @@ public class MapActivity extends AppCompatActivity {
         });
 
 
-
-
-
-
-
-
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String insertedPlaced = locationInfo.getText().toString();
                 if (insertedPlaced == null) {
                     Toast.makeText(MapActivity.this, "You need to enter your place", Toast.LENGTH_LONG);
-                }else {
+                } else {
                     Geocoder geocoder = new Geocoder(MapActivity.this, Locale.getDefault());
                     List<Address> addresses = null;
                     try {
@@ -174,15 +166,34 @@ public class MapActivity extends AppCompatActivity {
 
         if (ActivityCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             getCurrentLocation();
-        }else {
+        } else {
             ActivityCompat.requestPermissions(MapActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
         }
-
 
 
     }
 
     private void pointToPos(LatLng latLng) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         Task<Location> task = client.getLastLocation();
 
         task.addOnSuccessListener(new OnSuccessListener<Location>() {

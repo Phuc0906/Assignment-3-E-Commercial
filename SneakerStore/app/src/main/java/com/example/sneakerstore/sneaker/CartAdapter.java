@@ -43,12 +43,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
         CartSneaker cartSneaker = cartSneakerList.get(position);
 
         if (cartSneaker != null) {
-            System.out.println(cartSneaker.getResourceImage());
             holder.itemImg.setImageResource(cartSneaker.getResourceImage());
-            holder.brandText.setText(cartSneaker.getBrand());
-
-            holder.priceText.setText(Integer.toString(cartSneaker.getPrice()));
-            holder.quantityText.setText(Integer.toString(cartSneaker.getQuantity()));
+            holder.title.setText(cartSneaker.getName());
+            holder.priceText.setText(""+cartSneaker.getPrice());
         }
     }
 
@@ -62,19 +59,16 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
     }
 
     public class cartHolder extends RecyclerView.ViewHolder {
-        private TextView brandText, priceText;
+        private TextView title, priceText;
         private ImageView itemImg;
-        private EditText quantityText;
-        private ImageButton addButton, minusButton;
+        private TextView quantityText;
 
         public cartHolder(@NonNull View itemView) {
             super(itemView);
-            brandText = itemView.findViewById(R.id.cartBrandText);
+            title = itemView.findViewById(R.id.cartTitleText);
             priceText = itemView.findViewById(R.id.cartPriceText);
             itemImg = itemView.findViewById(R.id.cartImg);
             quantityText = itemView.findViewById(R.id.cartQuantity);
-            addButton = itemView.findViewById(R.id.addButton);
-            minusButton = itemView.findViewById(R.id.minusButton);
         }
     }
 }

@@ -51,7 +51,6 @@ public class CartFragment extends Fragment {
 
 
         adapter.setData(cartItemList);
-        cartRc.setNestedScrollingEnabled(false);
         cartRc.setAdapter(adapter);
 
     }

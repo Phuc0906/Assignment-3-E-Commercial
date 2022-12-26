@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
@@ -13,6 +15,8 @@ import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 
 public class HomePage extends AppCompatActivity {
     MeowBottomNavigation bottomNavigation;
+    ColorDrawable colorDrawable
+            = new ColorDrawable(Color.parseColor("#F9A825"));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
