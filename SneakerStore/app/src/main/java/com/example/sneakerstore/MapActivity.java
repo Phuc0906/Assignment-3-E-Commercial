@@ -75,6 +75,8 @@ public class MapActivity extends AppCompatActivity {
                 placeName = place.getName();
 
                 locationCoordinator = place.getLatLng();
+
+                System.out.println("COOR: " + locationCoordinator);
             }else if (requestCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
                 Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_LONG).show();
@@ -90,6 +92,15 @@ public class MapActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getSupportActionBar().hide();
         super.onCreate(savedInstanceState);
+        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.google_map);
+
+        client = LocationServices.getFusedLocationProviderClient(this);
+
+        if (ActivityCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            getCurrentLocation();
+        }else {
+            ActivityCompat.requestPermissions(MapActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+        }
         setContentView(R.layout.activity_map);
 
 
@@ -103,7 +114,7 @@ public class MapActivity extends AppCompatActivity {
         addressDistance = 0;
         placeName = "";
 
-        Places.initialize(getApplicationContext(), "AIzaSyD5ariVVie2nXj8xcFQrLhaY8gf1Dpc4v0");
+        Places.initialize(getApplicationContext(), "AIzaSyDGqZhCC5YCp4FjcScOwG-uZXgZzw805SA");
 
         locationInfo.setFocusable(false);
         locationInfo.setOnClickListener(new View.OnClickListener() {
@@ -145,6 +156,7 @@ public class MapActivity extends AppCompatActivity {
                             addressDistance = results[0];
 
 
+
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -168,15 +180,7 @@ public class MapActivity extends AppCompatActivity {
         });
 
 
-        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.google_map);
 
-        client = LocationServices.getFusedLocationProviderClient(this);
-
-        if (ActivityCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            getCurrentLocation();
-        }else {
-            ActivityCompat.requestPermissions(MapActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
-        }
 
 
 

@@ -7,7 +7,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.sneakerstore.adapter.CheckoutList;
@@ -21,8 +27,9 @@ import java.util.List;
 
 public class OrderActivity extends AppCompatActivity{
 
-    Button toMapBtn;
-    TextView distanceText, costText, placeView;
+    ImageButton toMapBtn;
+    TextView costText, placeView;
+    CheckBox creditCardBox, googlePayBox;
 
     RecyclerView paymentView;
 
@@ -46,6 +53,25 @@ public class OrderActivity extends AppCompatActivity{
         checkOutSectionList.add(checkOutSection);
 
         paymentView = findViewById(R.id.paymentView);
+        creditCardBox = findViewById(R.id.creditCardBox);
+        googlePayBox = findViewById(R.id.googlePayBox);
+
+
+
+        googlePayBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    creditCardBox.setSelected(false);
+                }else {
+                    creditCardBox.setSelected(true);
+                }
+            }
+        });
+
+
+
+
 
         CheckoutList checkoutList = new CheckoutList(this);
         checkoutList.setData(sneakerList);
@@ -55,39 +81,38 @@ public class OrderActivity extends AppCompatActivity{
         paymentView.setAdapter(checkoutList);
 
 
-//        distanceText = findViewById(R.id.distanceText);
-//        costText = findViewById(R.id.costText);
-//        placeView = findViewById(R.id.placeView);
-//
-//        toMapBtn = findViewById(R.id.toMapBtn);
-//        toMapBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(OrderActivity.this, MapActivity.class);
-//                startActivityForResult(intent, 10);
-//            }
-//        });
+
+        costText = findViewById(R.id.shippingCost);
+        placeView = findViewById(R.id.shippingAddress);
+
+        toMapBtn = findViewById(R.id.toMapBtn);
+        toMapBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(OrderActivity.this, MapActivity.class);
+                startActivityForResult(intent, 10);
+            }
+        });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-//        if (requestCode == 10) {
-//            if (resultCode == RESULT_OK) {
-//                float distance = data.getFloatExtra("distance", 0);
-//                String place = data.getStringExtra("place");
-//
-//                placeView.setText("Place: " + place);
-//
-//                int distanceToDestination = Math.round(distance/1000);
-//                distanceText.setText("Distance: " + distanceToDestination + " km");
-//                if (distance / 1000 != 0) {
-//                    costText.setText("Cost: " + (distanceToDestination * 3000) + " vnd");
-//                }else {
-//                    costText.setText("Free ship");
-//                }
-//            }
-//        }
+        if (requestCode == 10) {
+            if (resultCode == RESULT_OK) {
+                float distance = data.getFloatExtra("distance", 0);
+                String place = data.getStringExtra("place");
+
+                placeView.setText(place);
+
+                int distanceToDestination = Math.round(distance/1000);
+                if (distance / 1000 != 0) {
+                    costText.setText("Cost: " + (distanceToDestination * 3000) + " vnd");
+                }else {
+                    costText.setText("0 vnd");
+                }
+            }
+        }
     }
 }
