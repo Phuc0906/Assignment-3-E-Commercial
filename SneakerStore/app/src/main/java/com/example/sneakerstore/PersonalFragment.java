@@ -51,7 +51,9 @@ public class PersonalFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), OrderActivity.class));
+                Intent intent = new Intent(getActivity(), OrderActivity.class);
+                startActivityForResult(intent, 100);
+
             }
         });
 

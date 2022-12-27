@@ -76,9 +76,12 @@ public class MapActivity extends AppCompatActivity {
 
                 locationCoordinator = place.getLatLng();
 
-                System.out.println("COOR: " + locationCoordinator);
+                System.out.println("COOR: " + placeName);
+
+                Toast.makeText(this, placeName, Toast.LENGTH_LONG);
             }else if (requestCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
+                System.out.println("IN ERROR");
                 Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_LONG).show();
             }
         }
@@ -89,18 +92,9 @@ public class MapActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getSupportActionBar().hide();
         super.onCreate(savedInstanceState);
-        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.google_map);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        client = LocationServices.getFusedLocationProviderClient(this);
-
-        if (ActivityCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            getCurrentLocation();
-        }else {
-            ActivityCompat.requestPermissions(MapActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
-        }
         setContentView(R.layout.activity_map);
 
 
@@ -113,6 +107,18 @@ public class MapActivity extends AppCompatActivity {
         enterBtn = findViewById(R.id.enterButton);
         addressDistance = 0;
         placeName = "";
+
+        getSupportActionBar().hide();
+
+        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.google_map);
+
+        client = LocationServices.getFusedLocationProviderClient(this);
+
+        if (ActivityCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            getCurrentLocation();
+        }else {
+            ActivityCompat.requestPermissions(MapActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+        }
 
         Places.initialize(getApplicationContext(), "AIzaSyDGqZhCC5YCp4FjcScOwG-uZXgZzw805SA");
 

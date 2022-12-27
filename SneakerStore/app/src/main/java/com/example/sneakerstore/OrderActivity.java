@@ -30,7 +30,7 @@ public class OrderActivity extends AppCompatActivity{
     ImageButton toMapBtn;
     TextView costText, placeView;
     CheckBox creditCardBox, googlePayBox;
-
+    Button paymentBtn;
     RecyclerView paymentView;
 
 
@@ -55,6 +55,16 @@ public class OrderActivity extends AppCompatActivity{
         paymentView = findViewById(R.id.paymentView);
         creditCardBox = findViewById(R.id.creditCardBox);
         googlePayBox = findViewById(R.id.googlePayBox);
+
+        paymentBtn = findViewById(R.id.paymentBtn);
+
+        paymentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(OrderActivity.this, CreditCardPaymentActivity.class);
+                startActivityForResult(intent, 30);
+            }
+        });
 
 
 
@@ -82,7 +92,7 @@ public class OrderActivity extends AppCompatActivity{
 
 
 
-        costText = findViewById(R.id.shippingCost);
+        costText = findViewById(R.id.shipPrice);
         placeView = findViewById(R.id.shippingAddress);
 
         toMapBtn = findViewById(R.id.toMapBtn);
@@ -107,11 +117,20 @@ public class OrderActivity extends AppCompatActivity{
                 placeView.setText(place);
 
                 int distanceToDestination = Math.round(distance/1000);
+                int shippingCost = (distanceToDestination * 3000);
                 if (distance / 1000 != 0) {
-                    costText.setText("Cost: " + (distanceToDestination * 3000) + " vnd");
+                    costText.setText(shippingCost + " vnd");
                 }else {
                     costText.setText("0 vnd");
                 }
+
+
+            }
+        }else if (requestCode == 30) {
+            if (resultCode == RESULT_OK) {
+                Intent resultIntent = new Intent();
+                setResult(RESULT_OK, resultIntent);
+                finish();
             }
         }
     }
