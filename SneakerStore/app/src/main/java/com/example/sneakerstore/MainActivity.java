@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 if (val < seekBar.getMax()) {
                     seekBar.setProgress(0);
                 } else {
-                    startActivity(new Intent(MainActivity.this, HomePage.class));
+                    startActivity(new Intent(MainActivity.this, AdminActivity.class));
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override

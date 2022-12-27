@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="18dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="10dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:background="@drawable/custom_sneaker_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/statusImg"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:srcCompat="@drawable/shipping_icon"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Billing Number"
+            android:textColor="#111111"
+            android:layout_toRightOf="@+id/statusImg"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toEndOf="@+id/statusImg"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="15sp"
+            android:id="@+id/billingNumber"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Customer Name"
+            android:layout_toRightOf="@+id/statusImg"
+            android:layout_below="@+id/billingNumber"
+            android:layout_marginLeft="15dp"
+            app:layout_constraintStart_toEndOf="@+id/statusImg"
+            app:layout_constraintTop_toBottomOf="@+id/billingNumber"
+            android:textColor="#484A4B"
+            android:textSize="12sp"
+            android:layout_marginTop="5dp"
+            android:id="@+id/billingCustomerName"/>
+
+        <TextView
+            android:id="@+id/billingPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/billingCustomerName"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@+id/statusImg"
+            android:text="Price: 3000000"
+            android:textColor="#FFB301"
+            android:textSize="10sp"
+            app:layout_constraintStart_toEndOf="@+id/statusImg"
+            app:layout_constraintTop_toBottomOf="@+id/billingCustomerName" />
+
+        <ImageButton
+            android:id="@+id/toBillingDetail"
+            android:layout_width="55dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="20dp"
+            android:background="@null"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_arrow_forward_ios_24" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.cardview.widget.CardView>
