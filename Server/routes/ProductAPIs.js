@@ -111,6 +111,29 @@ router.delete('/', (req, res) => {
     res.send(req.query.productid);
 })
 
+// get category
+router.get('/category', (req, res) => {
+    const queryCommand = "SELECT * FROM CATEGORY";
+    db.query(queryCommand, (err, result) => {
+        if (err) {
+            res.send(err);
+        }else {
+            res.send(result);
+        }
+    });
+});
+
+router.get('/brand', (req, res) => {
+    const queryCommand = "SELECT * FROM BRAND";
+    db.query(queryCommand, (err, result) => {
+        if (err) {
+            res.send(err);
+        }else {
+            res.send(result);
+        }
+    });
+});
+
 //product cart wait until user finish
 
 // product wishlist API waiting for user
