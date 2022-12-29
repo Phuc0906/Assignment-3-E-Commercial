@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.sneakerstore.logo.Logo;
 import com.example.sneakerstore.logo.LogoAdapter;
 import com.example.sneakerstore.sneaker.Category;
@@ -54,6 +55,7 @@ public class HomeFragment extends Fragment {
     Handler handler = new Handler(Looper.getMainLooper());
     final int startPosition = 1;
 
+    List<Sneaker> sneakerList;
 
     public class DownloadLatestProduct extends AsyncTask<String, Void, String> {
 
@@ -97,15 +99,15 @@ public class HomeFragment extends Fragment {
 
             try {
                 System.out.println(s);
-//                sneakerList.clear();
+                sneakerList.clear();
                 JSONArray jsonArr = new JSONArray(s);
                 System.out.println(jsonArr);
                 for (int i = 0; i < jsonArr.length(); i++) {
                     JSONObject sneakerObj = jsonArr.getJSONObject(i);
-//                    new Sneaker(R.drawable.air_max, "Nike", "Air max 1")
-//                    sneakerList.add(new Sneaker(sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
+                    sneakerList.add(new Sneaker(MainActivity.ROOT_IMG + sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
                 }
 
+                adapter.notifyDataSetChanged();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -148,10 +150,13 @@ public class HomeFragment extends Fragment {
         viewPager2.setClipToPadding(false);
         viewPager2.setClipChildren(false);
 
+        sneakerList = new ArrayList<>();
+
         CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
         viewPager2.setPageTransformer(compositePageTransformer);
         viewPager2.setAdapter(logoAdapter);
 
+        img = view.findViewById(R.id.imageView4);
 
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -165,12 +170,14 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rcList.setLayoutManager(linearLayoutManager);
 
+
+
         DownloadLatestProduct downloadLatestProduct = new DownloadLatestProduct();
-        downloadLatestProduct.execute(MainActivity.ROOT_API + "/product/images");
+        downloadLatestProduct.execute(MainActivity.ROOT_API + "/product/latest");
 
 
         List<Category> list = new ArrayList<>();
-        list.add(new Category("Latest", HomePage.sneakerList));
+        list.add(new Category("Latest", sneakerList));
 
         adapter.setData(list);
         adapter.notifyDataSetChanged();
@@ -232,4 +239,5 @@ public class HomeFragment extends Fragment {
         super.onPause();
         handler.removeCallbacks(lRunnable);
     }
+
 }

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.sneakerstore.R;
 
 import java.util.List;
@@ -45,7 +46,9 @@ public class SneakerAdapter extends RecyclerView.Adapter<SneakerAdapter.sneakerH
             holder.brandName.setText(sneaker.getBrand());
 
             // convert bitmap image here ---------------------------------------
-            holder.sneakerImage.setImageBitmap(base64toBitmap(sneaker.getResourceImage()));
+//            holder.sneakerImage.setImageBitmap(base64toBitmap(sneaker.getResourceImage()));
+
+            Glide.with(context).load(sneaker.getResourceImage()).into(holder.sneakerImage);
         }
     }
 

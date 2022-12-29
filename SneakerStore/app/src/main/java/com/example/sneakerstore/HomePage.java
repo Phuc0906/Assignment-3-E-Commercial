@@ -27,7 +27,7 @@ import java.util.List;
 public class HomePage extends AppCompatActivity {
     MeowBottomNavigation bottomNavigation;
 
-    static List<Sneaker> sneakerList;
+
 
 
 
@@ -46,7 +46,6 @@ public class HomePage extends AppCompatActivity {
         bottomNavigation.add(new MeowBottomNavigation.Model(3, R.drawable.cart_icon));
         bottomNavigation.add(new MeowBottomNavigation.Model(4, R.drawable.user_icon));
 
-        sneakerList = new ArrayList<>();
 
         bottomNavigation.setOnShowListener(new MeowBottomNavigation.ShowListener() {
             @Override

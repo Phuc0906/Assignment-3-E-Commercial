@@ -2,6 +2,15 @@ const cors = require('cors');
 const { query } = require('express');
 const express = require('express');
 const router = express.Router();
+const AWS = require('aws-sdk');
+
+const s3 = new AWS.S3({
+    accessKeyId: 'AKIAXIAIX4DZTI2H25AJ',
+    secretAccessKey: '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'
+});
+
+// aws secret key: 4cNqeEJDwJFwrp5qMnANtxt2C1KiXutAat32bQL1
+// aws access key: AKIAXIAIX4DZTI2H25AJ
 
 router.use(cors());
 router.use(express.json());
@@ -28,7 +37,7 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/images', (req, res) => {
-    const queryCommand = 'SELECT PICTURE FROM PRODUCT;'
+    const queryCommand = 'SELECT PICTURE FROM PRODUCT LIMIT 1;'
     db.query(queryCommand, (err, result) => {
         if (err) {
             res.send(err);
@@ -40,7 +49,7 @@ router.get('/images', (req, res) => {
 
 //View the latest products
 router.get('/latest', (req, res) => {
-    const queryCommand = 'SELECT PR.ID, PR.NAME, PR.DESCRIPTION, PR.PRICE, BR.NAME as brand, CATE.NAME as category FROM PRODUCT PR, BRAND BR, CATEGORY CATE WHERE BR.ID = PR.BRAND AND PR.CATEGORY = CATE.ID ORDER BY DATE_ADDED ASC LIMIT 1'
+    const queryCommand = 'SELECT PR.ID, PR.NAME, PR.DESCRIPTION, PR.PRICE, PR.PICTURE, BR.NAME as brand, CATE.NAME as category FROM PRODUCT PR, BRAND BR, CATEGORY CATE WHERE BR.ID = PR.BRAND AND PR.CATEGORY = CATE.ID ORDER BY DATE_ADDED ASC LIMIT 1'
     db.query(queryCommand, (err, result) => {
         if (err) {
             res.send(err);
@@ -153,6 +162,54 @@ router.get('/brand', (req, res) => {
         }
     });
 });
+
+router.post('/newapi', (req, res) => {
+    const getNewIDCommand = `SELECT MAX(ID) as newid FROM PRODUCT`;
+    db.query(getNewIDCommand, (err, result) => {
+        if (err) {
+            res.send(err);
+        }else {
+
+            const newID = result[0].newid;
+            const reqBody = req.body;
+            const insertCommand = `
+            INSERT INTO PRODUCT(ID, NAME, DESCRIPTION, PRICE, CATEGORY, PICTURE, BRAND)
+            VALUES('${newID + 1}', '${reqBody.name}', '${reqBody.description}', ${reqBody.price}, ${reqBody.category}, '${newID + 1}.png', ${reqBody.brand}) 
+            `
+
+            const transferData = 'data:image/png;base64,' + reqBody.picture;
+            var buf = Buffer.from(transferData.replace(/^data:image\/\w+;base64,/, ""),'base64')
+
+            const params = {
+                Bucket: 'ass3-android-bucket',
+                Key: `${newID + 1}.png`, // File name you want to save as in S3
+                Body: buf,
+                ContentEncoding: 'base64',
+                ContentType: 'image/png'
+            };
+
+            s3.upload(params, function(err, data) {
+                if (err) {
+                    throw err;
+                }
+                console.log(`File uploaded successfully`);
+            });
+
+            db.query(insertCommand, (inerr, inresult) => {
+                if (inerr) {
+                    res.send(err);
+                }else {
+                    res.send(inresult);
+                }
+            })
+
+
+            
+        }
+    })
+
+    
+})
 
 //product cart wait until user finish
 

@@ -24,6 +24,6 @@ connection.connect(function (err) {
     console.log("Connect");
 });
 
-app.listen(process.env.PORT || 3004, () => {
+app.listen(process.env.PORT || 3000, () => {
     console.log("Server is listening");
 });

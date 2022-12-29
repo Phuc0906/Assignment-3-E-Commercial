@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     int val;
 
     static final String ROOT_API = "https://mappingapi-372807.as.r.appspot.com";
+    static final String ROOT_IMG = "https://ass3-android-bucket.s3.ap-southeast-1.amazonaws.com/";
 
     ImageView shoesImg;
 

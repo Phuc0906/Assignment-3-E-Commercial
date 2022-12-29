@@ -446,7 +446,7 @@ public class ProductFormActivity extends AppCompatActivity {
                 productPrice = Integer.parseInt(priceInput.getText().toString());
 
                 UploadProduct uploadProduct = new UploadProduct();
-                uploadProduct.execute(MainActivity.ROOT_API + "/product");
+                uploadProduct.execute(MainActivity.ROOT_API + "/product/newapi");
             }
         });
 
