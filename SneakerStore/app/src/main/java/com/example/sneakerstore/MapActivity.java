@@ -49,8 +49,6 @@ public class MapActivity extends AppCompatActivity {
     Button enterBtn;
     ListView locationList;
 
-
-
     double shopLatitude;
     double shopLongitude;
 

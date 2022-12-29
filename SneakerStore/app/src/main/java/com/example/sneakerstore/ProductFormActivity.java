@@ -76,9 +76,9 @@ public class ProductFormActivity extends AppCompatActivity {
         imageInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent imgIntent = new Intent(Intent.ACTION_PICK);
-                imgIntent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(imgIntent, 1000);
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, 1000);
             }
         });
 
@@ -171,27 +171,19 @@ public class ProductFormActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1000) {
-            if (resultCode == RESULT_OK) {
+        if (requestCode == 1000 && resultCode == RESULT_OK) {
+            Uri uri = data.getData();
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(uri);
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                 uploadImageTap.setVisibility(View.INVISIBLE);
+                imageInput.setImageBitmap(bitmap);
                 imageInput.setVisibility(View.VISIBLE);
-
-                // convert image to URI
-                final Uri imageUri = data.getData();
-                final InputStream imageStream;
-                try {
-                    imageStream = getContentResolver().openInputStream(imageUri);
-                    final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-
-                    String encodedImage = encodeImage(selectedImage);
-
-
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
+
+
         }
     }
 
