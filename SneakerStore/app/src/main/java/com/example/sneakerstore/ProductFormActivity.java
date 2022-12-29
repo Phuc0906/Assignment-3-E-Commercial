@@ -10,29 +10,113 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sneakerstore.sneaker.Sneaker;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+
+//{
+//        "name": "abc",
+//        "address": "abc",
+//        "phone_number": "3000000",
+//        "gender": 1,
+//        "date_of_birth": "abc",
+//        "password": "123",
+//        "email": "abc3@gmail.com"
+//        }
 
 // add and update product will use the same activity
 public class ProductFormActivity extends AppCompatActivity {
+    public class DownloadLatestProduct extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            String result = "";
+
+            URL url;
+            HttpURLConnection urlConnection = null;
+
+            try {
+                Log.i("Re", urls[0]);
+                url = new URL(urls[0]);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = urlConnection.getInputStream();
+                InputStreamReader reader = new InputStreamReader(in);
+                int data = reader.read();
+
+                System.out.println("IN");
+                while (data != -1) {
+                    char current = (char) data;
+                    result += current;
+                    data = reader.read();
+                }
+
+                System.out.println(result);
+
+            }catch (Exception e) {
+                e.printStackTrace();
+
+                return null;
+            }
+
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            try {
+                System.out.println(s);
+//                sneakerList.clear();
+                JSONArray jsonArr = new JSONArray(s);
+                System.out.println(jsonArr);
+                for (int i = 0; i < jsonArr.length(); i++) {
+                    JSONObject sneakerObj = jsonArr.getJSONObject(i);
+//                    new Sneaker(R.drawable.air_max, "Nike", "Air max 1")
+//                    sneakerList.add(new Sneaker(sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     ImageView imageInput;
     TextView uploadImageTap;
@@ -40,6 +124,179 @@ public class ProductFormActivity extends AppCompatActivity {
     Spinner categoryInput, brandInput;
     String productName, productDescription, productBase64Img;
     int productPrice, productCategory, productBrand;
+    Button saveFormBtn;
+
+    // setting for Spinner
+    ArrayAdapter<String> adapter;
+    ArrayList<String> brands;
+    HashMap<String, Integer> brandsHashMap;
+
+    ArrayAdapter<String> categoryAdapter;
+    ArrayList<String> categories;
+    HashMap<String, Integer> categoriesHashMap;
+
+
+    // downloading class data
+    public class DownloadBrand extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            String result = "";
+
+            URL url;
+            HttpURLConnection urlConnection = null;
+
+            try {
+                Log.i("Re", urls[0]);
+                url = new URL(urls[0]);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = urlConnection.getInputStream();
+                InputStreamReader reader = new InputStreamReader(in);
+                int data = reader.read();
+
+                while (data != -1) {
+                    char current = (char) data;
+                    result += current;
+                    data = reader.read();
+                }
+
+
+
+            }catch (Exception e) {
+                e.printStackTrace();
+
+                return null;
+            }
+
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            try {
+                System.out.println(s);
+                brands.clear();
+                JSONArray jsonArr = new JSONArray(s);
+                for (int i = 0; i < jsonArr.length(); i++) {
+                    JSONObject brandObj = jsonArr.getJSONObject(i);
+                    brands.add(brandObj.getString("NAME"));
+                    brandsHashMap.put(brandObj.getString("NAME") , brandObj.getInt("ID"));
+                }
+                adapter.notifyDataSetChanged();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public class DownloadCategory extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            String result = "";
+
+            URL url;
+            HttpURLConnection urlConnection = null;
+
+            try {
+                Log.i("Re", urls[0]);
+                url = new URL(urls[0]);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = urlConnection.getInputStream();
+                InputStreamReader reader = new InputStreamReader(in);
+                int data = reader.read();
+
+                while (data != -1) {
+                    char current = (char) data;
+                    result += current;
+                    data = reader.read();
+                }
+
+
+
+            }catch (Exception e) {
+                e.printStackTrace();
+
+                return null;
+            }
+
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            try {
+                System.out.println(s);
+                JSONArray jsonArr = new JSONArray(s);
+                for (int i = 0; i < jsonArr.length(); i++) {
+                    JSONObject categoryObj = jsonArr.getJSONObject(i);
+                    categories.add(categoryObj.getString("NAME"));
+                    categoriesHashMap.put(categoryObj.getString("NAME") , categoryObj.getInt("ID"));
+                }
+                categoryAdapter.notifyDataSetChanged();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public class UploadProduct extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            String status = "0";
+            URL url = null;
+            try {
+                url = new URL(urls[0]);
+
+                // Uploading process
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                connection.setRequestProperty("Accept", "application/json");
+                connection.setDoInput(true);
+                connection.setDoOutput(true);
+                JSONObject jsonData = new JSONObject();
+
+                // setting data
+                jsonData.put("name", productName);
+                jsonData.put("description", productDescription);
+                jsonData.put("price", productPrice);
+                jsonData.put("category", productCategory);
+                jsonData.put("picture", productBase64Img);
+                jsonData.put("brand", productBrand);
+
+                System.out.println(jsonData);
+                System.out.println("Size: " + productBase64Img.length());
+
+                DataOutputStream os = new DataOutputStream(connection.getOutputStream());
+                os.writeBytes(jsonData.toString());
+                status = Integer.toString(connection.getResponseCode());
+                os.flush();
+                os.close();
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            Log.i("INFO", status);
+            return status;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +317,29 @@ public class ProductFormActivity extends AppCompatActivity {
         nameInput = findViewById(R.id.productNameInput);
         desInput = findViewById(R.id.productDescriptionInput);
         priceInput = findViewById(R.id.productPriceInput);
-        categoryInput = findViewById(R.id.productCategoryInput);
-        brandInput = findViewById(R.id.productBrandInput);
+        categoryInput = (Spinner) findViewById(R.id.productCategoryInput);
+        brandInput = (Spinner) findViewById(R.id.productBrandInput);
+        saveFormBtn = findViewById(R.id.saveFormBtn);
+
+        brandsHashMap = new HashMap<>();
+
+        categories = new ArrayList<>();
+        categoryAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, categories);
+        categoriesHashMap = new HashMap<>();
+
+        categoryInput.setAdapter(categoryAdapter);
+
+
+        brands = new ArrayList<>();
+        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, brands);
+        adapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+
+        DownloadLatestProduct downloadLatestProduct = new DownloadLatestProduct();
+        downloadLatestProduct.execute(MainActivity.ROOT_API + "/product/latest");
+
+
+        brandInput.setAdapter(adapter);
+
 
         // set action for image getting from gallery
         uploadImageTap.setOnClickListener(new View.OnClickListener() {
@@ -137,7 +415,8 @@ public class ProductFormActivity extends AppCompatActivity {
         categoryInput.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                // compare with category array and return later
+                productCategory = categoriesHashMap.get(adapterView.getItemAtPosition(i).toString());
+
             }
 
             @Override
@@ -145,11 +424,12 @@ public class ProductFormActivity extends AppCompatActivity {
 
             }
         });
+
 
         brandInput.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                // compare with brand array and return later
+                productBrand = brandsHashMap.get(adapterView.getItemAtPosition(i).toString());
             }
 
             @Override
@@ -157,6 +437,23 @@ public class ProductFormActivity extends AppCompatActivity {
 
             }
         });
+
+        saveFormBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                productName = nameInput.getText().toString();
+                productDescription = desInput.getText().toString();
+                productPrice = Integer.parseInt(priceInput.getText().toString());
+
+                UploadProduct uploadProduct = new UploadProduct();
+                uploadProduct.execute(MainActivity.ROOT_API + "/product");
+            }
+        });
+
+        DownloadCategory downloadCategory = new DownloadCategory();
+        downloadCategory.execute(MainActivity.ROOT_API + "/product/category");
+        DownloadBrand downloadBrand = new DownloadBrand();
+        downloadBrand.execute(MainActivity.ROOT_API + "/product/brand");
     }
 
     private String encodeImage(Bitmap bm)
@@ -182,8 +479,8 @@ public class ProductFormActivity extends AppCompatActivity {
                 try {
                     imageStream = getContentResolver().openInputStream(imageUri);
                     final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-
-                    String encodedImage = encodeImage(selectedImage);
+                    imageInput.setImageBitmap(selectedImage);
+                    productBase64Img = encodeImage(selectedImage);
 
 
 

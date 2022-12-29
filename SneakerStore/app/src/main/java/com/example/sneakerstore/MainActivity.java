@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
     int val;
 
+    static final String ROOT_API = "https://mappingapi-372807.as.r.appspot.com";
+
     ImageView shoesImg;
 
     @Override
@@ -81,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 if (val < seekBar.getMax()) {
                     seekBar.setProgress(0);
                 } else {
-                    startActivity(new Intent(MainActivity.this, AdminActivity.class));
+                    startActivity(new Intent(MainActivity.this, HomePage.class));
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override

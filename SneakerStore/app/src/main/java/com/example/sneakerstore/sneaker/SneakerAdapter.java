@@ -1,6 +1,9 @@
 package com.example.sneakerstore.sneaker;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +45,7 @@ public class SneakerAdapter extends RecyclerView.Adapter<SneakerAdapter.sneakerH
             holder.brandName.setText(sneaker.getBrand());
 
             // convert bitmap image here ---------------------------------------
-            holder.sneakerImage.setImageResource(sneaker.getResourceImage());
+            holder.sneakerImage.setImageBitmap(base64toBitmap(sneaker.getResourceImage()));
         }
     }
 
@@ -63,5 +66,10 @@ public class SneakerAdapter extends RecyclerView.Adapter<SneakerAdapter.sneakerH
             brandName = itemView.findViewById(R.id.brandText);
             sneakerImage = itemView.findViewById(R.id.sneakerImg);
         }
+    }
+
+    private Bitmap base64toBitmap(String base64Img) {
+        byte[] decodedString = Base64.decode(base64Img, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
 }

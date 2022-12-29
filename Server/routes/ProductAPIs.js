@@ -27,9 +27,20 @@ router.get('/', async (req, res) => {
     })
 });
 
+router.get('/images', (req, res) => {
+    const queryCommand = 'SELECT PICTURE FROM PRODUCT;'
+    db.query(queryCommand, (err, result) => {
+        if (err) {
+            res.send(err);
+        }else {
+            res.send(result);
+        }
+    })
+})
+
 //View the latest products
 router.get('/latest', (req, res) => {
-    const queryCommand = 'SELECT * FROM PRODUCT ORDER BY DATE_ADDED ASC'
+    const queryCommand = 'SELECT PR.ID, PR.NAME, PR.DESCRIPTION, PR.PRICE, BR.NAME as brand, CATE.NAME as category FROM PRODUCT PR, BRAND BR, CATEGORY CATE WHERE BR.ID = PR.BRAND AND PR.CATEGORY = CATE.ID ORDER BY DATE_ADDED ASC LIMIT 1'
     db.query(queryCommand, (err, result) => {
         if (err) {
             res.send(err);
@@ -84,12 +95,21 @@ router.get('/search/brand', (req, res) => {
 //add product
 router.post('/', (req, res) => {
     const reqBody = req.body;
+    console.log(reqBody);
     // command will be updated when app created
     const queryCommand = `
     INSERT INTO PRODUCT(ID, NAME, DESCRIPTION, PRICE, CATEGORY, PICTURE, BRAND)
     VALUES(NULL, '${reqBody.name}', '${reqBody.description}', ${reqBody.price}, ${reqBody.category}, '${reqBody.picture}', ${reqBody.brand}) 
     `
-    res.send(queryCommand);
+
+    db.query(queryCommand, (err, result) => {
+        if (err) {
+            res.send(err);
+        }else {
+            res.send(result);
+        }
+    })
+    
 });
 
 // update product

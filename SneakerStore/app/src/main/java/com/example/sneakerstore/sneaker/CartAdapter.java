@@ -1,6 +1,9 @@
 package com.example.sneakerstore.sneaker;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +47,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
 
         if (cartSneaker != null) {
             System.out.println(cartSneaker.getResourceImage());
-            holder.itemImg.setImageResource(cartSneaker.getResourceImage());
+            holder.itemImg.setImageBitmap(base64toBitmap(cartSneaker.getResourceImage()));
             holder.brandText.setText(cartSneaker.getBrand());
 
             holder.priceText.setText(Integer.toString(cartSneaker.getPrice()));
@@ -76,5 +79,10 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
             addButton = itemView.findViewById(R.id.addButton);
             minusButton = itemView.findViewById(R.id.minusButton);
         }
+    }
+
+    private Bitmap base64toBitmap(String base64Img) {
+        byte[] decodedString = Base64.decode(base64Img, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
 }

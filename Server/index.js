@@ -7,6 +7,12 @@ const userAPI = require("./routes/UserAPIs");
 app.use(cors());
 app.use("/product", productAPI);
 app.use("/user", userAPI);
+
+app.use(express.json({limit: '50mb', extended: true}));
+app.use(express.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
+
+
+
 var connection = mysql.createConnection({
     host: "3.0.89.85",
     user: "phuchoang",
@@ -18,6 +24,6 @@ connection.connect(function (err) {
     console.log("Connect");
 });
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3004, () => {
     console.log("Server is listening");
 });

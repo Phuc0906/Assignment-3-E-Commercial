@@ -20,6 +20,7 @@ public class ProductManagementFragment extends Fragment {
     ImageButton addProductBtn;
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

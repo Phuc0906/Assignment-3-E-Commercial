@@ -1,21 +1,21 @@
 package com.example.sneakerstore.sneaker;
 
 public class Sneaker {
-    private int resourceImage;
+    private String resourceImage;
     private String brand;
     private String name;
 
-    public Sneaker(int resourceImage, String brand, String name) {
+    public Sneaker(String resourceImage, String brand, String name) {
         this.resourceImage = resourceImage;
         this.brand = brand;
         this.name = name;
     }
 
-    public int getResourceImage() {
+    public String getResourceImage() {
         return resourceImage;
     }
 
-    public void setResourceImage(int resourceImage) {
+    public void setResourceImage(String resourceImage) {
         this.resourceImage = resourceImage;
     }
 

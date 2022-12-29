@@ -40,12 +40,12 @@ public class OrderActivity extends AppCompatActivity{
         setContentView(R.layout.activity_order);
 
         List<CheckoutSneaker> sneakerList = new ArrayList<>();
-        sneakerList.add(new CheckoutSneaker(R.drawable.air_max, "Nike", "Air max", 3000000, 2, 8.5));
-        sneakerList.add(new CheckoutSneaker(R.drawable.air_max, "Nike", "Air max", 3000000, 2, 8.5));
-        sneakerList.add(new CheckoutSneaker(R.drawable.air_max, "Nike", "Air max", 3000000, 2, 8.5));
-        sneakerList.add(new CheckoutSneaker(R.drawable.air_max, "Nike", "Air max", 3000000, 2, 8.5));
-        sneakerList.add(new CheckoutSneaker(R.drawable.air_max, "Nike", "Air max", 3000000, 2, 8.5));
-        sneakerList.add(new CheckoutSneaker(R.drawable.air_max, "Nike", "Air max", 3000000, 2, 8.5));
+//        sneakerList.add(new CheckoutSneaker(R.drawable.air_max, "Nike", "Air max", 3000000, 2, 8.5));
+//        sneakerList.add(new CheckoutSneaker(R.drawable.air_max, "Nike", "Air max", 3000000, 2, 8.5));
+//        sneakerList.add(new CheckoutSneaker(R.drawable.air_max, "Nike", "Air max", 3000000, 2, 8.5));
+//        sneakerList.add(new CheckoutSneaker(R.drawable.air_max, "Nike", "Air max", 3000000, 2, 8.5));
+//        sneakerList.add(new CheckoutSneaker(R.drawable.air_max, "Nike", "Air max", 3000000, 2, 8.5));
+//        sneakerList.add(new CheckoutSneaker(R.drawable.air_max, "Nike", "Air max", 3000000, 2, 8.5));
 
         List<CheckOutSection> checkOutSectionList = new ArrayList<>();
 
