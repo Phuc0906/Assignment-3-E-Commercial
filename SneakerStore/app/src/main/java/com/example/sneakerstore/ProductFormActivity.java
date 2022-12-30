@@ -47,77 +47,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-//{
-//        "name": "abc",
-//        "address": "abc",
-//        "phone_number": "3000000",
-//        "gender": 1,
-//        "date_of_birth": "abc",
-//        "password": "123",
-//        "email": "abc3@gmail.com"
-//        }
-
-// add and update product will use the same activity
 public class ProductFormActivity extends AppCompatActivity {
-    public class DownloadLatestProduct extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... urls) {
-            String result = "";
-
-            URL url;
-            HttpURLConnection urlConnection = null;
-
-            try {
-                Log.i("Re", urls[0]);
-                url = new URL(urls[0]);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = urlConnection.getInputStream();
-                InputStreamReader reader = new InputStreamReader(in);
-                int data = reader.read();
-
-                System.out.println("IN");
-                while (data != -1) {
-                    char current = (char) data;
-                    result += current;
-                    data = reader.read();
-                }
-
-                System.out.println(result);
-
-            }catch (Exception e) {
-                e.printStackTrace();
-
-                return null;
-            }
-
-
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            try {
-                System.out.println(s);
-//                sneakerList.clear();
-                JSONArray jsonArr = new JSONArray(s);
-                System.out.println(jsonArr);
-                for (int i = 0; i < jsonArr.length(); i++) {
-                    JSONObject sneakerObj = jsonArr.getJSONObject(i);
-//                    new Sneaker(R.drawable.air_max, "Nike", "Air max 1")
-//                    sneakerList.add(new Sneaker(sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
-                }
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
     ImageView imageInput;
     TextView uploadImageTap;
     EditText nameInput, desInput, priceInput;
@@ -125,178 +55,12 @@ public class ProductFormActivity extends AppCompatActivity {
     String productName, productDescription, productBase64Img;
     int productPrice, productCategory, productBrand;
     Button saveFormBtn;
-
-    // setting for Spinner
     ArrayAdapter<String> adapter;
     ArrayList<String> brands;
     HashMap<String, Integer> brandsHashMap;
-
     ArrayAdapter<String> categoryAdapter;
     ArrayList<String> categories;
     HashMap<String, Integer> categoriesHashMap;
-
-
-    // downloading class data
-    public class DownloadBrand extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... urls) {
-            String result = "";
-
-            URL url;
-            HttpURLConnection urlConnection = null;
-
-            try {
-                Log.i("Re", urls[0]);
-                url = new URL(urls[0]);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = urlConnection.getInputStream();
-                InputStreamReader reader = new InputStreamReader(in);
-                int data = reader.read();
-
-                while (data != -1) {
-                    char current = (char) data;
-                    result += current;
-                    data = reader.read();
-                }
-
-
-
-            }catch (Exception e) {
-                e.printStackTrace();
-
-                return null;
-            }
-
-
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            try {
-                System.out.println(s);
-                brands.clear();
-                JSONArray jsonArr = new JSONArray(s);
-                for (int i = 0; i < jsonArr.length(); i++) {
-                    JSONObject brandObj = jsonArr.getJSONObject(i);
-                    brands.add(brandObj.getString("NAME"));
-                    brandsHashMap.put(brandObj.getString("NAME") , brandObj.getInt("ID"));
-                }
-                adapter.notifyDataSetChanged();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public class DownloadCategory extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... urls) {
-            String result = "";
-
-            URL url;
-            HttpURLConnection urlConnection = null;
-
-            try {
-                Log.i("Re", urls[0]);
-                url = new URL(urls[0]);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = urlConnection.getInputStream();
-                InputStreamReader reader = new InputStreamReader(in);
-                int data = reader.read();
-
-                while (data != -1) {
-                    char current = (char) data;
-                    result += current;
-                    data = reader.read();
-                }
-
-
-
-            }catch (Exception e) {
-                e.printStackTrace();
-
-                return null;
-            }
-
-
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            try {
-                System.out.println(s);
-                JSONArray jsonArr = new JSONArray(s);
-                for (int i = 0; i < jsonArr.length(); i++) {
-                    JSONObject categoryObj = jsonArr.getJSONObject(i);
-                    categories.add(categoryObj.getString("NAME"));
-                    categoriesHashMap.put(categoryObj.getString("NAME") , categoryObj.getInt("ID"));
-                }
-                categoryAdapter.notifyDataSetChanged();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public class UploadProduct extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... urls) {
-            String status = "0";
-            URL url = null;
-            try {
-                url = new URL(urls[0]);
-
-                // Uploading process
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                connection.setRequestProperty("Accept", "application/json");
-                connection.setDoInput(true);
-                connection.setDoOutput(true);
-                JSONObject jsonData = new JSONObject();
-
-                // setting data
-                jsonData.put("name", productName);
-                jsonData.put("description", productDescription);
-                jsonData.put("price", productPrice);
-                jsonData.put("category", productCategory);
-                jsonData.put("picture", productBase64Img);
-                jsonData.put("brand", productBrand);
-
-                System.out.println(jsonData);
-                System.out.println("Size: " + productBase64Img.length());
-
-                DataOutputStream os = new DataOutputStream(connection.getOutputStream());
-                os.writeBytes(jsonData.toString());
-                status = Integer.toString(connection.getResponseCode());
-                os.flush();
-                os.close();
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-            Log.i("INFO", status);
-            return status;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -482,18 +246,215 @@ public class ProductFormActivity extends AppCompatActivity {
                     imageInput.setImageBitmap(selectedImage);
                     productBase64Img = encodeImage(selectedImage);
 
-
-
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-
             }
         }
     }
 
-    private void base64toBitmap(String base64Img) {
-        byte[] decodedString = Base64.decode(base64Img, Base64.DEFAULT);
-        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+    public class DownloadLatestProduct extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            String result = "";
+
+            URL url;
+            HttpURLConnection urlConnection = null;
+            try {
+                Log.i("Re", urls[0]);
+                url = new URL(urls[0]);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = urlConnection.getInputStream();
+                InputStreamReader reader = new InputStreamReader(in);
+                int data = reader.read();
+
+                System.out.println("IN");
+                while (data != -1) {
+                    char current = (char) data;
+                    result += current;
+                    data = reader.read();
+                }
+
+                System.out.println(result);
+
+            }catch (Exception e) {
+                e.printStackTrace();
+
+                return null;
+            }
+
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            try {
+                System.out.println(s);
+//                sneakerList.clear();
+                JSONArray jsonArr = new JSONArray(s);
+                System.out.println(jsonArr);
+                for (int i = 0; i < jsonArr.length(); i++) {
+                    JSONObject sneakerObj = jsonArr.getJSONObject(i);
+//                    new Sneaker(R.drawable.air_max, "Nike", "Air max 1")
+//                    sneakerList.add(new Sneaker(sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    // downloading class data
+    public class DownloadBrand extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            String result = "";
+
+            URL url;
+            HttpURLConnection urlConnection = null;
+
+            try {
+                Log.i("Re", urls[0]);
+                url = new URL(urls[0]);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = urlConnection.getInputStream();
+                InputStreamReader reader = new InputStreamReader(in);
+                int data = reader.read();
+
+                while (data != -1) {
+                    char current = (char) data;
+                    result += current;
+                    data = reader.read();
+                }
+            }catch (Exception e) {
+                e.printStackTrace();
+
+                return null;
+            }
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            try {
+                System.out.println(s);
+                brands.clear();
+                JSONArray jsonArr = new JSONArray(s);
+                for (int i = 0; i < jsonArr.length(); i++) {
+                    JSONObject brandObj = jsonArr.getJSONObject(i);
+                    brands.add(brandObj.getString("NAME"));
+                    brandsHashMap.put(brandObj.getString("NAME") , brandObj.getInt("ID"));
+                }
+                adapter.notifyDataSetChanged();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public class DownloadCategory extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            String result = "";
+
+            URL url;
+            HttpURLConnection urlConnection = null;
+
+            try {
+                Log.i("Re", urls[0]);
+                url = new URL(urls[0]);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = urlConnection.getInputStream();
+                InputStreamReader reader = new InputStreamReader(in);
+                int data = reader.read();
+
+                while (data != -1) {
+                    char current = (char) data;
+                    result += current;
+                    data = reader.read();
+                }
+
+            }catch (Exception e) {
+                e.printStackTrace();
+
+                return null;
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            try {
+                System.out.println(s);
+                JSONArray jsonArr = new JSONArray(s);
+                for (int i = 0; i < jsonArr.length(); i++) {
+                    JSONObject categoryObj = jsonArr.getJSONObject(i);
+                    categories.add(categoryObj.getString("NAME"));
+                    categoriesHashMap.put(categoryObj.getString("NAME") , categoryObj.getInt("ID"));
+                }
+                categoryAdapter.notifyDataSetChanged();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public class UploadProduct extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            String status = "0";
+            URL url = null;
+            try {
+                url = new URL(urls[0]);
+
+                // Uploading process
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                connection.setRequestProperty("Accept", "application/json");
+                connection.setDoInput(true);
+                connection.setDoOutput(true);
+                JSONObject jsonData = new JSONObject();
+
+                // setting data
+                jsonData.put("name", productName);
+                jsonData.put("description", productDescription);
+                jsonData.put("price", productPrice);
+                jsonData.put("category", productCategory);
+                jsonData.put("picture", productBase64Img);
+                jsonData.put("brand", productBrand);
+
+                System.out.println(jsonData);
+                System.out.println("Size: " + productBase64Img.length());
+
+                DataOutputStream os = new DataOutputStream(connection.getOutputStream());
+                os.writeBytes(jsonData.toString());
+                status = Integer.toString(connection.getResponseCode());
+                os.flush();
+                os.close();
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            Log.i("INFO", status);
+            return status;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+        }
     }
 }
