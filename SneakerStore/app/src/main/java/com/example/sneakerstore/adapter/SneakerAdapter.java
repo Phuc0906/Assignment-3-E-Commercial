@@ -1,4 +1,4 @@
-package com.example.sneakerstore.sneaker;
+package com.example.sneakerstore.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.sneakerstore.R;
+import com.example.sneakerstore.sneaker.Sneaker;
 
 import java.util.List;
 

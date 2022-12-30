@@ -1,4 +1,4 @@
-package com.example.sneakerstore.sneaker;
+package com.example.sneakerstore.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sneakerstore.R;
+import com.example.sneakerstore.sneaker.Category;
 
 import java.util.List;
 

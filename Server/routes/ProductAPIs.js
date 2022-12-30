@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
         if (err) {
             res.send(err);
         }else {
-            res.send(result[0].PICTURE);
+            res.send(result);
         }
     })
 });
@@ -49,7 +49,7 @@ router.get('/images', (req, res) => {
 
 //View the latest products
 router.get('/latest', (req, res) => {
-    const queryCommand = 'SELECT PR.ID, PR.NAME, PR.DESCRIPTION, PR.PRICE, PR.PICTURE, BR.NAME as brand, CATE.NAME as category FROM PRODUCT PR, BRAND BR, CATEGORY CATE WHERE BR.ID = PR.BRAND AND PR.CATEGORY = CATE.ID ORDER BY DATE_ADDED ASC LIMIT 1'
+    const queryCommand = 'SELECT PR.ID, PR.NAME, PR.DESCRIPTION, PR.PRICE, PR.PICTURE, BR.NAME as brand, CATE.NAME as category FROM PRODUCT PR, BRAND BR, CATEGORY CATE WHERE BR.ID = PR.BRAND AND PR.CATEGORY = CATE.ID ORDER BY DATE_ADDED ASC'
     db.query(queryCommand, (err, result) => {
         if (err) {
             res.send(err);
@@ -195,15 +195,46 @@ router.post('/newapi', (req, res) => {
                 console.log(`File uploaded successfully`);
             });
 
+            
+            
             db.query(insertCommand, (inerr, inresult) => {
                 if (inerr) {
                     res.send(err);
                 }else {
-                    res.send(inresult);
+                    let updateStock = ""
+
+                    updateStock = `INSERT INTO STOCK(PRODUCT_ID, SIZE, QUANTITY) VALUES ?`;
+                    let stockValue = [
+                        [newID + 1, 5.0, 10],
+                        [newID + 1, 5.5, 10],
+                        [newID + 1, 6.0, 10],
+                        [newID + 1, 6.5, 10],
+                        [newID + 1, 7.0, 10],
+                        [newID + 1, 7.5, 10],
+                        [newID + 1, 8.0, 10],
+                        [newID + 1, 8.5, 10],
+                        [newID + 1, 9.0, 10],
+                        [newID + 1, 9.5, 10]
+                    ]
+
+                    let stockRes = "";
+                    db.query(updateStock, [stockValue] ,(stockErr, stockResult) => {
+                        if (stockErr) {
+                            
+                            stockRes = stockErr;
+                        }else {
+                            
+                            stockRes = stockResult;
+                        }
+                    })
+                    res.send({
+                        inRe: inresult,
+                        stockRep: stockRes
+                    });
                 }
             })
 
-
+            
             
         }
     })

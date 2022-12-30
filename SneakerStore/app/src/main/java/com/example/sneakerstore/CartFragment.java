@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.sneakerstore.sneaker.CartAdapter;
+import com.example.sneakerstore.adapter.CartAdapter;
 import com.example.sneakerstore.sneaker.CartSneaker;
 
 import java.util.ArrayList;
