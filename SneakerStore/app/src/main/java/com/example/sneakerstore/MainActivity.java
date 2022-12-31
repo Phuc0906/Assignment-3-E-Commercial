@@ -22,8 +22,8 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
     int val;
 
-    static final String ROOT_API = "https://mappingapi-372807.as.r.appspot.com";
-    static final String ROOT_IMG = "https://ass3-android-bucket.s3.ap-southeast-1.amazonaws.com/";
+    public static final String ROOT_API = "https://mappingapi-372807.as.r.appspot.com";
+    public static final String ROOT_IMG = "https://ass3-android-bucket.s3.ap-southeast-1.amazonaws.com/";
 
     ImageView shoesImg;
 
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 if (val < seekBar.getMax()) {
                     seekBar.setProgress(0);
                 } else {
-                    startActivity(new Intent(MainActivity.this, ProductListActivity.class));
+                    startActivity(new Intent(MainActivity.this, HomePage.class));
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override

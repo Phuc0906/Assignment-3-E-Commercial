@@ -1,4 +1,4 @@
-package com.example.sneakerstore;
+package com.example.sneakerstore.fragment;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import com.example.sneakerstore.MainActivity;
+import com.example.sneakerstore.R;
 import com.example.sneakerstore.logo.Logo;
 import com.example.sneakerstore.logo.LogoAdapter;
 import com.example.sneakerstore.sneaker.Category;
@@ -44,69 +46,7 @@ public class HomeFragment extends Fragment {
     ImageView img;
     Handler handler = new Handler(Looper.getMainLooper());
     final int startPosition = 1;
-
     List<Sneaker> sneakerList;
-
-    public class DownloadLatestProduct extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... urls) {
-            String result = "";
-
-            URL url;
-            HttpURLConnection urlConnection = null;
-
-            try {
-                Log.i("Re", urls[0]);
-                url = new URL(urls[0]);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = urlConnection.getInputStream();
-                InputStreamReader reader = new InputStreamReader(in);
-                int data = reader.read();
-
-                System.out.println("IN");
-                while (data != -1) {
-                    char current = (char) data;
-                    result += current;
-                    data = reader.read();
-                }
-
-                System.out.println(result);
-
-            }catch (Exception e) {
-                e.printStackTrace();
-
-                return null;
-            }
-
-
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            try {
-                System.out.println(s);
-                sneakerList.clear();
-                JSONArray jsonArr = new JSONArray(s);
-                System.out.println(jsonArr);
-                for (int i = 0; i < jsonArr.length(); i++) {
-                    JSONObject sneakerObj = jsonArr.getJSONObject(i);
-                    sneakerList.add(new Sneaker(MainActivity.ROOT_IMG + sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
-                }
-
-                adapter.notifyDataSetChanged();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-
     Runnable lRunnable = new Runnable() {
         @Override
         public void run() {
@@ -209,6 +149,64 @@ public class HomeFragment extends Fragment {
     public void onPause() {
         super.onPause();
         handler.removeCallbacks(lRunnable);
+    }
+
+    public class DownloadLatestProduct extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            String result = "";
+
+            URL url;
+            HttpURLConnection urlConnection = null;
+
+            try {
+                Log.i("Re", urls[0]);
+                url = new URL(urls[0]);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = urlConnection.getInputStream();
+                InputStreamReader reader = new InputStreamReader(in);
+                int data = reader.read();
+
+                System.out.println("IN");
+                while (data != -1) {
+                    char current = (char) data;
+                    result += current;
+                    data = reader.read();
+                }
+
+                System.out.println(result);
+
+            }catch (Exception e) {
+                e.printStackTrace();
+
+                return null;
+            }
+
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            try {
+                System.out.println(s);
+                sneakerList.clear();
+                JSONArray jsonArr = new JSONArray(s);
+                System.out.println(jsonArr);
+                for (int i = 0; i < jsonArr.length(); i++) {
+                    JSONObject sneakerObj = jsonArr.getJSONObject(i);
+                    sneakerList.add(new Sneaker(MainActivity.ROOT_IMG + sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
+                }
+
+                adapter.notifyDataSetChanged();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.sneakerstore;
+package com.example.sneakerstore.fragment;
 
 import android.os.Bundle;
 
@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.sneakerstore.R;
 import com.example.sneakerstore.adapter.CartAdapter;
 import com.example.sneakerstore.sneaker.CartSneaker;
 

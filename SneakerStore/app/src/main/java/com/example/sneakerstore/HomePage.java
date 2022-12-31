@@ -2,27 +2,16 @@ package com.example.sneakerstore;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
-import com.example.sneakerstore.sneaker.Sneaker;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import com.example.sneakerstore.fragment.CartFragment;
+import com.example.sneakerstore.fragment.ExploreFragment;
+import com.example.sneakerstore.fragment.HomeFragment;
 
 public class HomePage extends AppCompatActivity {
     MeowBottomNavigation bottomNavigation;
@@ -55,7 +44,7 @@ public class HomePage extends AppCompatActivity {
                 if (item.getId() == 1) {
                     fragment = new HomeFragment();
                 }else if (item.getId() == 2) {
-                    fragment = new CartFragment();
+                    fragment = new ExploreFragment();
                 }else if (item.getId() == 3) {
                     fragment = new CartFragment();
                 }else {
@@ -81,8 +70,6 @@ public class HomePage extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "You click " + item.getId(), Toast.LENGTH_LONG);
             }
         });
-
-
 
     }
 
