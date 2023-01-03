@@ -1,14 +1,20 @@
 package com.example.sneakerstore.sneaker;
 
 public class Sneaker {
+    private int sneakerId;
     private String resourceImage;
     private String brand;
     private String name;
 
-    public Sneaker(String resourceImage, String brand, String name) {
+    public Sneaker(int sneakerId, String resourceImage, String brand, String name) {
+        this.sneakerId = sneakerId;
         this.resourceImage = resourceImage;
         this.brand = brand;
         this.name = name;
+    }
+
+    public int getSneakerId() {
+        return sneakerId;
     }
 
     public String getResourceImage() {

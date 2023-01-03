@@ -7,8 +7,8 @@ public class CheckoutSneaker extends Sneaker {
     private int quantity;
     private double size;
 
-    public CheckoutSneaker(String resourceImage, String brand, String name, double price, int quantity, double size) {
-        super(resourceImage, brand, name);
+    public CheckoutSneaker(int sneakerId, String resourceImage, String brand, String name, double price, int quantity, double size) {
+        super(sneakerId, resourceImage, brand, name);
         this.price = price;
         this.quantity = quantity;
         this.size = size;

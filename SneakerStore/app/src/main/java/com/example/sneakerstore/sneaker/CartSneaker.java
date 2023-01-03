@@ -4,8 +4,8 @@ public class CartSneaker extends Sneaker {
     private int quantity;
     private int price;
 
-    public CartSneaker(String resourceImage, String brand, String name, int quantity, int price) {
-        super(resourceImage, brand, name);
+    public CartSneaker(int sneakerId, String resourceImage, String brand, String name, int quantity, int price) {
+        super(sneakerId, resourceImage, brand, name);
         this.quantity = quantity;
         this.price = price;
     }

@@ -16,11 +16,15 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sneakerstore.model.User;
+
 public class MainActivity extends AppCompatActivity {
     SeekBar seekBar;
     ImageView arrow;
     TextView textView;
     int val;
+
+    public static User appUser;
 
     public static final String ROOT_API = "https://mappingapi-372807.as.r.appspot.com";
     public static final String ROOT_IMG = "https://ass3-android-bucket.s3.ap-southeast-1.amazonaws.com/";
@@ -34,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
+
+        appUser = new User(1);
 
 //        shoesImg = findViewById(R.id.shoesImg);
 //

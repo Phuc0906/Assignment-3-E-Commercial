@@ -26,21 +26,23 @@
 
         <TextView
             android:id="@+id/sneakerNameText"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/brandText"
             android:layout_marginStart="12dp"
+            android:layout_marginLeft="5dp"
+
             android:text="Air Max 1" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnCart"
-            android:layout_width="80dp"
+            android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:background="@drawable/custom_button"
             android:drawableRight="@drawable/add_shopping_cart"
             android:paddingStart="12dp"
             android:paddingEnd="15dp"
-            android:text="Add to "
+            android:text="View Detail "
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="12sp"
@@ -64,6 +66,8 @@
             android:layout_height="80dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/btnCart"
+            android:layout_marginLeft="8dp"
             android:layout_marginEnd="10dp"
             android:src="@drawable/air_max" />
     </RelativeLayout>

@@ -198,7 +198,7 @@ public class HomeFragment extends Fragment {
                 System.out.println(jsonArr);
                 for (int i = 0; i < jsonArr.length(); i++) {
                     JSONObject sneakerObj = jsonArr.getJSONObject(i);
-                    sneakerList.add(new Sneaker(MainActivity.ROOT_IMG + sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
+                    sneakerList.add(new Sneaker(sneakerObj.getInt("ID") ,MainActivity.ROOT_IMG + sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
                 }
 
                 adapter.notifyDataSetChanged();

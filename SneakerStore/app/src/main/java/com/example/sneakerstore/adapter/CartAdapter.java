@@ -15,6 +15,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.sneakerstore.MainActivity;
+import com.example.sneakerstore.ProductDetailActivity;
 import com.example.sneakerstore.R;
 import com.example.sneakerstore.sneaker.CartSneaker;
 
@@ -47,7 +50,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
 
         if (cartSneaker != null) {
             System.out.println(cartSneaker.getResourceImage());
-            holder.itemImg.setImageBitmap(base64toBitmap(cartSneaker.getResourceImage()));
+            Glide.with(context).load(MainActivity.ROOT_IMG + cartSneaker.getResourceImage()).into(holder.itemImg);
             holder.brandText.setText(cartSneaker.getBrand());
 
             holder.priceText.setText(Integer.toString(cartSneaker.getPrice()));

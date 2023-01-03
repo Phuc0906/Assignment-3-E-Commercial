@@ -271,6 +271,29 @@ router.get("/detail", (req, res) => {
     });
 });
 
+router.post('/cart', (req, res) => {
+    const reqBody = req.body;
+    const insertCommand = `INSERT INTO IN_CART(USERID, PRODUCT_ID, SIZE, QUANTITY) VALUES(${reqBody.userid}, ${reqBody.productid}, ${reqBody.size}, ${reqBody.quantity})`;
+    db.query(insertCommand, (err, result) => {
+        if (err) {
+            res.send(err);
+        }else {
+            res.send(result);
+        }
+    })
+});
+
+router.get('/cart', (req, res) => {
+    const queryCommand = `SELECT IC.PRODUCT_ID, IC.QUANTITY, PR.NAME as PRODUCT_NAME, PR.PRICE, PR.PICTURE, BR.NAME as BRAND FROM IN_CART IC, PRODUCT PR, BRAND BR WHERE IC.PRODUCT_ID = PR.ID AND PR.BRAND = BR.ID AND IC.USERID = ${req.query.userid}`
+    db.query(queryCommand, (err, result) => {
+        if (err) {
+            res.send(err);
+        }else {
+            res.send(result);
+        }
+    })
+})
+
 //product cart wait until user finish
 
 // product wishlist API waiting for user
