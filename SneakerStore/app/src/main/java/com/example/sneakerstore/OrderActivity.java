@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +20,11 @@ import android.widget.TextView;
 import com.example.sneakerstore.adapter.CheckoutList;
 import com.example.sneakerstore.model.CheckOutSection;
 import com.example.sneakerstore.model.CheckoutSneaker;
+import com.example.sneakerstore.model.HttpHandler;
+import com.example.sneakerstore.sneaker.CartSneaker;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +34,13 @@ import java.util.List;
 public class OrderActivity extends AppCompatActivity{
 
     ImageButton toMapBtn;
-    TextView costText, placeView;
-    CheckBox creditCardBox, googlePayBox;
+    TextView costText, placeView, subPrice;
+    CheckBox creditCardBox, googlePayBox, shippingBox, pickUpBox;
     Button paymentBtn;
     RecyclerView paymentView;
+    List<CheckoutSneaker> sneakerList;
+    CheckoutList checkoutList;
+    ImageButton orderBackButton;
 
 
     @Override
@@ -39,13 +48,7 @@ public class OrderActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
 
-        List<CheckoutSneaker> sneakerList = new ArrayList<>();
-//        sneakerList.add(new CheckoutSneaker(R.drawable.air_max, "Nike", "Air max", 3000000, 2, 8.5));
-//        sneakerList.add(new CheckoutSneaker(R.drawable.air_max, "Nike", "Air max", 3000000, 2, 8.5));
-//        sneakerList.add(new CheckoutSneaker(R.drawable.air_max, "Nike", "Air max", 3000000, 2, 8.5));
-//        sneakerList.add(new CheckoutSneaker(R.drawable.air_max, "Nike", "Air max", 3000000, 2, 8.5));
-//        sneakerList.add(new CheckoutSneaker(R.drawable.air_max, "Nike", "Air max", 3000000, 2, 8.5));
-//        sneakerList.add(new CheckoutSneaker(R.drawable.air_max, "Nike", "Air max", 3000000, 2, 8.5));
+        sneakerList = new ArrayList<>();
 
         List<CheckOutSection> checkOutSectionList = new ArrayList<>();
 
@@ -54,7 +57,12 @@ public class OrderActivity extends AppCompatActivity{
 
         paymentView = findViewById(R.id.paymentView);
         creditCardBox = findViewById(R.id.creditCardBox);
+        creditCardBox.setChecked(true);
         googlePayBox = findViewById(R.id.googlePayBox);
+        shippingBox = findViewById(R.id.shippingCheckBox);
+        shippingBox.setChecked(true);
+        pickUpBox = findViewById(R.id.pickUpCheckBox);
+        orderBackButton = findViewById(R.id.orderBackBtn);
 
         paymentBtn = findViewById(R.id.paymentBtn);
 
@@ -66,24 +74,55 @@ public class OrderActivity extends AppCompatActivity{
             }
         });
 
-
-
-        googlePayBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        shippingBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
-                    creditCardBox.setSelected(false);
+                    pickUpBox.setChecked(false);
                 }else {
-                    creditCardBox.setSelected(true);
+                    pickUpBox.setChecked(true);
+                }
+            }
+        });
+
+        pickUpBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    shippingBox.setChecked(false);
+                }else {
+                    shippingBox.setChecked(true);
                 }
             }
         });
 
 
 
+        googlePayBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    creditCardBox.setChecked(false);
+                }else {
+                    creditCardBox.setChecked(true);
+                }
+            }
+        });
+
+        creditCardBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    googlePayBox.setChecked(false);
+                }else {
+                    googlePayBox.setChecked(true);
+                }
+            }
+        });
 
 
-        CheckoutList checkoutList = new CheckoutList(this);
+
+        checkoutList = new CheckoutList(this);
         checkoutList.setData(sneakerList);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -91,18 +130,32 @@ public class OrderActivity extends AppCompatActivity{
         paymentView.setAdapter(checkoutList);
 
 
-
+        subPrice = findViewById(R.id.subPrice);
         costText = findViewById(R.id.shipPrice);
         placeView = findViewById(R.id.shippingAddress);
+        costText.setText("0 vnd");
 
         toMapBtn = findViewById(R.id.toMapBtn);
         toMapBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(OrderActivity.this, MapActivity.class);
-                startActivityForResult(intent, 10);
+                if (shippingBox.isChecked()) {
+                    Intent intent = new Intent(OrderActivity.this, MapActivity.class);
+                    startActivityForResult(intent, 10);
+                }
+
             }
         });
+
+        orderBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        DownloadCheckoutProduct downloadCheckoutProduct = new DownloadCheckoutProduct();
+        downloadCheckoutProduct.execute(MainActivity.ROOT_API + "/product/cart?userid=" + MainActivity.appUser.getUserId());
     }
 
     @Override
@@ -131,6 +184,33 @@ public class OrderActivity extends AppCompatActivity{
                 Intent resultIntent = new Intent();
                 setResult(RESULT_OK, resultIntent);
                 finish();
+            }
+        }
+    }
+
+    public class DownloadCheckoutProduct extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            return HttpHandler.getMethod(urls[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            try {
+                int totalProductPrice = 0;
+                JSONArray productArr = new JSONArray(s);
+                for (int i = 0; i < productArr.length(); i++) {
+                    JSONObject object = productArr.getJSONObject(i);
+                    sneakerList.add(new CheckoutSneaker(object.getInt("PRODUCT_ID"), object.getString("PICTURE"), object.getString("BRAND"), object.getString("PRODUCT_NAME"), object.getInt("PRICE"), object.getInt("QUANTITY"), object.getDouble("SIZE")));
+                    totalProductPrice += object.getInt("QUANTITY") * object.getInt("PRICE");
+                }
+                checkoutList.notifyDataSetChanged();
+                subPrice.setText(totalProductPrice + " $");
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

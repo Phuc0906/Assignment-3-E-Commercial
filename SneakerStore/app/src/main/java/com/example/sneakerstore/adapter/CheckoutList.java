@@ -18,6 +18,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.sneakerstore.MainActivity;
 import com.example.sneakerstore.R;
 import com.example.sneakerstore.model.CheckoutSneaker;
 
@@ -51,7 +53,8 @@ public class CheckoutList extends RecyclerView.Adapter<CheckoutList.CheckoutAdap
             holder.price.setText(Double.toString(checkoutSneaker.getPrice()));
             holder.size.setText(Double.toString(checkoutSneaker.getSize()));
             holder.quantity.setText("Quantity: " + Integer.toString(checkoutSneaker.getQuantity()));
-            holder.itemImg.setImageBitmap(base64toBitmap(checkoutSneaker.getResourceImage()));
+
+            Glide.with(context).load(MainActivity.ROOT_IMG + checkoutSneaker.getResourceImage()).into(holder.itemImg);
 
         }
     }

@@ -2,6 +2,8 @@ package com.example.sneakerstore.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,19 +14,17 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.sneakerstore.R;
 import com.example.sneakerstore.adapter.ProductListAdapter;
 import com.example.sneakerstore.banner.Banner;
 import com.example.sneakerstore.banner.BannerAdapter;
-import com.example.sneakerstore.logo.Logo;
-import com.example.sneakerstore.logo.LogoAdapter;
 import com.example.sneakerstore.model.ProductExplore;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import me.relex.circleindicator.CircleIndicator3;
 
 public class ExploreFragment extends Fragment {
@@ -34,6 +34,7 @@ public class ExploreFragment extends Fragment {
     BannerAdapter bannerAdapter;
     ViewPager2 viewPager2;
     CircleIndicator3 indicator3;
+    EditText etSearch;
     private Handler handler = new Handler(Looper.getMainLooper());
     private Runnable runnable = new Runnable() {
         @Override
@@ -69,6 +70,10 @@ public class ExploreFragment extends Fragment {
         viewPager2.setAdapter(bannerAdapter);
         indicator3.setViewPager(viewPager2);
 
+        //set up for search bar
+        etSearch = view.findViewById(R.id.et_search);
+
+
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -103,6 +108,12 @@ public class ExploreFragment extends Fragment {
         list.add(new ProductExplore("Nike", "Zoom Fly", R.drawable.zoom_fly));
         list.add(new ProductExplore("Adidas", "Super Star", R.drawable.superstar));
         return list;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        etSearch.clearFocus();
     }
 
     @Override

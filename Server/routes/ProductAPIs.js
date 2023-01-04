@@ -21,6 +21,7 @@ var db = mysql.createConnection({
     user: "g9",
     password: "Ass3Password!",
     database: "ASS3DB",
+    multipleStatements: true
 });
 
 // View All Product
@@ -273,8 +274,48 @@ router.get("/detail", (req, res) => {
 
 router.post('/cart', (req, res) => {
     const reqBody = req.body;
+    const checkCommand = `SELECT * FROM IN_CART WHERE USERID = ${reqBody.userid} && PRODUCT_ID = ${reqBody.productid} && SIZE = ${reqBody.size}`
     const insertCommand = `INSERT INTO IN_CART(USERID, PRODUCT_ID, SIZE, QUANTITY) VALUES(${reqBody.userid}, ${reqBody.productid}, ${reqBody.size}, ${reqBody.quantity})`;
-    db.query(insertCommand, (err, result) => {
+    db.query(checkCommand, (err, result) => {
+        if (err) {
+            res.send(err);
+        }else {
+            if (result.length != 0) {
+                const updateQuery = `UPDATE IN_CART SET QUANTITY = QUANTITY + ${reqBody.quantity} WHERE USERID = ${reqBody.userid} && PRODUCT_ID = ${reqBody.productid} && SIZE = ${reqBody.size}`;
+                db.query(updateQuery, (upErr, upResult) => {
+                    if (upErr) {
+                        res.send(upErr);
+                    }else {
+                        res.send(upResult);
+                    }
+                })
+            }else {
+                db.query(insertCommand, (upErr, upResult) => {
+                    if (upErr) {
+                        res.send(upErr);
+                    }else {
+                        res.send(upResult);
+                    }
+                })
+            }
+        }
+    })
+});
+
+router.get('/cart', (req, res) => {
+    const queryCommand = `SELECT IC.PRODUCT_ID, IC.QUANTITY, IC.SIZE as SIZE, PR.NAME as PRODUCT_NAME, PR.PRICE, PR.PICTURE, BR.NAME as BRAND FROM IN_CART IC, PRODUCT PR, BRAND BR WHERE IC.PRODUCT_ID = PR.ID AND PR.BRAND = BR.ID AND IC.USERID = ${req.query.userid}`
+    db.query(queryCommand, (err, result) => {
+        if (err) {
+            res.send(err);
+        }else {
+            res.send(result);
+        }
+    })
+})
+
+router.delete('/cart', (req, res) => {
+    const queryCommand = `DELETE FROM IN_CART WHERE USERID = ${req.query.userid} && PRODUCT_ID = ${req.query.productid} && SIZE = ${req.query.size}`
+    db.query(queryCommand, (err, result) => {
         if (err) {
             res.send(err);
         }else {
@@ -283,12 +324,20 @@ router.post('/cart', (req, res) => {
     })
 });
 
-router.get('/cart', (req, res) => {
-    const queryCommand = `SELECT IC.PRODUCT_ID, IC.QUANTITY, PR.NAME as PRODUCT_NAME, PR.PRICE, PR.PICTURE, BR.NAME as BRAND FROM IN_CART IC, PRODUCT PR, BRAND BR WHERE IC.PRODUCT_ID = PR.ID AND PR.BRAND = BR.ID AND IC.USERID = ${req.query.userid}`
-    db.query(queryCommand, (err, result) => {
+router.patch('/cart', (req, res) => {
+
+    const bodyValues = req.body;
+
+    var updateQuery = "";
+    bodyValues.forEach(function(item) {
+        updateQuery += `UPDATE IN_CART SET QUANTITY = ${item[0]} WHERE USERID = ${item[1]} && PRODUCT_ID = ${item[2]} && SIZE = ${item[3]}; `
+    })
+
+    
+    db.query(updateQuery, (err, result) => {
         if (err) {
             res.send(err);
-        }else {
+        }else {6
             res.send(result);
         }
     })

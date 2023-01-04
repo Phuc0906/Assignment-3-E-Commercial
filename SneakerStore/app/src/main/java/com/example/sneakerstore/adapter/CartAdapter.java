@@ -3,10 +3,12 @@ package com.example.sneakerstore.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -19,7 +21,12 @@ import com.bumptech.glide.Glide;
 import com.example.sneakerstore.MainActivity;
 import com.example.sneakerstore.ProductDetailActivity;
 import com.example.sneakerstore.R;
+import com.example.sneakerstore.fragment.CartFragment;
+import com.example.sneakerstore.model.HttpHandler;
 import com.example.sneakerstore.sneaker.CartSneaker;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -53,8 +60,48 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
             Glide.with(context).load(MainActivity.ROOT_IMG + cartSneaker.getResourceImage()).into(holder.itemImg);
             holder.brandText.setText(cartSneaker.getBrand());
 
-            holder.priceText.setText(Integer.toString(cartSneaker.getPrice()));
+            holder.priceText.setText(Integer.toString(cartSneaker.getPrice()) + " $");
             holder.quantityText.setText(Integer.toString(cartSneaker.getQuantity()));
+
+            holder.sizeText.setText("Size: " + cartSneaker.getSize());
+
+            holder.addButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    cartSneaker.setQuantity(cartSneaker.getQuantity() + 1);
+                    int currentTotalPrice = Integer.parseInt(CartFragment.totalPrice.getText().toString().split(" ")[0]);
+                    currentTotalPrice += cartSneaker.getPrice();
+                    notifyDataSetChanged();
+                    CartFragment.totalPrice.setText(Integer.toString(currentTotalPrice) + " $");
+
+                }
+            });
+
+            holder.minusButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (cartSneaker.getQuantity() - 1 > 0) {
+                        cartSneaker.setQuantity(cartSneaker.getQuantity() - 1);
+                        int currentTotalPrice = Integer.parseInt(CartFragment.totalPrice.getText().toString().split(" ")[0]);
+                        currentTotalPrice -= cartSneaker.getPrice();
+                        notifyDataSetChanged();
+                        CartFragment.totalPrice.setText(Integer.toString(currentTotalPrice) + " $");
+
+                    }
+                }
+            });
+
+
+            holder.cartDeleteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    cartSneakerList.remove(position);
+                    notifyDataSetChanged();
+
+                    DeleteProduct deleteProduct = new DeleteProduct();
+                    deleteProduct.execute(MainActivity.ROOT_API + "/product/cart?userid=" + MainActivity.appUser.getUserId() + "&productid=" + cartSneaker.getSneakerId() + "&size=" + cartSneaker.getSize());
+                }
+            });
         }
     }
 
@@ -68,24 +115,43 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
     }
 
     public class cartHolder extends RecyclerView.ViewHolder {
-        private TextView brandText, priceText;
+        private TextView brandText, priceText, sizeText;
         private ImageView itemImg;
-        private EditText quantityText;
+        private TextView quantityText;
         private ImageButton addButton, minusButton;
+        private Button cartDeleteBtn;
 
         public cartHolder(@NonNull View itemView) {
             super(itemView);
-            brandText = itemView.findViewById(R.id.cartBrandText);
+            brandText = itemView.findViewById(R.id.cartTitleText);
             priceText = itemView.findViewById(R.id.cartPriceText);
             itemImg = itemView.findViewById(R.id.cartImg);
             quantityText = itemView.findViewById(R.id.cartQuantity);
             addButton = itemView.findViewById(R.id.addButton);
             minusButton = itemView.findViewById(R.id.minusButton);
+            sizeText = itemView.findViewById(R.id.cartProductSize);
+            cartDeleteBtn = itemView.findViewById(R.id.cartItemDeleteBtn);
+
         }
     }
 
-    private Bitmap base64toBitmap(String base64Img) {
-        byte[] decodedString = Base64.decode(base64Img, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+    public class DeleteProduct extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            System.out.println(urls[0]);
+            return HttpHandler.deleteMethod(urls[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            try {
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

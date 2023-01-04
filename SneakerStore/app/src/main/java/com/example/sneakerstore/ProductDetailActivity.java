@@ -83,9 +83,10 @@ public class ProductDetailActivity extends AppCompatActivity {
                 // setting data
                 jsonData.put("userid", MainActivity.appUser.getUserId());
                 jsonData.put("productid", productId);
-                jsonData.put("size", Double.parseDouble(productSize.getText().toString()));
+                jsonData.put("size", productSize.getText().toString());
                 jsonData.put("quantity", Integer.parseInt(productQuantity.getText().toString()));
 
+                System.out.println(jsonData);
 
                 DataOutputStream os = new DataOutputStream(connection.getOutputStream());
                 os.writeBytes(jsonData.toString());

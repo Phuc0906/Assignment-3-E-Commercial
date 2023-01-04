@@ -1,38 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/recycleList"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.CartFragment">
+    tools:context=".CartFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/cartList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="550dp"
+        android:layout_marginStart="8dp"
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="297dp"
-            android:layout_height="54dp"
-            android:layout_marginStart="57dp"
-            android:layout_marginTop="34dp"
-            android:layout_marginEnd="57dp"
-            android:text="Shopping Cart"
-            android:textAlignment="center"
-            android:textColor="#8D8D8D"
-            android:textSize="26sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/relativeLayout4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/cartList"
-            android:layout_width="409dp"
-            android:layout_height="590dp"
-            android:layout_marginTop="30dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</FrameLayout>
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingVertical="15dp"
+        android:text="MY CART"
+        android:textColor="@color/yellow"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:background="@color/white"
+        android:id="@+id/relativeLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:id="@+id/priceContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true">
+            <TextView
+                android:id="@+id/totalPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp"
+                android:text="Total:"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/totalProductPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@+id/totalPrice"
+                android:text="@string/app_name"
+                android:textColor="#DA0D0D"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/priceContent">
+
+            <SeekBar
+                android:id="@+id/cartSeekBar"
+                android:layout_width="0dp"
+                android:layout_height="93dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:max="100"
+                android:maxHeight="50dp"
+                android:progressDrawable="@drawable/custom_seekbar"
+                android:splitTrack="false"
+                android:thumb="@drawable/button"
+                android:thumbOffset="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.476"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageView
+                android:id="@+id/cartArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/cartSeekBar"
+                android:layout_alignTop="@+id/cartSeekBar"
+                android:layout_marginStart="84dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/cartSeekBar"
+                app:layout_constraintTop_toTopOf="@+id/cartSeekBar"
+                app:layout_constraintVertical_bias="0.5"
+                app:srcCompat="@drawable/arrow" />
+
+            <TextView
+                android:id="@+id/cartSlideText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="52dp"
+                android:text="Slide to confirmation"
+                android:textColor="#BDBABA"
+                app:layout_constraintBottom_toBottomOf="@+id/cartSeekBar"
+                app:layout_constraintEnd_toEndOf="@+id/cartSeekBar"
+                app:layout_constraintTop_toTopOf="@+id/cartSeekBar" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
