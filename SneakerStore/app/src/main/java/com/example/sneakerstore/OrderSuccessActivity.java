@@ -49,7 +49,7 @@ public class OrderSuccessActivity extends AppCompatActivity {
                 url = new URL(urls[0]);
 
                 // Uploading process
-                 hvHttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
                 connection.setRequestProperty("Accept", "application/json");
