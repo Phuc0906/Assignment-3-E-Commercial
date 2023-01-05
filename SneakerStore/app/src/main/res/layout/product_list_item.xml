@@ -27,6 +27,7 @@
             android:textStyle="bold|italic" />
 
         <TextView
+            android:gravity="center"
             android:id="@+id/explore_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,7 +40,11 @@
             android:textAllCaps="true"
             android:textColor="@color/black"
             android:textSize="17sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"
+            android:maxLines="2"
+            />
 
         <TextView
             android:id="@+id/explore_price"

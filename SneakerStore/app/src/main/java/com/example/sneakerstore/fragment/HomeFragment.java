@@ -172,9 +172,7 @@ public class HomeFragment extends Fragment {
                     JSONObject sneakerObj = jsonArr.getJSONObject(i);
                     sneakerList.add(new Sneaker(sneakerObj.getInt("ID") ,MainActivity.ROOT_IMG + sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
                 }
-
                 adapter.notifyDataSetChanged();
-
             } catch (Exception e) {
                 e.printStackTrace();
             }

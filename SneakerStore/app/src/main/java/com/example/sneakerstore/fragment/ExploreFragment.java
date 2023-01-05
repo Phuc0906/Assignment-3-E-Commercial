@@ -1,9 +1,8 @@
 package com.example.sneakerstore.fragment;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,14 +13,18 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.TextView;
 
+import com.example.sneakerstore.MainActivity;
 import com.example.sneakerstore.R;
-import com.example.sneakerstore.adapter.ProductListAdapter;
+import com.example.sneakerstore.adapter.ProductAdapter;
 import com.example.sneakerstore.banner.Banner;
 import com.example.sneakerstore.banner.BannerAdapter;
-import com.example.sneakerstore.model.ProductExplore;
+import com.example.sneakerstore.model.HttpHandler;
+import com.example.sneakerstore.model.Product;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +33,13 @@ import me.relex.circleindicator.CircleIndicator3;
 public class ExploreFragment extends Fragment {
 
     RecyclerView itemListView;
-    ProductListAdapter adapter;
+    ProductAdapter adapter;
     BannerAdapter bannerAdapter;
     ViewPager2 viewPager2;
     CircleIndicator3 indicator3;
-    EditText etSearch;
+    private static List<Product> productList = new ArrayList<>();
+
+
     private Handler handler = new Handler(Looper.getMainLooper());
     private Runnable runnable = new Runnable() {
         @Override
@@ -54,24 +59,22 @@ public class ExploreFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_explore, container, false);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        new readJSON().execute();
         // initialize
         itemListView = view.findViewById(R.id.productList);
         viewPager2 = view.findViewById(R.id.viewPager);
         indicator3 = view.findViewById(R.id.indicator);
 
         // set up for recyclerView
-        adapter = new ProductListAdapter(getContext());
-        adapter.setData(getProductList());
+        adapter = new ProductAdapter(getContext());
+        adapter.setData(productList);
         itemListView.setLayoutManager(gridLayoutManager);
         itemListView.setAdapter(adapter);
 
-        //set up for Viewpaper
+        //set up for viewPaper
         bannerAdapter = new BannerAdapter(getBannerList());
         viewPager2.setAdapter(bannerAdapter);
         indicator3.setViewPager(viewPager2);
-
-        //set up for search bar
-        etSearch = view.findViewById(R.id.et_search);
 
 
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -85,8 +88,6 @@ public class ExploreFragment extends Fragment {
         return view;
     }
 
-
-
     private List<Banner> getBannerList() {
         List<Banner> list = new ArrayList<>();
         list.add(new Banner(R.drawable.banner1));
@@ -96,24 +97,35 @@ public class ExploreFragment extends Fragment {
         return list;
     }
 
-    private List<ProductExplore> getProductList() {
-        List<ProductExplore> list = new ArrayList<>();
-        list.add(new ProductExplore("Nike", "Air Max 1", R.drawable.air_max));
-        list.add(new ProductExplore("Nike", "Zoom Fly", R.drawable.zoom_fly));
-        list.add(new ProductExplore("Adidas", "Super Star", R.drawable.superstar));
-        list.add(new ProductExplore("Nike", "Air Max 1", R.drawable.air_max));
-        list.add(new ProductExplore("Nike", "Zoom Fly", R.drawable.zoom_fly));
-        list.add(new ProductExplore("Adidas", "Super Star", R.drawable.superstar));
-        list.add(new ProductExplore("Nike", "Air Max 1", R.drawable.air_max));
-        list.add(new ProductExplore("Nike", "Zoom Fly", R.drawable.zoom_fly));
-        list.add(new ProductExplore("Adidas", "Super Star", R.drawable.superstar));
-        return list;
-    }
+    public class readJSON extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... voids) {
+           return HttpHandler.getMethod(MainActivity.ROOT_API + "/product/latest");
+        }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        etSearch.clearFocus();
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (s != null) {
+                try {
+                    JSONArray jsonArray =new JSONArray(s);
+                    System.out.println(jsonArray);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        productList.add(new Product(object.getInt("ID"),
+                                object.getString("NAME"),
+                                object.getString("DESCRIPTION"),
+                                object.getDouble("PRICE"),
+                                "Men shoes",
+                                "Nike",
+                                object.getString("PICTURE")));
+                    }
+                    adapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override

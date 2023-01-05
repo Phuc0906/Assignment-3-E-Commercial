@@ -1,6 +1,7 @@
 package com.example.sneakerstore;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -12,10 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.sneakerstore.model.HttpHandler;
 import com.example.sneakerstore.sneaker.Sneaker;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -24,141 +28,103 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class ProductDetailActivity extends AppCompatActivity {
-    int productId;
-
-    TextView productName, productDescription, productPrice, productQuantity, productSize;
-    ImageView productImg;
-    Button addToCartBtn;
-
+    String productID;
+    TextView detailName, detailDes, detailPrice;
+    ImageView detailImage;
+    RecyclerView detailSize;
+    Button addBtn, buyBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
+        getProductIntent();
 
-        Intent productIntent = getIntent();
-        productId = Integer.parseInt(productIntent.getStringExtra("id"));
+        //init
+        detailName = findViewById(R.id.detail_name);
+        detailDes = findViewById(R.id.detail_description);
+        detailPrice = findViewById(R.id.detail_price);
+        detailImage = findViewById(R.id.detail_image);
+        detailSize = findViewById(R.id.detail_size_list);
+        addBtn = findViewById(R.id.add_button);
+        buyBtn = findViewById(R.id.buy_button);
 
-        productName = findViewById(R.id.productName);
-        productDescription = findViewById(R.id.productDescription);
-        productPrice=  findViewById(R.id.productPrice);
-        productQuantity = findViewById(R.id.productQuantity);
-        productQuantity.setText("1");
-        productSize = findViewById(R.id.productSize);
-        productSize.setText("5.5");
+        new readJSON().execute();
 
-        productImg = findViewById(R.id.productImage);
-
-        addToCartBtn = findViewById(R.id.addToCartBtn);
-
-        DownloadProduct downloadProduct = new DownloadProduct();
-        downloadProduct.execute(MainActivity.ROOT_API + "/product/detail?id=" + productId);
-
-        addToCartBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                UploadCartProduct uploadCartProduct = new UploadCartProduct();
-                uploadCartProduct.execute(MainActivity.ROOT_API + "/product/cart");
-            }
-        });
     }
 
-    public class UploadCartProduct extends AsyncTask<String, Void, String> {
+    private void getProductIntent() {
+        Intent intent = getIntent();
+        productID = intent.getStringExtra("product_id");
+    }
+
+    public class readJSON extends AsyncTask<Void, Void, String> {
 
         @Override
-        protected String doInBackground(String... urls) {
-            String status = "0";
-            URL url = null;
-            try {
-                url = new URL(urls[0]);
-
-                // Uploading process
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                connection.setRequestProperty("Accept", "application/json");
-                connection.setDoInput(true);
-                connection.setDoOutput(true);
-                JSONObject jsonData = new JSONObject();
-
-                // setting data
-                jsonData.put("userid", MainActivity.appUser.getUserId());
-                jsonData.put("productid", productId);
-                jsonData.put("size", productSize.getText().toString());
-                jsonData.put("quantity", Integer.parseInt(productQuantity.getText().toString()));
-
-                System.out.println(jsonData);
-
-                DataOutputStream os = new DataOutputStream(connection.getOutputStream());
-                os.writeBytes(jsonData.toString());
-                status = Integer.toString(connection.getResponseCode());
-                os.flush();
-                os.close();
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-            Log.i("INFO", status);
-            return status;
+        protected String doInBackground(Void... voids) {
+            return HttpHandler.getMethod("http://localhost:3000/product/detail?id=" + productID);
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-
-        }
-    }
-
-    public class DownloadProduct extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... urls) {
-            String result = "";
-
-            URL url;
-            HttpURLConnection urlConnection = null;
-
-            try {
-                Log.i("Re", urls[0]);
-                url = new URL(urls[0]);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = urlConnection.getInputStream();
-                InputStreamReader reader = new InputStreamReader(in);
-                int data = reader.read();
-
-                System.out.println("IN");
-                while (data != -1) {
-                    char current = (char) data;
-                    result += current;
-                    data = reader.read();
+            if (s != null) {
+                try {
+                    JSONObject object = new JSONObject(s);
+                    System.out.println(object);
+                    detailName.setText(object.getString("Name"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-
-                System.out.println(result);
-
-            }catch (Exception e) {
-                e.printStackTrace();
-
-                return null;
-            }
-
-
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            try {
-                JSONObject productObj = new JSONObject(s);
-                productName.setText(productObj.getString("Name"));
-                productDescription.setText(productObj.getString("Description"));
-                productPrice.setText(Integer.toString(productObj.getInt("Price")));
-                Glide.with(ProductDetailActivity.this).load(MainActivity.ROOT_IMG + productObj.getString("PICTURE")).into(productImg);
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }
+
+//    public class UploadCartProduct extends AsyncTask<String, Void, String> {
+//
+//        @Override
+//        protected String doInBackground(String... urls) {
+//            String status = "0";
+//            URL url = null;
+//            try {
+//                url = new URL(urls[0]);
+//
+//                // Uploading process
+//                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//                connection.setRequestMethod("POST");
+//                connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+//                connection.setRequestProperty("Accept", "application/json");
+//                connection.setDoInput(true);
+//                connection.setDoOutput(true);
+//                JSONObject jsonData = new JSONObject();
+//
+//                // setting data
+//                jsonData.put("userid", MainActivity.appUser.getUserId());
+//                jsonData.put("productid", productId);
+//                jsonData.put("size", productSize.getText().toString());
+//                jsonData.put("quantity", Integer.parseInt(productQuantity.getText().toString()));
+//
+//                System.out.println(jsonData);
+//
+//                DataOutputStream os = new DataOutputStream(connection.getOutputStream());
+//                os.writeBytes(jsonData.toString());
+//                status = Integer.toString(connection.getResponseCode());
+//                os.flush();
+//                os.close();
+//
+//            } catch (Exception ex) {
+//                ex.printStackTrace();
+//            }
+//
+//            Log.i("INFO", status);
+//            return status;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String s) {
+//            super.onPostExecute(s);
+//
+//        }
+//    }
+//
+
 }

@@ -5,52 +5,38 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class HttpHandler {
-    public static String getMethod(String urls) {
-        String result = "";
-
-        URL url;
-        HttpURLConnection urlConnection = null;
-
+    public static String getMethod(String s) {
+        System.out.println(s);
+        HttpURLConnection httpURLConnection = null;
+        StringBuilder stringBuilder = new StringBuilder();
         try {
-            Log.i("Re", urls);
-            url = new URL(urls);
-            urlConnection = (HttpURLConnection) url.openConnection();
-
-            InputStream in = urlConnection.getInputStream();
-            InputStreamReader reader = new InputStreamReader(in);
-            int data = reader.read();
-
-            System.out.println("IN");
-            while (data != -1) {
-                char current = (char) data;
-                result += current;
-                data = reader.read();
+            URL url = new URL(s);
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+            String line = "";
+            while((line = bufferedReader.readLine()) !=null){
+                stringBuilder.append(line);
             }
-
-            System.out.println(result);
-
-        }catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
-
-            return null;
         }
-
-
-        return result;
+        return stringBuilder.toString();
     }
+
     public static String deleteMethod(String urls) {
         String result = "";
-
         URL url;
         HttpURLConnection urlConnection = null;
-
         try {
             Log.i("Re", urls);
             url = new URL(urls);
@@ -66,9 +52,7 @@ public class HttpHandler {
                 result += current;
                 data = reader.read();
             }
-
             System.out.println(result);
-
         }catch (Exception e) {
             e.printStackTrace();
 
