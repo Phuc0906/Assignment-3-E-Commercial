@@ -51,6 +51,7 @@ public class CartFragment extends Fragment {
     ImageView cartArrow;
     private int val;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -115,6 +116,7 @@ public class CartFragment extends Fragment {
                 if (val < seekBar.getMax()) {
                     seekBar.setProgress(0);
                 } else {
+                    // load order page
                     Intent intent = new Intent(getContext(), OrderActivity.class);
                     startActivityForResult(intent, 900);
                     Handler handler = new Handler();
@@ -129,7 +131,6 @@ public class CartFragment extends Fragment {
                 }
             }
         });
-
     }
 
     public class UpdateCartData extends AsyncTask<String, Void, String> {
@@ -140,6 +141,7 @@ public class CartFragment extends Fragment {
             for (int i = 0; i < cartItemList.size(); i++) {
                 JSONArray itemData = new JSONArray();
                 try {
+                    // when user move to order page => update the cart
                     itemData.put(cartItemList.get(i).getQuantity());
                     itemData.put(MainActivity.appUser.getUserId());
                     itemData.put(cartItemList.get(i).getSneakerId());
@@ -169,6 +171,7 @@ public class CartFragment extends Fragment {
             try {
                 int totalProductPrice = 0;
                 JSONArray productArr = new JSONArray(s);
+                // update user's cart
                 for (int i = 0; i < productArr.length(); i++) {
                     JSONObject object = productArr.getJSONObject(i);
                     cartItemList.add(new CartSneaker(object.getInt("PRODUCT_ID"), object.getString("PICTURE"), object.getString("BRAND"), object.getString("PRODUCT_NAME"), object.getInt("QUANTITY"), object.getInt("PRICE"), object.getDouble("SIZE")));
@@ -178,6 +181,17 @@ public class CartFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 900) {
+            if (resultCode == -1) {
+                // go back to home page when transaction finished
+                HomePage.bottomNavigation.show(1, true);
             }
         }
     }

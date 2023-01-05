@@ -51,7 +51,7 @@ public class CheckoutList extends RecyclerView.Adapter<CheckoutList.CheckoutAdap
         if (checkoutSneaker != null) {
             holder.name.setText(checkoutSneaker.getName());
             holder.price.setText(Double.toString(checkoutSneaker.getPrice()));
-            holder.size.setText(Double.toString(checkoutSneaker.getSize()));
+            holder.size.setText("Size: " + Double.toString(checkoutSneaker.getSize()));
             holder.quantity.setText("Quantity: " + Integer.toString(checkoutSneaker.getQuantity()));
 
             Glide.with(context).load(MainActivity.ROOT_IMG + checkoutSneaker.getResourceImage()).into(holder.itemImg);

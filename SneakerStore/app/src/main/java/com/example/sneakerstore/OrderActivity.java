@@ -21,6 +21,7 @@ import com.example.sneakerstore.adapter.CheckoutList;
 import com.example.sneakerstore.model.CheckOutSection;
 import com.example.sneakerstore.model.CheckoutSneaker;
 import com.example.sneakerstore.model.HttpHandler;
+import com.example.sneakerstore.model.Order;
 import com.example.sneakerstore.sneaker.CartSneaker;
 
 import org.json.JSONArray;
@@ -41,6 +42,11 @@ public class OrderActivity extends AppCompatActivity{
     List<CheckoutSneaker> sneakerList;
     CheckoutList checkoutList;
     ImageButton orderBackButton;
+
+    // declaration for billing
+    public static Order userOder;
+    private int receiveOption;
+    private int totalProductPrice;
 
 
     @Override
@@ -66,11 +72,19 @@ public class OrderActivity extends AppCompatActivity{
 
         paymentBtn = findViewById(R.id.paymentBtn);
 
+        receiveOption = 0; // receive option = 1: shipping, 0: pick up
+
         paymentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(OrderActivity.this, CreditCardPaymentActivity.class);
-                startActivityForResult(intent, 30);
+                userOder = new Order(MainActivity.appUser.getUserId(), totalProductPrice + Integer.parseInt(costText.getText().toString().split(" ")[0]), receiveOption);
+                if (googlePayBox.isChecked()) {
+                    Intent intent = new Intent(OrderActivity.this, OrderSuccessActivity.class);
+                    startActivityForResult(intent, 30);
+                }else {
+                    Intent intent = new Intent(OrderActivity.this, CreditCardPaymentActivity.class);
+                    startActivityForResult(intent, 30);
+                }
             }
         });
 
@@ -78,6 +92,7 @@ public class OrderActivity extends AppCompatActivity{
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
+                    receiveOption = 1;
                     pickUpBox.setChecked(false);
                 }else {
                     pickUpBox.setChecked(true);
@@ -89,6 +104,7 @@ public class OrderActivity extends AppCompatActivity{
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
+                    receiveOption = 0;
                     shippingBox.setChecked(false);
                 }else {
                     shippingBox.setChecked(true);
@@ -133,7 +149,7 @@ public class OrderActivity extends AppCompatActivity{
         subPrice = findViewById(R.id.subPrice);
         costText = findViewById(R.id.shipPrice);
         placeView = findViewById(R.id.shippingAddress);
-        costText.setText("0 vnd");
+        costText.setText("0 $");
 
         toMapBtn = findViewById(R.id.toMapBtn);
         toMapBtn.setOnClickListener(new View.OnClickListener() {
@@ -170,11 +186,11 @@ public class OrderActivity extends AppCompatActivity{
                 placeView.setText(place);
 
                 int distanceToDestination = Math.round(distance/1000);
-                int shippingCost = (distanceToDestination * 3000);
+                int shippingCost = distanceToDestination;
                 if (distance / 1000 != 0) {
-                    costText.setText(shippingCost + " vnd");
+                    costText.setText(shippingCost + " $");
                 }else {
-                    costText.setText("0 vnd");
+                    costText.setText("0 $");
                 }
 
 
@@ -200,7 +216,7 @@ public class OrderActivity extends AppCompatActivity{
             super.onPostExecute(s);
 
             try {
-                int totalProductPrice = 0;
+                totalProductPrice = 0;
                 JSONArray productArr = new JSONArray(s);
                 for (int i = 0; i < productArr.length(); i++) {
                     JSONObject object = productArr.getJSONObject(i);

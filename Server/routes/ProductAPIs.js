@@ -328,9 +328,9 @@ router.patch("/cart", (req, res) => {
     const bodyValues = req.body;
 
     var updateQuery = "";
-    bodyValues.forEach(function (item) {
-        updateQuery += `UPDATE IN_CART SET QUANTITY = ${item[0]} WHERE USERID = ${item[1]} && PRODUCT_ID = ${item[2]} && SIZE = ${item[3]}; `;
-    });
+    bodyValues.forEach(function(item) {
+        updateQuery += `UPDATE IN_CART SET QUANTITY = ${item[0]} WHERE USERID = ${item[1]} && PRODUCT_ID = ${item[2]} && SIZE = ${item[3]};`
+    })
 
     db.query(updateQuery, (err, result) => {
         if (err) {
@@ -341,8 +341,46 @@ router.patch("/cart", (req, res) => {
     });
 });
 
-//product cart wait until user finish
-
-// product wishlist API waiting for user
+router.post('/billing', (req, res) => {
+    const reqBody = req.body;
+    const getNewBuyId = `SELECT MAX(BUYID) as newid FROM PURCHASE`
+    db.query(getNewBuyId, (err, result) => {
+        if (err) {
+            res.send(err);
+        }else {
+            const resultRespone = result;
+            const newId = result[0].newid;
+            const insertPurchase = `INSERT INTO PURCHASE(USERID, BUYID, TOTAL_PRICE, STATUS) VALUES (${reqBody.userid}, ${newId + 1}, ${reqBody.totalPrice}, ${reqBody.status});`
+            db.query(insertPurchase, (errPur, resPur) => {
+                if (errPur) {
+                    res.send(errPur);
+                }else {
+                    const purResponse = resPur;
+                    const insertBuyHistory = `INSERT INTO BUY_HISTORY(BUYID, PRODUCT_ID, QUANTITY, SIZE) SELECT ${newId + 1}, PRODUCT_ID, QUANTITY, SIZE FROM IN_CART WHERE USERID = ${reqBody.userid}`;
+                    db.query(insertBuyHistory, (buyErr, buyRes) => {
+                        if (buyErr) {
+                            res.send(buyErr);
+                        }else {
+                            const buyResult = buyRes;
+                            const deleteCart = `DELETE FROM IN_CART WHERE USERID = ${reqBody.userid}`;
+                            db.query(deleteCart, (carErr, cartRes) => {
+                                if (carErr) {
+                                    res.send(carErr);
+                                }else {
+                                    res.send({
+                                        resultRespone: resultRespone,
+                                        purResponse: purResponse,
+                                        buyResult: buyResult,
+                                        delCart: cartRes
+                                    })
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        }
+    })
+})
 
 module.exports = router;

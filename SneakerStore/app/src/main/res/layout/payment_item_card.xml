@@ -40,18 +40,17 @@
 
         <TextView
             android:id="@+id/sneakerName"
-            android:layout_width="wrap_content"
+            android:layout_width="155dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            app:layout_constraintLeft_toRightOf="@+id/shoesCheckOutImg"
-            app:layout_constraintTop_toTopOf="parent"
             android:fontFamily="sans-serif"
             android:text="Sneaker Name"
             android:textColor="@color/black"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@+id/shoesCheckOutImg"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:layout_width="wrap_content"

@@ -33,7 +33,6 @@ public class CreditCardPaymentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_credit_card_payment);
 
-
         cardName = findViewById(R.id.nameOnCardInput);
         cardNo = findViewById(R.id.cardNoInput);
         cardExpiredDate = findViewById(R.id.expiredDateInput);
