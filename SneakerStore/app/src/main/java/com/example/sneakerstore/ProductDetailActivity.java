@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.sneakerstore.adapter.SizeAdapter;
 import com.example.sneakerstore.model.HttpHandler;
+import com.example.sneakerstore.model.SneakerSize;
 import com.example.sneakerstore.sneaker.Sneaker;
 
 import org.json.JSONArray;
@@ -40,7 +41,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     String url;
     SizeAdapter adapter;
 
-    private List<String> sizeList;
+    private List<SneakerSize> sizeList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +71,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private String getProductIntent() {
         Intent intent = getIntent();
-        productID = intent.getStringExtra("product_id");
+        productID = intent.getStringExtra("id");
         return MainActivity.ROOT_API + "/product/detail?id=" + productID;
     }
 
@@ -97,7 +98,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                     for (double i = 5; i < 10; i += 0.5) {
                         int index = (int) (i - 5) * 2;
                         if (Integer.parseInt(sizeArr[index]) > 0) {
-                            sizeList.add(String.valueOf(i));
+                            sizeList.add(new SneakerSize(String.valueOf(i), false));
                         }
                     }
                     adapter.notifyDataSetChanged();

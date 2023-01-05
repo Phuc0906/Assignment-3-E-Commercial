@@ -10,19 +10,21 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.sneakerstore.ProductDetailActivity;
 import com.example.sneakerstore.R;
+import com.example.sneakerstore.model.SneakerSize;
 
 import java.util.List;
 
 public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.SizeHolder> {
     private Context context;
-    private List<String> list;
+    private List<SneakerSize> list;
 
     public SizeAdapter(Context context) {
         this.context = context;
     }
 
-    public void setAdapter(List<String>list){
+    public void setAdapter(List<SneakerSize>list){
         this.list = list;
         notifyDataSetChanged();
     }
@@ -36,19 +38,23 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.SizeHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull SizeHolder holder, int position) {
-        String s = list.get(position);
+        SneakerSize s = list.get(position);
         if (s != null) {
-            holder.sizeText.setText(s);
+            holder.sizeText.setText(s.getSize());
+            if (s.isSelected()) {
+                holder.sizeText.setBackgroundColor(Color.parseColor("#F9A825"));
+            }else {
+                holder.sizeText.setBackgroundColor(Color.parseColor("#B5B5B5"));
+            }
             holder.sizeText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                  if (!holder.isSelected) {
-                      holder.sizeText.setBackgroundColor(Color.parseColor("#F9A825"));
-                      holder.isSelected = true;
-                  } else {
-                      holder.sizeText.setBackgroundColor(Color.parseColor("#B5B5B5"));
-                      holder.isSelected = false;
+                  s.setSelected(true);
+                  for (int i = 0; i < list.size(); i++) {
+                      if (i == position) continue;
+                      list.get(i).setSelected(false);
                   }
+                  notifyDataSetChanged();
                 }
             });
         }
