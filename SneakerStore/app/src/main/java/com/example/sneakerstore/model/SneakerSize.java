@@ -13,6 +13,10 @@ public class SneakerSize {
         return size;
     }
 
+    public void setSize(String size) {
+        this.size = size;
+    }
+
     public boolean isSelected() {
         return isSelected;
     }

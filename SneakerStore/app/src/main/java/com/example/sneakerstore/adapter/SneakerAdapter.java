@@ -49,9 +49,9 @@ public class SneakerAdapter extends RecyclerView.Adapter<SneakerAdapter.sneakerH
             holder.cartBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent sneakerDetailIntent = new Intent(context, ProductDetailActivity.class);
-                    sneakerDetailIntent.putExtra("id", Integer.toString(sneaker.getSneakerId()));
-                    context.startActivity(sneakerDetailIntent);
+                    Intent intent = new Intent(context, ProductDetailActivity.class);
+                    intent.putExtra("product_id", Integer.toString(sneaker.getSneakerId()));
+                    context.startActivity(intent);
                 }
             });
 

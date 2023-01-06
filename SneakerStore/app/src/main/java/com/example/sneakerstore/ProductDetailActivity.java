@@ -71,7 +71,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private String getProductIntent() {
         Intent intent = getIntent();
-        productID = intent.getStringExtra("id");
+        productID = intent.getStringExtra("product_id");
         return MainActivity.ROOT_API + "/product/detail?id=" + productID;
     }
 

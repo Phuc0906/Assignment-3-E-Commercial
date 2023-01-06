@@ -1,5 +1,6 @@
 package com.example.sneakerstore.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -37,7 +38,7 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.SizeHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SizeHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SizeHolder holder, @SuppressLint("RecyclerView") int position) {
         SneakerSize s = list.get(position);
         if (s != null) {
             holder.sizeText.setText(s.getSize());
@@ -49,7 +50,7 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.SizeHolder> {
             holder.sizeText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                  s.setSelected(true);
+                  s.setSelected(!s.isSelected());
                   for (int i = 0; i < list.size(); i++) {
                       if (i == position) continue;
                       list.get(i).setSelected(false);
@@ -70,7 +71,6 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.SizeHolder> {
 
     public class SizeHolder extends RecyclerView.ViewHolder{
         TextView sizeText;
-        boolean isSelected;
         public SizeHolder(@NonNull View itemView) {
             super(itemView);
             sizeText = itemView.findViewById(R.id.size_text);
