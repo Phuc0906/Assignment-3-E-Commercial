@@ -118,7 +118,6 @@ public class HomeFragment extends Fragment {
 
         List<Category> list = new ArrayList<>();
         list.add(new Category("Latest", sneakerList));
-
         adapter.setData(list);
         adapter.notifyDataSetChanged();
         rcList.setAdapter(adapter);
