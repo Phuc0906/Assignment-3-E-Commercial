@@ -13,6 +13,8 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.example.sneakerstore.MainActivity;
 import com.example.sneakerstore.R;
@@ -31,7 +33,8 @@ import java.util.List;
 import me.relex.circleindicator.CircleIndicator3;
 
 public class ExploreFragment extends Fragment {
-
+    ProgressBar progressBar;
+    EditText searchView;
     RecyclerView itemListView;
     ProductAdapter adapter;
     BannerAdapter bannerAdapter;
@@ -64,7 +67,8 @@ public class ExploreFragment extends Fragment {
         itemListView = view.findViewById(R.id.productList);
         viewPager2 = view.findViewById(R.id.viewPager);
         indicator3 = view.findViewById(R.id.indicator);
-
+        searchView = view.findViewById(R.id.edt_search);
+        progressBar = view.findViewById(R.id.progressBar);
         // set up for recyclerView
         adapter = new ProductAdapter(getContext());
         adapter.setData(productList);
@@ -121,6 +125,11 @@ public class ExploreFragment extends Fragment {
                                 object.getString("PICTURE")));
                     }
                     adapter.notifyDataSetChanged();
+                    progressBar.setVisibility(View.GONE);
+                    searchView.setVisibility(View.VISIBLE);
+                    viewPager2.setVisibility(View.VISIBLE);
+                    itemListView.setVisibility(View.VISIBLE);
+                    indicator3.setVisibility(View.VISIBLE);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.sneakerstore.adapter.SizeAdapter;
@@ -25,6 +26,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -40,6 +42,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     Button addBtn, buyBtn;
     String url;
     SizeAdapter adapter;
+    String sizeSelected;
 
     private List<SneakerSize> sizeList;
     @Override
@@ -67,6 +70,29 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         new readJSON().execute();
 
+        //set up event for add button
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sizeSelected = getSizeSelect();
+                if (sizeSelected != null) {
+                    new writeJSON().execute();
+                    Toast.makeText(ProductDetailActivity.this, "Add to cart", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ProductDetailActivity.this, "Please select size", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+
+    private String getSizeSelect() {
+        for (int i = 0; i < sizeList.size(); i++) {
+            if (sizeList.get(i).isSelected()) {
+                return sizeList.get(i).getSize();
+            }
+        }
+        return null;
     }
 
     private String getProductIntent() {
@@ -110,52 +136,19 @@ public class ProductDetailActivity extends AppCompatActivity {
         }
     }
 
-//    public class UploadCartProduct extends AsyncTask<String, Void, String> {
-//
-//        @Override
-//        protected String doInBackground(String... urls) {
-//            String status = "0";
-//            URL url = null;
-//            try {
-//                url = new URL(urls[0]);
-//
-//                // Uploading process
-//                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//                connection.setRequestMethod("POST");
-//                connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-//                connection.setRequestProperty("Accept", "application/json");
-//                connection.setDoInput(true);
-//                connection.setDoOutput(true);
-//                JSONObject jsonData = new JSONObject();
-//
-//                // setting data
-//                jsonData.put("userid", MainActivity.appUser.getUserId());
-//                jsonData.put("productid", productId);
-//                jsonData.put("size", productSize.getText().toString());
-//                jsonData.put("quantity", Integer.parseInt(productQuantity.getText().toString()));
-//
-//                System.out.println(jsonData);
-//
-//                DataOutputStream os = new DataOutputStream(connection.getOutputStream());
-//                os.writeBytes(jsonData.toString());
-//                status = Integer.toString(connection.getResponseCode());
-//                os.flush();
-//                os.close();
-//
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//
-//            Log.i("INFO", status);
-//            return status;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String s) {
-//            super.onPostExecute(s);
-//
-//        }
-//    }
-//
+    public class writeJSON extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                HttpHandler.postToCart(MainActivity.ROOT_API + "/product/cart", "1", productID, sizeSelected, 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
 
 }
