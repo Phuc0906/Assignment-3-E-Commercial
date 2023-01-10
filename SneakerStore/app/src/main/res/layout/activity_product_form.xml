@@ -160,7 +160,7 @@
                 android:background="@drawable/payment_input_bg"
                 android:ems="10"
                 android:hint="Product Price"
-                android:inputType="number"
+                android:inputType="number|numberDecimal"
                 android:padding="5dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/propriceView" />

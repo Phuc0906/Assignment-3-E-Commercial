@@ -53,14 +53,11 @@ public class ProductFormActivity extends AppCompatActivity {
     EditText nameInput, desInput, priceInput;
     Spinner categoryInput, brandInput;
     String productName, productDescription, productBase64Img;
-    int productPrice, productCategory, productBrand;
+    int productCategory, productBrand;
+    double productPrice;
     Button saveFormBtn;
     ArrayAdapter<String> adapter;
-    ArrayList<String> brands;
-    HashMap<String, Integer> brandsHashMap;
     ArrayAdapter<String> categoryAdapter;
-    ArrayList<String> categories;
-    HashMap<String, Integer> categoriesHashMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,21 +82,14 @@ public class ProductFormActivity extends AppCompatActivity {
         brandInput = (Spinner) findViewById(R.id.productBrandInput);
         saveFormBtn = findViewById(R.id.saveFormBtn);
 
-        brandsHashMap = new HashMap<>();
 
-        categories = new ArrayList<>();
-        categoryAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, categories);
-        categoriesHashMap = new HashMap<>();
+        categoryAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, MainActivity.categories);
 
         categoryInput.setAdapter(categoryAdapter);
 
 
-        brands = new ArrayList<>();
-        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, brands);
+        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, MainActivity.brands);
         adapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
-
-        DownloadLatestProduct downloadLatestProduct = new DownloadLatestProduct();
-        downloadLatestProduct.execute(MainActivity.ROOT_API + "/product/latest");
 
 
         brandInput.setAdapter(adapter);
@@ -172,14 +162,17 @@ public class ProductFormActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                productPrice = Integer.parseInt(editable.toString());
+                if (editable.toString().length() != 0) {
+                    productPrice = Double.parseDouble(editable.toString());
+                }
+
             }
         });
 
         categoryInput.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                productCategory = categoriesHashMap.get(adapterView.getItemAtPosition(i).toString());
+                productCategory = MainActivity.categoriesHashMap.get(adapterView.getItemAtPosition(i).toString());
 
             }
 
@@ -193,7 +186,7 @@ public class ProductFormActivity extends AppCompatActivity {
         brandInput.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                productBrand = brandsHashMap.get(adapterView.getItemAtPosition(i).toString());
+                productBrand = MainActivity.brandsHashMap.get(adapterView.getItemAtPosition(i).toString());
             }
 
             @Override
@@ -207,17 +200,13 @@ public class ProductFormActivity extends AppCompatActivity {
             public void onClick(View view) {
                 productName = nameInput.getText().toString();
                 productDescription = desInput.getText().toString();
-                productPrice = Integer.parseInt(priceInput.getText().toString());
+                productPrice = Double.parseDouble(priceInput.getText().toString());
 
                 UploadProduct uploadProduct = new UploadProduct();
                 uploadProduct.execute(MainActivity.ROOT_API + "/product/newapi");
             }
         });
 
-        DownloadCategory downloadCategory = new DownloadCategory();
-        downloadCategory.execute(MainActivity.ROOT_API + "/product/category");
-        DownloadBrand downloadBrand = new DownloadBrand();
-        downloadBrand.execute(MainActivity.ROOT_API + "/product/brand");
     }
 
     private String encodeImage(Bitmap bm)
@@ -249,161 +238,6 @@ public class ProductFormActivity extends AppCompatActivity {
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-            }
-        }
-    }
-
-    public class DownloadLatestProduct extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            String result = "";
-
-            URL url;
-            HttpURLConnection urlConnection = null;
-            try {
-                Log.i("Re", urls[0]);
-                url = new URL(urls[0]);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = urlConnection.getInputStream();
-                InputStreamReader reader = new InputStreamReader(in);
-                int data = reader.read();
-
-                System.out.println("IN");
-                while (data != -1) {
-                    char current = (char) data;
-                    result += current;
-                    data = reader.read();
-                }
-
-                System.out.println(result);
-
-            }catch (Exception e) {
-                e.printStackTrace();
-
-                return null;
-            }
-
-
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            try {
-                System.out.println(s);
-//                sneakerList.clear();
-                JSONArray jsonArr = new JSONArray(s);
-                System.out.println(jsonArr);
-                for (int i = 0; i < jsonArr.length(); i++) {
-                    JSONObject sneakerObj = jsonArr.getJSONObject(i);
-//                    new Sneaker(R.drawable.air_max, "Nike", "Air max 1")
-//                    sneakerList.add(new Sneaker(sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    // downloading class data
-    public class DownloadBrand extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            String result = "";
-
-            URL url;
-            HttpURLConnection urlConnection = null;
-
-            try {
-                Log.i("Re", urls[0]);
-                url = new URL(urls[0]);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = urlConnection.getInputStream();
-                InputStreamReader reader = new InputStreamReader(in);
-                int data = reader.read();
-
-                while (data != -1) {
-                    char current = (char) data;
-                    result += current;
-                    data = reader.read();
-                }
-            }catch (Exception e) {
-                e.printStackTrace();
-
-                return null;
-            }
-
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            try {
-                System.out.println(s);
-                brands.clear();
-                JSONArray jsonArr = new JSONArray(s);
-                for (int i = 0; i < jsonArr.length(); i++) {
-                    JSONObject brandObj = jsonArr.getJSONObject(i);
-                    brands.add(brandObj.getString("NAME"));
-                    brandsHashMap.put(brandObj.getString("NAME") , brandObj.getInt("ID"));
-                }
-                adapter.notifyDataSetChanged();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public class DownloadCategory extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            String result = "";
-
-            URL url;
-            HttpURLConnection urlConnection = null;
-
-            try {
-                Log.i("Re", urls[0]);
-                url = new URL(urls[0]);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = urlConnection.getInputStream();
-                InputStreamReader reader = new InputStreamReader(in);
-                int data = reader.read();
-
-                while (data != -1) {
-                    char current = (char) data;
-                    result += current;
-                    data = reader.read();
-                }
-
-            }catch (Exception e) {
-                e.printStackTrace();
-
-                return null;
-            }
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            try {
-                System.out.println(s);
-                JSONArray jsonArr = new JSONArray(s);
-                for (int i = 0; i < jsonArr.length(); i++) {
-                    JSONObject categoryObj = jsonArr.getJSONObject(i);
-                    categories.add(categoryObj.getString("NAME"));
-                    categoriesHashMap.put(categoryObj.getString("NAME") , categoryObj.getInt("ID"));
-                }
-                categoryAdapter.notifyDataSetChanged();
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }
@@ -454,6 +288,9 @@ public class ProductFormActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            nameInput.setText("");
+            priceInput.setText("0.0");
+            desInput.setText("");
 
         }
     }

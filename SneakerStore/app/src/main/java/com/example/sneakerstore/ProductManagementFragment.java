@@ -15,10 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import com.example.sneakerstore.adapter.ProductManagementCategoryAdapter;
+
+import java.util.ArrayList;
+
 public class ProductManagementFragment extends Fragment {
 
     ImageButton addProductBtn;
-
+    RecyclerView productCatView;
 
 
     @Override
@@ -33,6 +37,16 @@ public class ProductManagementFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         addProductBtn = view.findViewById(R.id.addProductBtn);
+        ProductManagementCategoryAdapter productManagementCategoryAdapter = new ProductManagementCategoryAdapter(getContext());
+        productManagementCategoryAdapter.setData(MainActivity.categories);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        productCatView = view.findViewById(R.id.productManageCat);
+        productCatView.setLayoutManager(linearLayoutManager);
+        productCatView.setAdapter(productManagementCategoryAdapter);
+
+        System.out.println("ID: " + MainActivity.categoriesHashMap.get("He"));
+
+
 
         addProductBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,6 +54,7 @@ public class ProductManagementFragment extends Fragment {
                 Intent productFormIntent = new Intent(getContext(), ProductFormActivity.class);
                 productFormIntent.putExtra("status", 1); // status == 1 => add product, status == 0 => update product
                 startActivityForResult(productFormIntent, 200);
+                productManagementCategoryAdapter.notifyDataSetChanged();
             }
         });
     }
