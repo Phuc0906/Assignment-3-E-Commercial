@@ -21,6 +21,7 @@ import com.example.sneakerstore.adapter.CategoryAdapter;
 import com.example.sneakerstore.adapter.SizeAdapter;
 import com.example.sneakerstore.model.HttpHandler;
 import com.example.sneakerstore.model.SneakerSize;
+import com.example.sneakerstore.sneaker.CartSneaker;
 import com.example.sneakerstore.sneaker.Category;
 import com.example.sneakerstore.sneaker.Sneaker;
 
@@ -29,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,9 +43,8 @@ public class ProductDetailActivity extends AppCompatActivity {
     ImageView detailImage;
     RecyclerView detailSize, suggestView;
     Button addBtn, buyBtn;
-    String url;
+    String url, resourceImage, sizeSelected, brandName;
     SizeAdapter sizeAdapter;
-    String sizeSelected;
     List<Sneaker> sneakerList;
     List<Category> categoryList;
     CategoryAdapter categoryAdapter;
@@ -88,6 +89,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         categoryAdapter.setData(categoryList);
         suggestView.setLayoutManager(linearLayoutManager1);
         suggestView.setAdapter(categoryAdapter);
+
         //set up event for add button
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,6 +104,24 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         });
 
+        //set up event for buy button
+        buyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sizeSelected = getSizeSelect();
+                if (sizeSelected != null) {
+                    Intent intent = new Intent(ProductDetailActivity.this, OrderActivity.class);
+
+                    intent.putExtra("product_in_cart", new String[] {new CartSneaker(Integer.parseInt(productID),
+                            resourceImage, brandName,
+                            detailName.getText().toString().trim() ,1,
+                            Integer.parseInt(detailPrice.getText().toString().trim()), Double.parseDouble(sizeSelected)).toString()});
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(ProductDetailActivity.this, "Please select size", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private String getSizeSelect() {
@@ -135,8 +155,9 @@ public class ProductDetailActivity extends AppCompatActivity {
                     detailName.setText(object.getString("Name"));
                     detailDes.setText(object.getString("Description"));
                     detailPrice.setText(object.getString("Price"));
-                    String pic = MainActivity.ROOT_IMG + object.getString("Picture");
-                    Glide.with(ProductDetailActivity.this).load(pic).into(detailImage);
+                    resourceImage = object.getString("Picture");
+                    brandName = object.getString("Brand");
+                    Glide.with(ProductDetailActivity.this).load(MainActivity.ROOT_IMG + resourceImage).into(detailImage);
                     String[] sizeArr = object.getString("Quantity").split(",");
 
                     for (double i = 5; i < 10; i += 0.5) {

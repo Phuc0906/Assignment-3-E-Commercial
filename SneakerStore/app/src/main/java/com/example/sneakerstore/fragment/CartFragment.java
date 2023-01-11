@@ -35,6 +35,7 @@ import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -117,7 +118,13 @@ public class CartFragment extends Fragment {
                     seekBar.setProgress(0);
                 } else {
                     // load order page
+                    String[] arr = new String[cartItemList.size()];
+                    for (int i = 0; i < cartItemList.size(); i++) {
+                        arr[i] = cartItemList.get(i).toString();
+                    }
                     Intent intent = new Intent(getContext(), OrderActivity.class);
+
+                    intent.putExtra("product_in_cart", arr);
                     startActivityForResult(intent, 900);
                     Handler handler = new Handler();
                     UpdateCartData updateCartData = new UpdateCartData();
@@ -127,7 +134,7 @@ public class CartFragment extends Fragment {
                         public void run() {
                             seekBar.setProgress(0);
                         }
-                    }, 300);
+                    }, 500);
                 }
             }
         });

@@ -56,6 +56,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductI
         if (product != null) {
             holder.brandName.setText(product.getBrand());
             holder.shoesName.setText(product.getName());
+            holder.priceView.setText(Math.round(product.getPrice()) + "$");
             Glide.with(context).load(product.getPicture()).into(holder.imageView);
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -77,7 +78,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductI
     }
 
     public class ProductItemHolder extends RecyclerView.ViewHolder {
-        TextView brandName, shoesName;
+        TextView brandName, shoesName, priceView;
         ImageView imageView;
         CardView cardView;
         public ProductItemHolder(@NonNull View itemView) {
@@ -86,6 +87,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductI
             shoesName = itemView.findViewById(R.id.explore_name);
             imageView = itemView.findViewById(R.id.explore_image);
             cardView  = itemView.findViewById(R.id.explore_card);
+            priceView = itemView.findViewById(R.id.explore_price);
         }
     }
 }

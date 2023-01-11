@@ -1,12 +1,14 @@
 package com.example.sneakerstore.model;
 
+import com.example.sneakerstore.sneaker.CartSneaker;
+
 import java.util.List;
 
 public class CheckOutSection {
     private String sectionName;
-    private List<CheckoutSneaker> checkoutSneakerList;
+    private List<CartSneaker> checkoutSneakerList;
 
-    public CheckOutSection(String sectionName, List<CheckoutSneaker> checkoutSneakerList) {
+    public CheckOutSection(String sectionName, List<CartSneaker> checkoutSneakerList) {
         this.sectionName = sectionName;
         this.checkoutSneakerList = checkoutSneakerList;
     }
@@ -15,7 +17,7 @@ public class CheckOutSection {
         return sectionName;
     }
 
-    public List<CheckoutSneaker> getCheckoutSneakerList() {
+    public List<CartSneaker> getCheckoutSneakerList() {
         return checkoutSneakerList;
     }
 }
