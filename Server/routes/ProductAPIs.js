@@ -1,5 +1,5 @@
 const cors = require("cors");
-const { query } = require("express");
+const { query, Router } = require("express");
 const express = require("express");
 const router = express.Router();
 const AWS = require("aws-sdk");
@@ -63,7 +63,7 @@ router.get("/latest", (req, res) => {
 // search by category
 router.get("/search/category", (req, res) => {
     const queryCommand =
-        "SELECT * FROM PRODUCT WHERE CATEGORY = " + req.query.category;
+        `SELECT PR.ID, PR.NAME, PR.DESCRIPTION, PR.PRICE, PR.PICTURE, BR.NAME as brand, CATE.NAME as category FROM PRODUCT PR, BRAND BR, CATEGORY CATE WHERE BR.ID = PR.BRAND AND PR.CATEGORY = CATE.ID AND PR.CATEGORY = ${req.query.category}`;
     db.query(queryCommand, (err, result) => {
         if (err) {
             res.send(err);
@@ -176,7 +176,9 @@ router.post("/newapi", (req, res) => {
             res.send(err);
         } else {
             const newID = result[0].newid;
-            const reqBody = req.body;
+            const reqBody = req.body.info;
+            const sizeBody = req.body.size;
+            const sizeArr = sizeBody.split(',');
             const insertCommand = `
             INSERT INTO PRODUCT(ID, NAME, DESCRIPTION, PRICE, CATEGORY, PICTURE, BRAND)
             VALUES('${newID + 1}', '${reqBody.name}', '${
@@ -215,16 +217,16 @@ router.post("/newapi", (req, res) => {
 
                     updateStock = `INSERT INTO STOCK(PRODUCT_ID, SIZE, QUANTITY) VALUES ?`;
                     let stockValue = [
-                        [newID + 1, 5.0, 10],
-                        [newID + 1, 5.5, 10],
-                        [newID + 1, 6.0, 10],
-                        [newID + 1, 6.5, 10],
-                        [newID + 1, 7.0, 10],
-                        [newID + 1, 7.5, 10],
-                        [newID + 1, 8.0, 10],
-                        [newID + 1, 8.5, 10],
-                        [newID + 1, 9.0, 10],
-                        [newID + 1, 9.5, 10],
+                        [newID + 1, 5.0, sizeArr[0]],
+                        [newID + 1, 5.5, sizeArr[1]],
+                        [newID + 1, 6.0, sizeArr[2]],
+                        [newID + 1, 6.5, sizeArr[3]],
+                        [newID + 1, 7.0, sizeArr[4]],
+                        [newID + 1, 7.5, sizeArr[5]],
+                        [newID + 1, 8.0, sizeArr[6]],
+                        [newID + 1, 8.5, sizeArr[7]],
+                        [newID + 1, 9.0, sizeArr[8]],
+                        [newID + 1, 9.5, sizeArr[9]],
                     ];
 
                     let stockRes = "";
@@ -250,7 +252,7 @@ router.post("/newapi", (req, res) => {
 });
 
 router.get("/detail", (req, res) => {
-    const command = `SELECT PR.ID, PR.NAME, PR.DESCRIPTION, PR.PRICE, PR.PICTURE, ST.SIZE, ST.QUANTITY, BR.NAME as BRAND FROM PRODUCT PR, STOCK ST, BRAND BR WHERE PR.ID = ${req.query.id} AND PR.ID = ST.PRODUCT_ID AND PR.BRAND = BR.ID`;
+    const command = `SELECT PR.ID, PR.NAME, PR.DESCRIPTION, PR.PRICE, PR.PICTURE, ST.SIZE, ST.QUANTITY, BR.NAME as BRAND, CAT.NAME as category FROM PRODUCT PR, STOCK ST, BRAND BR, CATEGORY CAT WHERE PR.ID = ${req.query.id} AND PR.ID = ST.PRODUCT_ID AND PR.BRAND = BR.ID AND PR.CATEGORY = CAT.ID `;
     db.query(command, (err, result) => {
         if (err) {
             res.send(err);
@@ -265,12 +267,82 @@ router.get("/detail", (req, res) => {
                 Description: result[0].DESCRIPTION,
                 Price: result[0].PRICE,
                 Brand: result[0].BRAND,
+                Category: result[0].category,
                 Picture: result[0].PICTURE,
                 Quantity: shoes_quantity,
             });
         }
     });
 });
+
+router.patch('/detail', (req, res) => {
+    const productId = req.query.id;
+    const reqBody = req.body.info;
+    const sizeBody = req.body.size;
+    const sizeArr = sizeBody.split(',');
+    const updateCommand = `UPDATE PRODUCT 
+    SET NAME = '${reqBody.name}', DESCRIPTION = '${reqBody.description}', PRICE = ${reqBody.price}, CATEGORY = ${reqBody.category}, BRAND = ${reqBody.brand}
+    WHERE ID = ${productId}`;
+
+    if (reqBody.picture != undefined) {
+        const transferData = "data:image/png;base64," + reqBody.picture;
+        var buf = Buffer.from(
+            transferData.replace(/^data:image\/\w+;base64,/, ""),
+            "base64"
+        );
+
+        const paramsPatch = {
+            Bucket: "ass3-android-bucket",
+            Key: `${productId}.png`, // File name you want to save as in S3
+            Body: buf,
+            ContentEncoding: "base64",
+            ContentType: "image/png",
+        };
+
+        s3.upload(paramsPatch, function (err, data) {
+            if (err) {
+                throw err;
+            }
+            console.log(`File uploaded successfully`);
+        });
+    }
+
+    db.query(updateCommand, (err, result) => {
+        if (err) {
+            res.send(err);
+        }else {
+            
+            var updateStockCommand = ``;
+            var i = 5;
+            var sizeIdx = 0;
+            var quantitySetting = 0;
+            while (sizeIdx < sizeArr.length) {
+                quantitySetting = parseInt(sizeArr[sizeIdx]);
+                updateStockCommand += `UPDATE STOCK SET QUANTITY = ` + `${quantitySetting}` + ` WHERE PRODUCT_ID = ${productId} && SIZE = ${i};`; 
+                i+= 0.5;
+                sizeIdx++;
+            }
+            
+            // res.send({
+            //     result: result,
+            //     sizeArray: sizeArr
+            // })
+
+            db.query(updateStockCommand, (stkErr, stkResult) => {
+                if (stkErr) {
+                    res.send(stkErr);
+                }else {
+                    res.send({
+                        updateProductRes: result,
+                        updateStkRes: stkResult
+                    })
+                }
+            })
+
+        }
+    })
+    
+})
 
 router.post("/cart", (req, res) => {
     const reqBody = req.body;
@@ -350,7 +422,7 @@ router.post('/billing', (req, res) => {
         }else {
             const resultRespone = result;
             const newId = result[0].newid;
-            const insertPurchase = `INSERT INTO PURCHASE(USERID, BUYID, TOTAL_PRICE, STATUS) VALUES (${reqBody.userid}, ${newId + 1}, ${reqBody.totalPrice}, ${reqBody.status});`
+            const insertPurchase = `INSERT INTO PURCHASE(USERID, BUYID, TOTAL_PRICE, STATUS, PAYMENT, ADDRESS) VALUES (${reqBody.userid}, ${newId + 1}, ${reqBody.totalPrice}, ${reqBody.status}, ${reqBody.payment}, ${reqBody.address});`
             db.query(insertPurchase, (errPur, resPur) => {
                 if (errPur) {
                     res.send(errPur);
@@ -379,6 +451,28 @@ router.post('/billing', (req, res) => {
                     })
                 }
             })
+        }
+    })
+});
+
+router.get('/billing', (req, res) => {
+    const queryCommand = "SELECT USR.NAME, PU.BUYID, PU.STATUS, PU.TOTAL_PRICE, PU.ADDRESS, PU.PAYMENT FROM PURCHASE PU, USER USR WHERE USR.ID = PU.USERID;";
+    db.query(queryCommand, (err, result)=> {
+        if (err) {
+            res.send(err);
+        }else {
+            res.send(result);
+        }
+    })
+});
+
+router.get('/billing/detail', (req, res) => {
+    const queryBilling = `SELECT PR.ID, PR.PICTURE, BR.NAME AS BRAND, PR.NAME, PR.PRICE * BU.QUANTITY AS ITEM_PRICE, BU.QUANTITY, BU.SIZE FROM PRODUCT PR, BUY_HISTORY BU, BRAND BR WHERE BU.BUYID = ${req.query.buyid} AND BU.PRODUCT_ID = PR.ID AND PR.BRAND = BR.ID;`
+    db.query(queryBilling, (err, result) => {
+        if (err) {
+            res.send(err);
+        }else {
+            res.send(result);
         }
     })
 })

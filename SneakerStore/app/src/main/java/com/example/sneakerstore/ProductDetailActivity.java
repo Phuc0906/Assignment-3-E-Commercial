@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,6 +39,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     ImageView detailImage;
     RecyclerView detailSize;
     Button addBtn, buyBtn;
+
     String url;
     SizeAdapter adapter;
 
@@ -58,6 +60,9 @@ public class ProductDetailActivity extends AppCompatActivity {
         buyBtn = findViewById(R.id.buy_button);
         sizeList = new ArrayList<>();
         adapter = new SizeAdapter(this);
+
+
+
 
         //set up for recyclerView
         adapter.setAdapter(sizeList);
@@ -92,6 +97,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                     detailDes.setText(object.getString("Description"));
                     detailPrice.setText(object.getString("Price"));
                     String pic = MainActivity.ROOT_IMG + object.getString("Picture");
+
                     Glide.with(ProductDetailActivity.this).load(pic).into(detailImage);
                     String[] sizeArr = object.getString("Quantity").split(",");
 
@@ -109,53 +115,4 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         }
     }
-
-//    public class UploadCartProduct extends AsyncTask<String, Void, String> {
-//
-//        @Override
-//        protected String doInBackground(String... urls) {
-//            String status = "0";
-//            URL url = null;
-//            try {
-//                url = new URL(urls[0]);
-//
-//                // Uploading process
-//                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//                connection.setRequestMethod("POST");
-//                connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-//                connection.setRequestProperty("Accept", "application/json");
-//                connection.setDoInput(true);
-//                connection.setDoOutput(true);
-//                JSONObject jsonData = new JSONObject();
-//
-//                // setting data
-//                jsonData.put("userid", MainActivity.appUser.getUserId());
-//                jsonData.put("productid", productId);
-//                jsonData.put("size", productSize.getText().toString());
-//                jsonData.put("quantity", Integer.parseInt(productQuantity.getText().toString()));
-//
-//                System.out.println(jsonData);
-//
-//                DataOutputStream os = new DataOutputStream(connection.getOutputStream());
-//                os.writeBytes(jsonData.toString());
-//                status = Integer.toString(connection.getResponseCode());
-//                os.flush();
-//                os.close();
-//
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//
-//            Log.i("INFO", status);
-//            return status;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String s) {
-//            super.onPostExecute(s);
-//
-//        }
-//    }
-//
-
 }

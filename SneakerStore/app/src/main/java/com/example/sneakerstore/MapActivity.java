@@ -120,7 +120,7 @@ public class MapActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(MapActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
         }
 
-        Places.initialize(getApplicationContext(), "AIzaSyByUkuJFNAj1c3ckj8b9fVWBwlYYAI_dzc");
+        Places.initialize(getApplicationContext(), "AIzaSyACyCwpxpzeZqDNnNuao0PTZdcSHSxfNXI");
 
         locationInfo.setFocusable(false);
 

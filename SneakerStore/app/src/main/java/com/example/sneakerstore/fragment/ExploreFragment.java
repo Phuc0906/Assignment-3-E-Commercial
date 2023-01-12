@@ -66,7 +66,7 @@ public class ExploreFragment extends Fragment {
         indicator3 = view.findViewById(R.id.indicator);
 
         // set up for recyclerView
-        adapter = new ProductAdapter(getContext());
+        adapter = new ProductAdapter(getContext(), 0);
         adapter.setData(productList);
         itemListView.setLayoutManager(gridLayoutManager);
         itemListView.setAdapter(adapter);
@@ -116,8 +116,8 @@ public class ExploreFragment extends Fragment {
                                 object.getString("NAME"),
                                 object.getString("DESCRIPTION"),
                                 object.getDouble("PRICE"),
-                                "Men shoes",
-                                "Nike",
+                                object.getString("category"),
+                                object.getString("brand"),
                                 object.getString("PICTURE")));
                     }
                     adapter.notifyDataSetChanged();

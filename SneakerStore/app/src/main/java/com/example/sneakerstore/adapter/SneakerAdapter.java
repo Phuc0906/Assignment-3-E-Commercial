@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.sneakerstore.ProductDetailActivity;
 import com.example.sneakerstore.R;
+import com.example.sneakerstore.model.HttpHandler;
 import com.example.sneakerstore.sneaker.Sneaker;
 
 import java.util.List;
@@ -70,7 +71,7 @@ public class SneakerAdapter extends RecyclerView.Adapter<SneakerAdapter.sneakerH
                     break;
             }
 
-            Glide.with(context).load(sneaker.getResourceImage()).into(holder.sneakerImage);
+            new HttpHandler.DownloadImageFromInternet(holder.sneakerImage).execute(sneaker.getResourceImage());
 
         }
     }

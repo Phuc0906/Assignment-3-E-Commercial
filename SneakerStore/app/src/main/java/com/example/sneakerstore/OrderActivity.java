@@ -47,6 +47,7 @@ public class OrderActivity extends AppCompatActivity{
     public static Order userOder;
     private int receiveOption;
     private int totalProductPrice;
+    private int paymentOption;
 
 
     @Override
@@ -73,11 +74,12 @@ public class OrderActivity extends AppCompatActivity{
         paymentBtn = findViewById(R.id.paymentBtn);
 
         receiveOption = 0; // receive option = 1: shipping, 0: pick up
+        paymentOption = 0;
 
         paymentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userOder = new Order(MainActivity.appUser.getUserId(), totalProductPrice + Integer.parseInt(costText.getText().toString().split(" ")[0]), receiveOption);
+                userOder = new Order(MainActivity.appUser.getUserId(), totalProductPrice + Integer.parseInt(costText.getText().toString().split(" ")[0]), receiveOption, (googlePayBox.isChecked()) ? 1 : 0, (shippingBox.isChecked()) ? placeView.getText().toString() : "");
                 if (googlePayBox.isChecked()) {
                     Intent intent = new Intent(OrderActivity.this, OrderSuccessActivity.class);
                     startActivityForResult(intent, 30);

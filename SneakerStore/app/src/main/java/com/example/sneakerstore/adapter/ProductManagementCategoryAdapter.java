@@ -1,6 +1,7 @@
 package com.example.sneakerstore.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sneakerstore.MainActivity;
+import com.example.sneakerstore.ProductListActivity;
 import com.example.sneakerstore.R;
 
 import java.util.ArrayList;
@@ -24,12 +26,14 @@ public class ProductManagementCategoryAdapter extends RecyclerView.Adapter<Produ
 
     public ProductManagementCategoryAdapter(Context context) {
         this.context = context;
+        cats = new ArrayList<>();
+        cats.add("Latest");
 
     }
 
     public void setData(List<String> cats) {
-        this.cats = cats;
-        cats.add("Latest");
+        this.cats.addAll(cats);
+
     }
 
     @NonNull
@@ -48,7 +52,11 @@ public class ProductManagementCategoryAdapter extends RecyclerView.Adapter<Produ
             holder.catName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    
+                    Intent intent = new Intent(context, ProductListActivity.class);
+                    intent.putExtra("role", 1); // 1: admin, 0: user
+                    intent.putExtra("id", MainActivity.categoriesHashMap.get(category));
+                    intent.putExtra("cat", category);
+                    context.startActivity(intent);
                 }
             });
         }

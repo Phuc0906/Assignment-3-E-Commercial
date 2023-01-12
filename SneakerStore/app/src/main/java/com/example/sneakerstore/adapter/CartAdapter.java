@@ -57,7 +57,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
 
         if (cartSneaker != null) {
             System.out.println(cartSneaker.getResourceImage());
-            Glide.with(context).load(MainActivity.ROOT_IMG + cartSneaker.getResourceImage()).into(holder.itemImg);
+
+            new HttpHandler.DownloadImageFromInternet(holder.itemImg).execute(MainActivity.ROOT_IMG + cartSneaker.getResourceImage());
             holder.brandText.setText(cartSneaker.getBrand());
 
             holder.priceText.setText(Integer.toString(cartSneaker.getPrice()) + " $");

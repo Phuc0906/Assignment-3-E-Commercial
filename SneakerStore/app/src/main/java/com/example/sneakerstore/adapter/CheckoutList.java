@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.example.sneakerstore.MainActivity;
 import com.example.sneakerstore.R;
 import com.example.sneakerstore.model.CheckoutSneaker;
+import com.example.sneakerstore.model.HttpHandler;
 
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class CheckoutList extends RecyclerView.Adapter<CheckoutList.CheckoutAdap
             holder.size.setText("Size: " + Double.toString(checkoutSneaker.getSize()));
             holder.quantity.setText("Quantity: " + Integer.toString(checkoutSneaker.getQuantity()));
 
-            Glide.with(context).load(MainActivity.ROOT_IMG + checkoutSneaker.getResourceImage()).into(holder.itemImg);
+            new HttpHandler.DownloadImageFromInternet(holder.itemImg).execute(MainActivity.ROOT_IMG + checkoutSneaker.getResourceImage());
 
         }
     }
@@ -69,7 +70,6 @@ public class CheckoutList extends RecyclerView.Adapter<CheckoutList.CheckoutAdap
         TextView name, price, size;
         TextView quantity;
         ImageView itemImg;
-        ImageButton addBtn, minusBtn;
 
         public CheckoutAdapter(@NonNull View itemView) {
             super(itemView);

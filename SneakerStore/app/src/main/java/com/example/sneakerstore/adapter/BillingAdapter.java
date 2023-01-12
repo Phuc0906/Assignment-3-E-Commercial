@@ -1,6 +1,7 @@
 package com.example.sneakerstore.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.sneakerstore.BillingDetailPage;
 import com.example.sneakerstore.R;
 import com.example.sneakerstore.model.Billing;
 
@@ -49,12 +51,20 @@ public class BillingAdapter extends RecyclerView.Adapter<BillingAdapter.BillHold
 
             holder.billingNo.setText("No: " + Integer.toString(billing.getBillingNo()));
             holder.customerName.setText("Customer: " + billing.getCustomerName());
-            holder.billingPrice.setText("Price: " + Integer.toString(billing.getBillingPrice()));
+            holder.billingPrice.setText("Price: " + Double.toString(billing.getBillingPrice()) + " $");
 
             holder.toDetailBilling.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // to detail billing page
+                    // load billing page
+                    Intent intent = new Intent(context, BillingDetailPage.class);
+                    intent.putExtra("billing_id", billing.getBillingNo());
+                    intent.putExtra("customer", billing.getCustomerName());
+                    intent.putExtra("total", billing.getBillingPrice());
+                    intent.putExtra("status", billing.getStatus() ? 1 : 0);
+                    intent.putExtra("address", billing.getBillingAddress());
+                    intent.putExtra("payment", billing.isPayment() ? 1 : 0);
+                    context.startActivity(intent);
                 }
             });
         }

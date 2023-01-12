@@ -60,6 +60,8 @@ public class OrderSuccessActivity extends AppCompatActivity {
                 jsonData.put("userid", OrderActivity.userOder.getUserId());
                 jsonData.put("totalPrice", OrderActivity.userOder.getTotalPrice());
                 jsonData.put("status", OrderActivity.userOder.getReceiveStatus());
+                jsonData.put("payment", OrderActivity.userOder.getPaymentMethod());
+                jsonData.put("address", OrderActivity.userOder.getShippingAddress());
 
                 DataOutputStream os = new DataOutputStream(connection.getOutputStream());
                 os.writeBytes(jsonData.toString());

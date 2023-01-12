@@ -4,13 +4,25 @@ public class Billing {
     private boolean status;
     private int billingNo;
     private String customerName;
-    private int billingPrice;
+    private double billingPrice;
+    private String billingAddress;
+    private boolean payment; // 1: google pay, 0: credit card
 
-    public Billing(int billingNo, String customerName, int billingPrice, boolean status) {
+    public Billing(int billingNo, String customerName, double billingPrice, boolean status, String billingAddress, boolean payment) {
         this.billingNo = billingNo;
         this.customerName = customerName;
         this.billingPrice = billingPrice;
         this.status = status;
+        this.billingAddress = billingAddress;
+        this.payment = payment;
+    }
+
+    public String getBillingAddress() {
+        return billingAddress;
+    }
+
+    public boolean isPayment() {
+        return payment;
     }
 
     public boolean getStatus() {
@@ -25,7 +37,7 @@ public class Billing {
         return customerName;
     }
 
-    public int getBillingPrice() {
+    public double getBillingPrice() {
         return billingPrice;
     }
 }
