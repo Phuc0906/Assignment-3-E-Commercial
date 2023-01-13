@@ -41,6 +41,7 @@ public class ExploreFragment extends Fragment {
     ViewPager2 viewPager2;
     CircleIndicator3 indicator3;
     private static List<Product> productList = new ArrayList<>();
+    ArrayList<Integer> wishlist;
 
 
     private Handler handler = new Handler(Looper.getMainLooper());
@@ -62,7 +63,7 @@ public class ExploreFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_explore, container, false);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        new readJSON().execute();
+        new getWishlist().execute();
         // initialize
         itemListView = view.findViewById(R.id.productList);
         viewPager2 = view.findViewById(R.id.viewPager);
@@ -74,6 +75,7 @@ public class ExploreFragment extends Fragment {
         adapter.setData(productList);
         itemListView.setLayoutManager(gridLayoutManager);
         itemListView.setAdapter(adapter);
+        wishlist = new ArrayList<>();
 
         //set up for viewPaper
         bannerAdapter = new BannerAdapter(getBannerList());
@@ -101,6 +103,32 @@ public class ExploreFragment extends Fragment {
         return list;
     }
 
+    public class getWishlist extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... voids) {
+            return HttpHandler.getMethod(MainActivity.ROOT_API + "/product/wishlist?userid=1"); // modify id here
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (s != null) {
+                try {
+                    JSONArray jsonArray = new JSONArray(s);
+                    wishlist.clear();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        wishlist.add(object.getInt("PRODUCT_ID"));
+                    }
+
+                    new readJSON().execute();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public class readJSON extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... voids) {
@@ -116,13 +144,21 @@ public class ExploreFragment extends Fragment {
                     System.out.println(jsonArray);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject object = jsonArray.getJSONObject(i);
+                        int isWish = 0;
+                        for (int j = 0; j < wishlist.size(); j++) {
+                            if (object.getInt("ID") == wishlist.get(j)) {
+                                isWish = 1;
+                                break;
+                            }
+                        }
+
                         productList.add(new Product(object.getInt("ID"),
                                 object.getString("NAME"),
                                 object.getString("DESCRIPTION"),
                                 object.getDouble("PRICE"),
                                 object.getString("category"),
                                 object.getString("brand"),
-                                object.getString("PICTURE")));
+                                object.getString("PICTURE"), isWish));
                     }
                     adapter.notifyDataSetChanged();
                     progressBar.setVisibility(View.GONE);

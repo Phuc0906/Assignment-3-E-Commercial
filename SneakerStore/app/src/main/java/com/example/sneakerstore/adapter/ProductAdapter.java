@@ -24,6 +24,10 @@ import com.example.sneakerstore.R;
 import com.example.sneakerstore.model.HttpHandler;
 import com.example.sneakerstore.model.Product;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -60,10 +64,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductI
         Product product = list.get(position);
 
         if (product != null) {
+            if (role == 1) {
+                holder.wishlistHeart.setVisibility(View.INVISIBLE);
+            }
             holder.brandName.setText(product.getBrand());
             holder.shoesName.setText(product.getName());
             new HttpHandler.DownloadImageFromInternet(holder.imageView).execute(product.getPicture());
             holder.shoesPrice.setText(Double.toString(product.getPrice()) + " $");
+
+            if (product.getIsWish() == 1) {
+                holder.wishlistHeart.setImageResource(R.drawable.black_heart);
+            }else {
+                holder.wishlistHeart.setImageResource(R.drawable.heart);
+            }
+
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -73,10 +87,22 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductI
                     }else { // load product form for admin
                         intent = new Intent(context, ProductFormActivity.class);
                     }
-
-                    intent.putExtra("product_id", product.getId());
+                    System.out.println("PRODUCT ID: " + product.getId());
+                    intent.putExtra("product_id", Integer.toString(product.getId()));
 
                     context.startActivity(intent);
+                }
+            });
+
+            holder.wishlistHeart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (product.getIsWish() == 1) {
+                        product.setIsWish(0);
+                    }else {
+                        product.setIsWish(1);
+                    }
+                    notifyDataSetChanged();
                 }
             });
         }
@@ -92,7 +118,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductI
 
     public class ProductItemHolder extends RecyclerView.ViewHolder {
         TextView brandName, shoesName, shoesPrice;
-        ImageView imageView;
+        ImageView imageView, wishlistHeart;
         CardView cardView;
 
         public ProductItemHolder(@NonNull View itemView) {
@@ -102,8 +128,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductI
             imageView = itemView.findViewById(R.id.explore_image);
             cardView  = itemView.findViewById(R.id.explore_card);
             shoesPrice = itemView.findViewById(R.id.explore_price);
+            wishlistHeart = itemView.findViewById(R.id.wishlistHeart);
         }
     }
+
 
 
 }

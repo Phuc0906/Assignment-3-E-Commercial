@@ -134,7 +134,7 @@ public class HttpHandler {
 
         DataOutputStream os = new DataOutputStream(conn.getOutputStream());
         //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
-        os.writeBytes(object.toString());
+        os.writeBytes((object == null) ? "" : object.toString());
 
         os.flush();
         os.close();
@@ -145,6 +145,33 @@ public class HttpHandler {
         status = Integer.toString(conn.getResponseCode());
         return status;
     }
+
+    public static String deleteMethod(String urlStr, JSONObject object) throws IOException {
+        String status = "";
+        URL url = new URL(urlStr);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("DELETE");
+        conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setDoOutput(true);
+        conn.setDoInput(true);
+
+        DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+        //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
+        os.writeBytes((object == null) ? "" : object.toString());
+
+
+        os.flush();
+        os.close();
+
+        Log.i("STATUS", String.valueOf(conn.getResponseCode()));
+        Log.i("MSG", conn.getResponseMessage());
+        conn.disconnect();
+        status = Integer.toString(conn.getResponseCode());
+        return status;
+    }
+
+
 
     public static class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
         ImageView imageView;

@@ -9,9 +9,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -33,6 +36,8 @@ import com.example.sneakerstore.model.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,7 +48,7 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
     SeekBar seekBar;
-    ImageView arrow;
+    ImageView arrow, userRegisterImg;
     TextView textView;
     EditText email, password;
     TextView wrongAlert, registerAccount;
@@ -54,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     ConstraintLayout registerLayout;
     JSONObject object;
     public static SharedPreferences sharePref;
+    String userImgBase64;
 
     public static ArrayList<String> brands;
     public static HashMap<String, Integer> brandsHashMap;
@@ -74,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         appUser = new User(1);
-
+        userImgBase64 = "";
         categoriesHashMap = new HashMap<>();
         categories = new ArrayList<>();
         brands = new ArrayList<>();
@@ -95,11 +101,24 @@ public class MainActivity extends AppCompatActivity {
         registerAddress = findViewById(R.id.registerAddress);
         emailAlert = findViewById(R.id.emailAlert);
         passwordAlert = findViewById(R.id.passwordAlert);
+        userRegisterImg = findViewById(R.id.user_register_img);
+
+
+        userRegisterImg.setImageResource(R.drawable.user_icon);
 
         emailAlert.setVisibility(View.INVISIBLE);
         passwordAlert.setVisibility(View.INVISIBLE);
 
         registerLayout.setY(2000);
+
+        userRegisterImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent imgIntent = new Intent(Intent.ACTION_PICK);
+                imgIntent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(imgIntent, 1000);
+            }
+        });
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,9 +172,13 @@ public class MainActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (registerConfirmPassword.getText().toString().equals(registerPassword.getText().toString())) {
-                    VerifyEmail verifyEmail = new VerifyEmail();
-                    verifyEmail.execute(ROOT_API + "/user/email?email=" + registerEmail.getText().toString());
+                if (registerConfirmPassword.getText().toString().length() != 0 && registerPassword.getText().toString().length() != 0) {
+                    if (registerConfirmPassword.getText().toString().equals(registerPassword.getText().toString())) {
+                        VerifyEmail verifyEmail = new VerifyEmail();
+                        verifyEmail.execute(ROOT_API + "/user/email?email=" + registerEmail.getText().toString());
+                    }else {
+                        passwordAlert.setVisibility(View.VISIBLE);
+                    }
                 }else {
                     passwordAlert.setVisibility(View.VISIBLE);
                 }
@@ -456,6 +479,8 @@ public class MainActivity extends AppCompatActivity {
                         object.put("password", registerPassword.getText().toString());
                         object.put("email", registerEmail.getText().toString());
                         object.put("gender", "Male");
+
+                        object.put("img", userImgBase64);
                         RegisterUser registerUser = new RegisterUser();
                         registerUser.execute(ROOT_API + "/user/infomation");
                     }
@@ -481,6 +506,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            if (Integer.parseInt(s) == 200) {
+                registerLayout.animate().translationYBy(2000).setDuration(1000);
+            }
 
         }
     }
@@ -500,6 +528,29 @@ public class MainActivity extends AppCompatActivity {
                 editor.apply();
                 editor.commit();
             }
+        }else if (requestCode == 1000) {
+            if (resultCode == RESULT_OK) {
+                final Uri imageUri = data.getData();
+                final InputStream imageStream;
+                try {
+                    imageStream = getContentResolver().openInputStream(imageUri);
+                    final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                    userRegisterImg.setImageBitmap(selectedImage);
+                    userImgBase64 = encodeImage(selectedImage);
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+    }
+
+    private String encodeImage(Bitmap bm)
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.PNG,100,baos);
+        byte[] b = baos.toByteArray();
+        String encImage = Base64.encodeToString(b, Base64.DEFAULT);
+        return encImage;
     }
 }

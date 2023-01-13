@@ -475,6 +475,44 @@ router.get('/billing/detail', (req, res) => {
             res.send(result);
         }
     })
+});
+
+router.post('/wishlist', (req, res) => {
+    const userid = req.query.userid;
+    const productid = req.query.productid;
+    const queryCommand = `INSERT INTO WISHLIST(USERID, PRODUCT_ID) VALUES (${userid}, ${productid});`
+    db.query(queryCommand, (err, result) => {
+        if (err) {
+            res.send(err);
+        }else {
+            res.send(result);
+        }
+    })
+});
+
+router.get('/wishlist', (req, res) => {
+    const userid = req.query.userid;
+    const queryCommand = `SELECT * FROM WISHLIST WHERE USERID = ${userid};`
+    db.query(queryCommand, (err, result) => {
+        if (err) {
+            res.send(err);
+        }else {
+            res.send(result);
+        }
+    })
+})
+
+router.delete('/wishlist', (req, res) => {
+    const userid = req.query.userid;
+    const productid = req.query.productid;
+    const queryCommand = `DELETE FROM WISHLIST WHERE USERID = ${userid} && PRODUCT_ID = ${productid}`
+    db.query(queryCommand, (err, result) => {
+        if (err) {
+            res.send(err);
+        }else {
+            res.send(result);
+        }
+    })
 })
 
 module.exports = router;

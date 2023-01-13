@@ -96,7 +96,7 @@ public class ProductListActivity extends AppCompatActivity {
                                 object.getDouble("PRICE"),
                                 object.getString("category"),
                                 object.getString("brand"),
-                                object.getString("PICTURE")));
+                                object.getString("PICTURE"), 0));
                     }
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {

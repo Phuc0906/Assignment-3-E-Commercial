@@ -14,6 +14,13 @@ var db = mysql.createConnection({
     database: "ASS3DB",
 });
 
+const AWS = require("aws-sdk");
+
+const s3 = new AWS.S3({
+    accessKeyId: "AKIAXIAIX4DZTI2H25AJ",
+    secretAccessKey: "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",
+});
+
 router.get("/login", async (req, res) => {
     const email = req.query.email;
     const password = req.query.password;
@@ -41,6 +48,9 @@ router.get("/login", async (req, res) => {
 router.get('/email', (req, res) => {
     const email = req.query.email;
     const command = `SELECT * FROM USER WHERE EMAIL = '${email}'`;
+
+    
+
     db.query(command, (err, result) => {
         if (err) {
             res.send(err);
@@ -60,7 +70,7 @@ router.get('/email', (req, res) => {
 
 router.get("/infomation", (req, res) => {
     const id = req.query.id;
-    const queryCommand = `SELECT * FROM USER WHERE ID = '${id}'`;
+    const queryCommand = `SELECT * FROM USER WHERE EMAIL = '${id}'`;
     db.query(queryCommand, (err, result) => {
         if (err) {
             res.send(err);
@@ -77,6 +87,28 @@ router.post("/infomation", (req, res) => {
     const queryCommand = `
     INSERT INTO USER(ID, NAME, ADDRESS, PHONE_NUMBER, GENDER, DATE_OF_BIRTH, POINT, PASSWORD, ROLE, EMAIL)
     VALUES(NULL, '${reqBody.name}', '${reqBody.address}', '${reqBody.phone}', '${reqBody.gender}', '', 0, '${reqBody.password}', 'USER', '${reqBody.email}')`;
+    
+    const transferData = "data:image/png;base64," + reqBody.img;
+    var buf = Buffer.from(
+        transferData.replace(/^data:image\/\w+;base64,/, ""),
+        "base64"
+    );
+
+    const params = {
+        Bucket: "ass3-android-bucket",
+        Key: `${reqBody.email}.png`, // File name you want to save as in S3
+        Body: buf,
+        ContentEncoding: "base64",
+        ContentType: "image/png",
+    };
+
+    s3.upload(params, function (err, data) {
+        if (err) {
+            throw err;
+        }
+        console.log(`File uploaded successfully`);
+    });
+    
     db.query(queryCommand, (err, result) => {
         if (err) {
             res.send(err);

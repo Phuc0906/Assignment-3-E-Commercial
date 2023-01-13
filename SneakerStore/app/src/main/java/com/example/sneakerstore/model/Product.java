@@ -1,6 +1,10 @@
 package com.example.sneakerstore.model;
 
+import android.os.AsyncTask;
+
 import com.example.sneakerstore.MainActivity;
+
+import java.io.IOException;
 
 public class Product {
     private int id;
@@ -10,8 +14,9 @@ public class Product {
     private String category;
     private String brand;
     private String picture;
+    private int isWish;
 
-    public Product(int id, String name, String description, double price, String category, String brand, String picture) {
+    public Product(int id, String name, String description, double price, String category, String brand, String picture, int isWish) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -19,6 +24,7 @@ public class Product {
         this.category = category;
         this.brand = brand;
         this.picture = MainActivity.ROOT_IMG + picture;
+        this.isWish = isWish;
     }
 
     public int getId() {
@@ -75,5 +81,42 @@ public class Product {
 
     public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    public int getIsWish() {
+        return isWish;
+    }
+
+    public void setIsWish(int isWish) {
+        if (isWish == 1) {
+            new postWishlist().execute();
+        }else {
+            new deleteWishlist().execute();
+        }
+        this.isWish = isWish;
+    }
+
+    public class postWishlist extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                return HttpHandler.postMethod(MainActivity.ROOT_API + "/product/wishlist?userid=1&productid=" + id, null);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return "";
+        }
+    }
+
+    public class deleteWishlist extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                return HttpHandler.deleteMethod(MainActivity.ROOT_API + "/product/wishlist?userid=1&productid=" + id, null);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return "";
+        }
     }
 }
