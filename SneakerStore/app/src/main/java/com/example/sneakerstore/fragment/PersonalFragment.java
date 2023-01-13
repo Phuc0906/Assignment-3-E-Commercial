@@ -55,7 +55,7 @@ public class PersonalFragment extends Fragment {
             public void onClick(View view) {
                 // alert dialog will be here
                 SharedPreferences sharePref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharePref.edit();
+                SharedPreferences.Editor editor = MainActivity.sharePref.edit();
                 editor.putInt("session", 0);
                 editor.apply();
                 editor.commit();

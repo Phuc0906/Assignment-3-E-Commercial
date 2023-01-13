@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     int val;
     ConstraintLayout registerLayout;
     JSONObject object;
+    public static SharedPreferences sharePref;
 
     public static ArrayList<String> brands;
     public static HashMap<String, Integer> brandsHashMap;
@@ -162,10 +163,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // get share preferences value
-        SharedPreferences sharePref = this.getPreferences(Context.MODE_PRIVATE);
+        sharePref = this.getPreferences(Context.MODE_PRIVATE);
 
-//        int loginStatus = sharePref.getInt("session", 0); // if 0 => user is not in session, 1 => in session
-        int loginStatus = 0;
+        int loginStatus = sharePref.getInt("session", 0); // if 0 => user is not in session, 1 => in session
+//        int loginStatus = 0;
         int role = sharePref.getInt("role", 0); // 0: user, 1: admin
 
         DownloadCategory downloadCategory = new DownloadCategory();
