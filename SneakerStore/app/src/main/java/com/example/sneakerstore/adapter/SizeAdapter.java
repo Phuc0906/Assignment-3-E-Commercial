@@ -42,22 +42,24 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.SizeHolder> {
         SneakerSize s = list.get(position);
         if (s != null) {
             holder.sizeText.setText(s.getSize());
+
+            holder.sizeText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    s.setSelected(!s.isSelected());
+                    for (int i = 0; i < list.size(); i++) {
+                        if (i == position) continue;
+                        list.get(i).setSelected(false);
+                    }
+                    notifyDataSetChanged();
+                }
+            });
+
             if (s.isSelected()) {
                 holder.sizeText.setBackgroundColor(Color.parseColor("#F9A825"));
             }else {
                 holder.sizeText.setBackgroundColor(Color.parseColor("#B5B5B5"));
             }
-            holder.sizeText.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                  s.setSelected(!s.isSelected());
-                  for (int i = 0; i < list.size(); i++) {
-                      if (i == position) continue;
-                      list.get(i).setSelected(false);
-                  }
-                  notifyDataSetChanged();
-                }
-            });
         }
     }
 

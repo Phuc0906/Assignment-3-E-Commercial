@@ -14,6 +14,7 @@ import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 import com.example.sneakerstore.fragment.CartFragment;
 import com.example.sneakerstore.fragment.ExploreFragment;
 import com.example.sneakerstore.fragment.HomeFragment;
+import com.example.sneakerstore.fragment.PersonalFragment;
 
 public class HomePage extends AppCompatActivity {
     public static MeowBottomNavigation bottomNavigation;

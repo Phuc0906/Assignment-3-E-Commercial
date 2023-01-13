@@ -18,7 +18,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.example.sneakerstore.MainActivity;
 import com.example.sneakerstore.R;
@@ -28,6 +30,7 @@ import com.example.sneakerstore.model.HttpHandler;
 import com.example.sneakerstore.sneaker.Category;
 import com.example.sneakerstore.adapter.CategoryAdapter;
 import com.example.sneakerstore.sneaker.Sneaker;
+import com.github.ybq.android.spinkit.style.CubeGrid;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,6 +43,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
+    EditText searchView;
+    ProgressBar progressBar;
     RecyclerView rcList;
     CategoryAdapter adapter;
     ViewPager2 viewPager2;
@@ -72,6 +77,10 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+        progressBar = view.findViewById(R.id.progressBar);
+        progressBar.setIndeterminateDrawable(new CubeGrid());
+        searchView = view.findViewById(R.id.edt_search);
         rcList = view.findViewById(R.id.recyclerList);
         adapter = new CategoryAdapter(getContext());
         viewPager2 = view.findViewById(R.id.viewPager2);
@@ -109,7 +118,6 @@ public class HomeFragment extends Fragment {
 
         List<Category> list = new ArrayList<>();
         list.add(new Category("Latest", sneakerList));
-
         adapter.setData(list);
         adapter.notifyDataSetChanged();
         rcList.setAdapter(adapter);
@@ -162,7 +170,6 @@ public class HomeFragment extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-
             try {
                 System.out.println(s);
                 sneakerList.clear();
@@ -173,7 +180,13 @@ public class HomeFragment extends Fragment {
                     sneakerList.add(new Sneaker(sneakerObj.getInt("ID") ,MainActivity.ROOT_IMG + sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
                 }
                 adapter.notifyDataSetChanged();
-            } catch (Exception e) {
+
+                progressBar.setVisibility(View.GONE);
+                searchView.setVisibility(View.VISIBLE);
+                img.setVisibility(View.VISIBLE);
+                viewPager2.setVisibility(View.VISIBLE);
+                rcList.setVisibility(View.VISIBLE);
+                } catch (Exception e) {
                 e.printStackTrace();
             }
         }

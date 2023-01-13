@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -92,6 +93,32 @@ public class HttpHandler {
 
         Log.i("INFO", status);
         return status;
+    }
+
+    public static void postToCart(String urlString, String uID, String pID, String size, int quantity) throws IOException, JSONException {
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setDoOutput(true);
+        conn.setDoInput(true);
+        JSONObject jsonParam = new JSONObject();
+        jsonParam.put("userid", uID);
+        jsonParam.put("productid", pID);
+        jsonParam.put("size", size);
+        jsonParam.put("quantity", quantity);
+
+        DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+        //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
+        os.writeBytes(jsonParam.toString());
+
+        os.flush();
+        os.close();
+
+        Log.i("STATUS", String.valueOf(conn.getResponseCode()));
+        Log.i("MSG", conn.getResponseMessage());
+        conn.disconnect();
     }
 
     public static class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {

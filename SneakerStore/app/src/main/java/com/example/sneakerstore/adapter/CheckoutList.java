@@ -23,18 +23,19 @@ import com.example.sneakerstore.MainActivity;
 import com.example.sneakerstore.R;
 import com.example.sneakerstore.model.CheckoutSneaker;
 import com.example.sneakerstore.model.HttpHandler;
+import com.example.sneakerstore.sneaker.CartSneaker;
 
 import java.util.List;
 
 public class CheckoutList extends RecyclerView.Adapter<CheckoutList.CheckoutAdapter> {
     Context context;
-    List<CheckoutSneaker> list;
+    List<CartSneaker> list;
 
     public CheckoutList(Context context) {
         this.context = context;
     }
 
-    public void setData(List<CheckoutSneaker> list ) {
+    public void setData(List<CartSneaker> list ) {
         this.list = list;
         notifyDataSetChanged();
     }
@@ -48,7 +49,7 @@ public class CheckoutList extends RecyclerView.Adapter<CheckoutList.CheckoutAdap
 
     @Override
     public void onBindViewHolder(@NonNull CheckoutList.CheckoutAdapter holder, int position) {
-        CheckoutSneaker checkoutSneaker = list.get(position);
+        CartSneaker checkoutSneaker = list.get(position);
         if (checkoutSneaker != null) {
             holder.name.setText(checkoutSneaker.getName());
             holder.price.setText(Double.toString(checkoutSneaker.getPrice()));

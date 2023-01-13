@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 import com.example.sneakerstore.fragment.BillingFragment;
+import com.example.sneakerstore.fragment.PersonalFragment;
 
 public class AdminActivity extends AppCompatActivity {
 

@@ -1,6 +1,8 @@
 package com.example.sneakerstore.sneaker;
 
-public class CartSneaker extends Sneaker {
+import java.io.Serializable;
+
+public class CartSneaker extends Sneaker implements Serializable{
     private int quantity;
     private int price;
     private double size;
@@ -26,5 +28,11 @@ public class CartSneaker extends Sneaker {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public String toString() {
+        return getSneakerId() + "," + getResourceImage() + ","
+                + getBrand() + "," + getName() + "," + this.price + ","
+                + this.quantity+ "," + this.size;
     }
 }

@@ -16,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.sneakerstore.adapter.CheckoutList;
 import com.example.sneakerstore.model.CheckOutSection;
@@ -39,7 +40,7 @@ public class OrderActivity extends AppCompatActivity{
     CheckBox creditCardBox, googlePayBox, shippingBox, pickUpBox;
     Button paymentBtn;
     RecyclerView paymentView;
-    List<CheckoutSneaker> sneakerList;
+    List<CartSneaker> sneakerList;
     CheckoutList checkoutList;
     ImageButton orderBackButton;
 
@@ -141,6 +142,7 @@ public class OrderActivity extends AppCompatActivity{
 
 
         checkoutList = new CheckoutList(this);
+        getProductArr();
         checkoutList.setData(sneakerList);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -171,9 +173,19 @@ public class OrderActivity extends AppCompatActivity{
                 finish();
             }
         });
+    }
 
-        DownloadCheckoutProduct downloadCheckoutProduct = new DownloadCheckoutProduct();
-        downloadCheckoutProduct.execute(MainActivity.ROOT_API + "/product/cart?userid=" + MainActivity.appUser.getUserId());
+    private void getProductArr() {
+        Intent intent = getIntent();
+        String[] arr = intent.getStringArrayExtra("product_in_cart");
+        for (String s : arr) {
+            if (s != null) {
+                String[] values = s.split(",");
+                sneakerList.add(new CartSneaker(Integer.parseInt(values[0]), values[1],
+                        values[2], values[3], Integer.parseInt(values[4]),
+                        Integer.parseInt(values[5]), Double.parseDouble(values[6])));
+            }
+        }
     }
 
     @Override
@@ -202,33 +214,6 @@ public class OrderActivity extends AppCompatActivity{
                 Intent resultIntent = new Intent();
                 setResult(RESULT_OK, resultIntent);
                 finish();
-            }
-        }
-    }
-
-    public class DownloadCheckoutProduct extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... urls) {
-            return HttpHandler.getMethod(urls[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            try {
-                totalProductPrice = 0;
-                JSONArray productArr = new JSONArray(s);
-                for (int i = 0; i < productArr.length(); i++) {
-                    JSONObject object = productArr.getJSONObject(i);
-                    sneakerList.add(new CheckoutSneaker(object.getInt("PRODUCT_ID"), object.getString("PICTURE"), object.getString("BRAND"), object.getString("PRODUCT_NAME"), object.getInt("PRICE"), object.getInt("QUANTITY"), object.getDouble("SIZE")));
-                    totalProductPrice += object.getInt("QUANTITY") * object.getInt("PRICE");
-                }
-                checkoutList.notifyDataSetChanged();
-                subPrice.setText(totalProductPrice + " $");
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }
