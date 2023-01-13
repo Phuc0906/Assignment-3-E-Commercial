@@ -1,5 +1,6 @@
 package com.example.sneakerstore.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -52,7 +53,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CartAdapter.cartHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CartAdapter.cartHolder holder, @SuppressLint("RecyclerView") int position) {
         CartSneaker cartSneaker = cartSneakerList.get(position);
 
         if (cartSneaker != null) {
@@ -99,7 +100,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
                     notifyDataSetChanged();
 
                     DeleteProduct deleteProduct = new DeleteProduct();
-                    deleteProduct.execute(MainActivity.ROOT_API + "/product/cart?userid=" + MainActivity.appUser.getUserId() + "&productid=" + cartSneaker.getSneakerId() + "&size=" + cartSneaker.getSize());
+                    deleteProduct.execute(MainActivity.ROOT_API + "/product/cart?userid=" + "1" + "&productid=" + cartSneaker.getSneakerId() + "&size=" + cartSneaker.getSize());
                 }
             });
         }

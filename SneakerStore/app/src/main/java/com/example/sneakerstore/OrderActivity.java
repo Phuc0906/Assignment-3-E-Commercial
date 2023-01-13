@@ -78,7 +78,7 @@ public class OrderActivity extends AppCompatActivity{
         paymentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userOder = new Order(MainActivity.appUser.getUserId(), totalProductPrice + Integer.parseInt(costText.getText().toString().split(" ")[0]), receiveOption);
+                userOder = new Order(1, totalProductPrice + Integer.parseInt(costText.getText().toString().split(" ")[0]), receiveOption);
                 if (googlePayBox.isChecked()) {
                     Intent intent = new Intent(OrderActivity.this, OrderSuccessActivity.class);
                     startActivityForResult(intent, 30);
