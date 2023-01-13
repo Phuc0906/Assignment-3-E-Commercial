@@ -6,9 +6,9 @@ import java.util.List;
 
 public class CheckOutSection {
     private String sectionName;
-    private List<CartSneaker> checkoutSneakerList;
+    private List<CheckoutSneaker> checkoutSneakerList;
 
-    public CheckOutSection(String sectionName, List<CartSneaker> checkoutSneakerList) {
+    public CheckOutSection(String sectionName, List<CheckoutSneaker> checkoutSneakerList) {
         this.sectionName = sectionName;
         this.checkoutSneakerList = checkoutSneakerList;
     }
@@ -17,7 +17,7 @@ public class CheckOutSection {
         return sectionName;
     }
 
-    public List<CartSneaker> getCheckoutSneakerList() {
+    public List<CheckoutSneaker> getCheckoutSneakerList() {
         return checkoutSneakerList;
     }
 }

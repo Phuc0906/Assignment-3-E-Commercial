@@ -40,7 +40,7 @@ public class OrderActivity extends AppCompatActivity{
     CheckBox creditCardBox, googlePayBox, shippingBox, pickUpBox;
     Button paymentBtn;
     RecyclerView paymentView;
-    List<CartSneaker> sneakerList;
+    List<CheckoutSneaker> sneakerList;
     CheckoutList checkoutList;
     ImageButton orderBackButton;
 
@@ -181,7 +181,7 @@ public class OrderActivity extends AppCompatActivity{
         for (String s : arr) {
             if (s != null) {
                 String[] values = s.split(",");
-                sneakerList.add(new CartSneaker(Integer.parseInt(values[0]), values[1],
+                sneakerList.add(new CheckoutSneaker(Integer.parseInt(values[0]), values[1],
                         values[2], values[3], Integer.parseInt(values[4]),
                         Integer.parseInt(values[5]), Double.parseDouble(values[6])));
             }
