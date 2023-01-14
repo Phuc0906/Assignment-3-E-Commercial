@@ -70,7 +70,7 @@ router.get('/email', (req, res) => {
 
 router.get("/infomation", (req, res) => {
     const id = req.query.id;
-    const queryCommand = `SELECT * FROM USER WHERE EMAIL = '${id}'`;
+    const queryCommand = `SELECT * FROM USER WHERE ID = '${id}'`;
     db.query(queryCommand, (err, result) => {
         if (err) {
             res.send(err);
