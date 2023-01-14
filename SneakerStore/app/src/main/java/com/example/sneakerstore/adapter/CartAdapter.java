@@ -61,7 +61,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
             Glide.with(context).load(MainActivity.ROOT_IMG + cartSneaker.getResourceImage()).into(holder.itemImg);
             holder.brandText.setText(cartSneaker.getBrand());
 
-            holder.priceText.setText(Integer.toString(cartSneaker.getPrice()) + " $");
+            holder.priceText.setText(Double.toString(cartSneaker.getPrice()) + " $");
             holder.quantityText.setText(Integer.toString(cartSneaker.getQuantity()));
 
             holder.sizeText.setText("Size: " + cartSneaker.getSize());

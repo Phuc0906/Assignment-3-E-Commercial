@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 public class CartSneaker extends Sneaker implements Serializable{
     private int quantity;
-    private int price;
+    private double price;
     private double size;
 
-    public CartSneaker(int sneakerId, String resourceImage, String brand, String name, int quantity, int price, double size) {
+    public CartSneaker(int sneakerId, String resourceImage, String brand, String name, int quantity, double price, double size) {
         super(sneakerId, resourceImage, brand, name);
         this.quantity = quantity;
         this.price = price;
@@ -22,7 +22,7 @@ public class CartSneaker extends Sneaker implements Serializable{
 
     public int getQuantity() {return this.quantity;}
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 

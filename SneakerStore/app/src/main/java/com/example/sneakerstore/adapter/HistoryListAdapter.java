@@ -44,7 +44,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
         HistoryList hl = list.get(position);
         if (hl != null) {
             int total = 0;
-            holder.date.setText(hl.getDate());
+            holder.date.setText("Order created on " + hl.getDate());
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
             holder.recyclerView.setLayoutManager(linearLayoutManager);
             HistoryItemAdapter historyItemAdapter = new HistoryItemAdapter(context);

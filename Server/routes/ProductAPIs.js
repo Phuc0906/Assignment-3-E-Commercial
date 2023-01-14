@@ -383,4 +383,32 @@ router.post('/billing', (req, res) => {
     })
 })
 
+router.get('/billing/history', (req, res) => {
+    const userid = req.query.userid;
+    const queryCommand = `SELECT PU.BUYID AS BUYID, PU.DATE_BUY AS BUY_DATE, PR.PICTURE, BR.NAME as BRAND, PR.ID AS PRODUCT_ID, PR.NAME, PU.TOTAL_PRICE, PR.PRICE * BU.QUANTITY AS PRODUCT_PRICE, BU.SIZE, BU.QUANTITY FROM PRODUCT PR, PURCHASE PU, BUY_HISTORY BU, BRAND BR 
+    WHERE PU.USERID = ${userid} AND PU.BUYID = BU.BUYID AND BU.PRODUCT_ID = PR.ID AND PR.BRAND = BR.ID ORDER BY PU.BUYID;`
+    db.query(queryCommand, (err, result) => {
+        if (err) {
+            res.send(err);
+        }else {
+            res.send(result);
+            var sendingObj = {};
+            var lastBuyId = -1;
+            var currentBuyId = 0;
+            var productArr = [];
+            // for (var i = 0; i < result.length; i++) {
+            //     if (i == 0) {
+            //         lastBuyId = result[i].BUYID;
+            //     }else {
+            //         if (result[i].BUYID != lastBuyId) {
+            //             // assign value
+            //         }
+            //     }
+
+                
+            // }
+        }
+    })
+})
+
 module.exports = router;
