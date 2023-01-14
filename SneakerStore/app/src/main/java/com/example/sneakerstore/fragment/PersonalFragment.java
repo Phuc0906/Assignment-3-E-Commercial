@@ -44,7 +44,7 @@ import org.json.JSONObject;
 
 public class PersonalFragment extends Fragment {
     ImageView userImage;
-    TextView userName, userRank;
+    TextView userName, userRank, userPoint;
     ConstraintLayout historyLayout, infoLayout, contactLayout, logoutLayout;
     String userID;
     User user;
@@ -58,6 +58,7 @@ public class PersonalFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_personal, container, false);
         userImage = view.findViewById(R.id.user_image);
         userName = view.findViewById(R.id.user_name);
+        userPoint = view.findViewById(R.id.user_point);
         userRank = view.findViewById(R.id.user_rank);
         historyLayout = view.findViewById(R.id.history_layout);
         infoLayout = view.findViewById(R.id.info_layout);
@@ -123,6 +124,7 @@ public class PersonalFragment extends Fragment {
 
                     userName.setText(user.getName());
                     userRank.setText(getRank(user.getPoint()));
+                    userPoint.setText(String.valueOf(user.getPoint()));
                     con.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                 } catch (JSONException e) {

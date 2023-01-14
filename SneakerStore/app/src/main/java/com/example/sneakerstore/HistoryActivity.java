@@ -47,24 +47,6 @@ public class HistoryActivity extends AppCompatActivity {
 
 
     }
-    private List<HistoryList> getList() {
-        list = new ArrayList<>();
-        List<CartSneaker> cList = new ArrayList<>();
-        List<CartSneaker> cList1 = new ArrayList<>();
-        cList.add(new CartSneaker(1, MainActivity.ROOT_IMG + "4.png", "Nike", "Nike Airmax-1",2,210, 9.5));
-        cList.add(new CartSneaker(1, MainActivity.ROOT_IMG + "3.png", "Nike", "Nike Fly5",2,210, 9.5));
-        cList.add(new CartSneaker(1, MainActivity.ROOT_IMG + "6.png", "Nike", "Nike Airmax-1",2,210, 9.5));
-        cList.add(new CartSneaker(1, MainActivity.ROOT_IMG + "8.png", "Nike", "Nike Fly5",2,210, 9.5));
-
-        cList1.add(new CartSneaker(1, MainActivity.ROOT_IMG + "4.png", "Nike", "Nike Airmax-1",2,210, 9.5));
-        cList1.add(new CartSneaker(1, MainActivity.ROOT_IMG + "3.png", "Nike", "Nike Fly5",2,210, 9.5));
-        cList1.add(new CartSneaker(1, MainActivity.ROOT_IMG + "6.png", "Nike", "Nike Airmax-1",2,210, 9.5));
-        cList1.add(new CartSneaker(1, MainActivity.ROOT_IMG + "8.png", "Nike", "Nike Fly5",2,210, 9.5));
-
-        list.add(new HistoryList("12/01/2023", cList));
-        list.add(new HistoryList("13/01/2023", cList1));
-        return list;
-    }
 
     private void getData() {
         Intent intent = getIntent();
