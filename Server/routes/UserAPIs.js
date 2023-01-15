@@ -94,25 +94,36 @@ router.post("/infomation", (req, res) => {
         "base64"
     );
 
-    const params = {
-        Bucket: "ass3-android-bucket",
-        Key: `${reqBody.email}.png`, // File name you want to save as in S3
-        Body: buf,
-        ContentEncoding: "base64",
-        ContentType: "image/png",
-    };
+    
 
-    s3.upload(params, function (err, data) {
-        if (err) {
-            throw err;
-        }
-        console.log(`File uploaded successfully`);
-    });
+    
     
     db.query(queryCommand, (err, result) => {
         if (err) {
             res.send(err);
         } else {
+            const newID = `SELECT MAX(ID) as newid FROM USER;`
+            db.query(newID, (err, result) => {
+                if (err) {
+                    res.send(err);
+                }else {
+                    const userImgId = result[0].newid;
+                    const params = {
+                        Bucket: "ass3-android-bucket",
+                        Key: `user_${userImgId}.png`, // File name you want to save as in S3
+                        Body: buf,
+                        ContentEncoding: "base64",
+                        ContentType: "image/png",
+                    };
+                
+                    s3.upload(params, function (err, data) {
+                        if (err) {
+                            throw err;
+                        }
+                        console.log(`File uploaded successfully`);
+                    });
+                }
+            })
             res.send(result);
         }
     });

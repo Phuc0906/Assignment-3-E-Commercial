@@ -36,7 +36,7 @@ import java.util.List;
 public class OrderActivity extends AppCompatActivity{
 
     ImageButton toMapBtn;
-    TextView costText, placeView, subPrice;
+    TextView costText, placeView, subPrice, totalPrice;
     CheckBox creditCardBox, googlePayBox, shippingBox, pickUpBox;
     Button paymentBtn;
     RecyclerView paymentView;
@@ -47,8 +47,9 @@ public class OrderActivity extends AppCompatActivity{
     // declaration for billing
     public static Order userOder;
     private int receiveOption;
-    private int totalProductPrice;
+    private double totalProductPrice, shippingPrice;
     private int paymentOption;
+    private double totalBilling;
 
 
     @Override
@@ -71,10 +72,17 @@ public class OrderActivity extends AppCompatActivity{
         shippingBox.setChecked(true);
         pickUpBox = findViewById(R.id.pickUpCheckBox);
         orderBackButton = findViewById(R.id.orderBackBtn);
+        subPrice = findViewById(R.id.subPrice);
+        costText = findViewById(R.id.shipPrice);
+        placeView = findViewById(R.id.shippingAddress);
+        totalPrice = findViewById(R.id.totalPriceCost);
+        costText.setText("0 $");
+        totalProductPrice = 0.0;
+        shippingPrice = 0.0;
 
         paymentBtn = findViewById(R.id.paymentBtn);
 
-        receiveOption = 0; // receive option = 1: shipping, 0: pick up
+        receiveOption = 1; // receive option = 1: shipping, 0: pick up
         paymentOption = 0;
 
         paymentBtn.setOnClickListener(new View.OnClickListener() {
@@ -150,10 +158,7 @@ public class OrderActivity extends AppCompatActivity{
         paymentView.setAdapter(checkoutList);
 
 
-        subPrice = findViewById(R.id.subPrice);
-        costText = findViewById(R.id.shipPrice);
-        placeView = findViewById(R.id.shippingAddress);
-        costText.setText("0 $");
+
 
         toMapBtn = findViewById(R.id.toMapBtn);
         toMapBtn.setOnClickListener(new View.OnClickListener() {
@@ -178,14 +183,19 @@ public class OrderActivity extends AppCompatActivity{
     private void getProductArr() {
         Intent intent = getIntent();
         String[] arr = intent.getStringArrayExtra("product_in_cart");
+        totalBilling = 0.0;
         for (String s : arr) {
             if (s != null) {
                 String[] values = s.split(",");
+                totalBilling += Double.parseDouble(values[4]) * Integer.parseInt(values[5]);
                 sneakerList.add(new CheckoutSneaker(Integer.parseInt(values[0]), values[1],
                         values[2], values[3], Integer.parseInt(values[4]),
                         Integer.parseInt(values[5]), Double.parseDouble(values[6])));
             }
         }
+        subPrice.setText(totalBilling + " $");
+        totalProductPrice = totalBilling + shippingPrice;
+        totalPrice.setText(totalProductPrice + " $");
     }
 
     @Override
@@ -200,12 +210,14 @@ public class OrderActivity extends AppCompatActivity{
                 placeView.setText(place);
 
                 int distanceToDestination = Math.round(distance/1000);
-                int shippingCost = distanceToDestination;
+                shippingPrice = distanceToDestination;
                 if (distance / 1000 != 0) {
-                    costText.setText(shippingCost + " $");
+                    costText.setText(shippingPrice + " $");
                 }else {
                     costText.setText("0 $");
                 }
+                totalProductPrice = totalBilling + shippingPrice;
+                totalPrice.setText(totalProductPrice + " $");
 
 
             }

@@ -422,7 +422,7 @@ router.post('/billing', (req, res) => {
         }else {
             const resultRespone = result;
             const newId = result[0].newid;
-            const insertPurchase = `INSERT INTO PURCHASE(USERID, BUYID, TOTAL_PRICE, STATUS, PAYMENT, ADDRESS) VALUES (${reqBody.userid}, ${newId + 1}, ${reqBody.totalPrice}, ${reqBody.status}, ${reqBody.payment}, ${reqBody.address});`
+            const insertPurchase = `INSERT INTO PURCHASE(USERID, BUYID, TOTAL_PRICE, STATUS, PAYMENT, ADDRESS) VALUES (${reqBody.userid}, ${newId + 1}, ${reqBody.totalPrice}, ${reqBody.status}, ${reqBody.payment}, '${reqBody.address}');`
             db.query(insertPurchase, (errPur, resPur) => {
                 if (errPur) {
                     res.send(errPur);
@@ -434,17 +434,25 @@ router.post('/billing', (req, res) => {
                             res.send(buyErr);
                         }else {
                             const buyResult = buyRes;
-                            const deleteCart = `DELETE FROM IN_CART WHERE USERID = ${reqBody.userid}`;
+                            const deleteCart = `DELETE FROM IN_CART WHERE USERID = ${reqBody.userid};`;
                             db.query(deleteCart, (carErr, cartRes) => {
                                 if (carErr) {
                                     res.send(carErr);
                                 }else {
-                                    res.send({
-                                        resultRespone: resultRespone,
-                                        purResponse: purResponse,
-                                        buyResult: buyResult,
-                                        delCart: cartRes
+                                    const pointQuery = `UPDATE USER SET POINT = POINT + ${reqBody.totalPrice / 100} WHERE ID = ${reqBody.userid}`;
+                                    db.query(pointQuery, (pointErr, pointRes) => {
+                                        if (pointErr) {
+                                            res.send(pointErr);
+                                        }else {
+                                            res.send({
+                                                resultRespone: resultRespone,
+                                                purResponse: purResponse,
+                                                buyResult: buyResult,
+                                                delCart: cartRes
+                                            })
+                                        }
                                     })
+                                    
                                 }
                             })
                         }

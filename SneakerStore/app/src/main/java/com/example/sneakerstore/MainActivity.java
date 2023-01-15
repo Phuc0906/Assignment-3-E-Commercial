@@ -111,6 +111,40 @@ public class MainActivity extends AppCompatActivity {
 
         registerLayout.setY(2000);
 
+        registerConfirmPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                passwordAlert.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        registerPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                passwordAlert.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         userRegisterImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 registerLayout.animate().translationYBy(2000).setDuration(1000);
+                resetRegisterInput();
             }
         });
 
@@ -189,7 +224,6 @@ public class MainActivity extends AppCompatActivity {
         sharePref = this.getPreferences(Context.MODE_PRIVATE);
 
         int loginStatus = sharePref.getInt("session", 0); // if 0 => user is not in session, 1 => in session
-//        int loginStatus = 0;
         int role = sharePref.getInt("role", 0); // 0: user, 1: admin
 
         DownloadCategory downloadCategory = new DownloadCategory();
@@ -197,9 +231,6 @@ public class MainActivity extends AppCompatActivity {
         DownloadBrand downloadBrand = new DownloadBrand();
         downloadBrand.execute(ROOT_API + "/product/brand");
 
-        initialize();
-        setEvent();
-        System.out.println("LOgin stat: " + loginStatus);
         if (loginStatus == 0) {
             System.out.println("LO gin page");
             initialize();
@@ -268,6 +299,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void resetRegisterInput() {
+        registerConfirmPassword.setText("");
+        registerPassword.setText("");
+        registerAddress.setText("");
+        registerPhone.setText("");
+        registerEmail.setText("");
+        registerName.setText("");
     }
 
     public class DownloadBrand extends AsyncTask<String, Void, String> {
@@ -508,6 +548,7 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(s);
             if (Integer.parseInt(s) == 200) {
                 registerLayout.animate().translationYBy(2000).setDuration(1000);
+                resetRegisterInput();
             }
 
         }
