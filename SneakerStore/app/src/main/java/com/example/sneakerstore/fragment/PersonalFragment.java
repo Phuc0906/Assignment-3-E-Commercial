@@ -24,9 +24,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.sneakerstore.ContactActivity;
 import com.example.sneakerstore.HistoryActivity;
 import com.example.sneakerstore.MainActivity;
 import com.example.sneakerstore.OrderActivity;
+import com.example.sneakerstore.ProfileActivity;
 import com.example.sneakerstore.R;
 import com.example.sneakerstore.model.HttpHandler;
 import com.example.sneakerstore.model.User;
@@ -53,7 +55,6 @@ public class PersonalFragment extends Fragment {
     User user;
     ConstraintLayout con;
     ProgressBar progressBar;
-    ConstraintLayout logOutLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,7 +80,20 @@ public class PersonalFragment extends Fragment {
         progressBar.setVisibility(View.GONE);
         new HttpHandler.DownloadImageFromInternet(userImage).execute(MainActivity.ROOT_IMG + MainActivity.user.getImage());
 
-
+        logoutLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // alert dialog will be here
+                SharedPreferences sharePref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = MainActivity.sharePref.edit();
+                editor.putInt("session", 0);
+                editor.apply();
+                editor.commit();
+                Intent resultIntent = new Intent();
+                getActivity().setResult(Activity.RESULT_OK, resultIntent);
+                getActivity().finish();
+            }
+        });
 
         //set event
         historyLayout.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +106,23 @@ public class PersonalFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        contactLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), ContactActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        infoLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
         return view;
     }
 
@@ -107,26 +138,4 @@ public class PersonalFragment extends Fragment {
         }
     }
 
-
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        logOutLayout = view.findViewById(R.id.logout_layout);
-
-        logOutLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // alert dialog will be here
-                SharedPreferences sharePref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = MainActivity.sharePref.edit();
-                editor.putInt("session", 0);
-                editor.apply();
-                editor.commit();
-                Intent resultIntent = new Intent();
-                getActivity().setResult(Activity.RESULT_OK, resultIntent);
-                getActivity().finish();
-            }
-        });
-    }
 }
