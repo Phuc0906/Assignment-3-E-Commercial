@@ -13,8 +13,9 @@ public class User implements Serializable {
     private String password;
     private String Role;
     private String Email;
+    private String image;
 
-    public User(int id, String name, String address, String phone, String gender, String DOB, int point, String password, String role, String email) {
+    public User(int id, String name, String address, String phone, String gender, String DOB, int point, String password, String role, String email, String image) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -25,6 +26,15 @@ public class User implements Serializable {
         this.password = password;
         Role = role;
         Email = email;
+        this.image = image;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public int getId() {

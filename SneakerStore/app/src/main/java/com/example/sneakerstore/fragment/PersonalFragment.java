@@ -120,7 +120,8 @@ public class PersonalFragment extends Fragment {
                             obj.getInt("POINT"),
                             obj.getString("PASSWORD"),
                             obj.getString("ROLE"),
-                            obj.getString("EMAIL"));
+                            obj.getString("EMAIL"),
+                            obj.getString("PICTURE"));
 
                     userName.setText(user.getName());
                     userRank.setText(getRank(user.getPoint()));
