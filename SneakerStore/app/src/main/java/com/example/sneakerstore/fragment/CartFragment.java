@@ -86,7 +86,7 @@ public class CartFragment extends Fragment {
 
 
         DownloadCartProduct downloadCartProduct = new DownloadCartProduct();
-        downloadCartProduct.execute(MainActivity.ROOT_API + "/product/cart?userid=" + MainActivity.appUser.getUserId());
+        downloadCartProduct.execute(MainActivity.ROOT_API + "/product/cart?userid=" + "1");
 
         //set up seek bar listener
         cartSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -150,7 +150,7 @@ public class CartFragment extends Fragment {
                 try {
                     // when user move to order page => update the cart
                     itemData.put(cartItemList.get(i).getQuantity());
-                    itemData.put(MainActivity.appUser.getUserId());
+                    itemData.put(1);
                     itemData.put(cartItemList.get(i).getSneakerId());
                     itemData.put(cartItemList.get(i).getSize());
                 } catch (JSONException e) {

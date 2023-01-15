@@ -243,6 +243,24 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        initialize();
+        setEvent();
+        // get share preferences value
+        SharedPreferences sharePref = this.getPreferences(Context.MODE_PRIVATE);
+        int loginStatus = sharePref.getInt("session", 0); // if 0 => user is not in session, 1 => in session
+        int role = sharePref.getInt("role", 0); // 0: user, 1: admin
+
+        if (loginStatus == 0) {
+            initialize();
+            setEvent();
+        }else {
+            if (role == 0) {
+                startActivity(new Intent(MainActivity.this, HomePage.class));
+            }else {
+                startActivity(new Intent(MainActivity.this, AdminActivity.class));
+            }
+        }
+
     }
 
     private void initialize() {

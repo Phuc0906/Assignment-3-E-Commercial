@@ -114,9 +114,11 @@ public class ProductDetailActivity extends AppCompatActivity {
                     Intent intent = new Intent(ProductDetailActivity.this, OrderActivity.class);
 
                     intent.putExtra("product_in_cart", new String[] {new CartSneaker(Integer.parseInt(productID),
-                            resourceImage, brandName,
+                            resourceImage,
+                            brandName,
                             detailName.getText().toString().trim() ,1,
-                            Integer.parseInt(detailPrice.getText().toString().trim()), Double.parseDouble(sizeSelected)).toString()});
+                            Integer.parseInt(detailPrice.getText().toString().trim()),
+                            Double.parseDouble(sizeSelected)).toString()});
                     startActivity(intent);
                 } else {
                     Toast.makeText(ProductDetailActivity.this, "Please select size", Toast.LENGTH_SHORT).show();
