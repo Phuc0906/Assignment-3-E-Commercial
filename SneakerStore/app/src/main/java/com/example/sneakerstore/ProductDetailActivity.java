@@ -160,7 +160,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                     detailPrice.setText(object.getString("Price"));
                     resourceImage = object.getString("Picture");
                     brandName = object.getString("Brand");
-                    Glide.with(ProductDetailActivity.this).load(MainActivity.ROOT_IMG + resourceImage).into(detailImage);
+                    new HttpHandler.DownloadImageFromInternet(detailImage).execute(MainActivity.ROOT_IMG + resourceImage);
                     String[] sizeArr = object.getString("Quantity").split(",");
 
                     for (double i = 5; i < 10; i += 0.5) {
@@ -184,7 +184,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                HttpHandler.postToCart(MainActivity.ROOT_API + "/product/cart", "1", productID, sizeSelected, 1);
+                HttpHandler.postToCart(MainActivity.ROOT_API + "/product/cart", MainActivity.user.getId(), productID, sizeSelected, 1);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {

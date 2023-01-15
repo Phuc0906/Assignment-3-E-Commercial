@@ -96,7 +96,7 @@ public class HttpHandler {
         return status;
     }
 
-    public static void postToCart(String urlString, String uID, String pID, String size, int quantity) throws IOException, JSONException {
+    public static void postToCart(String urlString, int uID, String pID, String size, int quantity) throws IOException, JSONException {
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");

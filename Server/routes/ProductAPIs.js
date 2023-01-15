@@ -532,21 +532,7 @@ router.get('/billing/history', (req, res) => {
             res.send(err);
         }else {
             res.send(result);
-            var sendingObj = {};
-            var lastBuyId = -1;
-            var currentBuyId = 0;
-            var productArr = [];
-            // for (var i = 0; i < result.length; i++) {
-            //     if (i == 0) {
-            //         lastBuyId = result[i].BUYID;
-            //     }else {
-            //         if (result[i].BUYID != lastBuyId) {
-            //             // assign value
-            //         }
-            //     }
 
-                
-            // }
         }
     })
 })

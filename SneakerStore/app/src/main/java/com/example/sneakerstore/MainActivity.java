@@ -34,6 +34,7 @@ import com.example.sneakerstore.model.HttpHandler;
 import com.example.sneakerstore.model.User;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -66,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<String> categories;
     public static HashMap<String, Integer> categoriesHashMap;
 
-    public static User appUser;
+    public static User user;
+    private int systemUserid;
 
     public static final String ROOT_API = "https://mappingapi-372807.as.r.appspot.com";
     public static final String ROOT_IMG = "https://ass3-android-bucket.s3.ap-southeast-1.amazonaws.com/";
@@ -79,7 +81,9 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
 
-        appUser = new User(1);
+
+
+
         userImgBase64 = "";
         categoriesHashMap = new HashMap<>();
         categories = new ArrayList<>();
@@ -223,6 +227,8 @@ public class MainActivity extends AppCompatActivity {
         // get share preferences value
         sharePref = this.getPreferences(Context.MODE_PRIVATE);
 
+        // get current user
+
         int loginStatus = sharePref.getInt("session", 0); // if 0 => user is not in session, 1 => in session
         int role = sharePref.getInt("role", 0); // 0: user, 1: admin
 
@@ -232,28 +238,13 @@ public class MainActivity extends AppCompatActivity {
         downloadBrand.execute(ROOT_API + "/product/brand");
 
         if (loginStatus == 0) {
-            System.out.println("LO gin page");
             initialize();
             setEvent();
         }else {
-            if (role == 0) {
-                startActivity(new Intent(MainActivity.this, HomePage.class));
-            }else {
-                startActivity(new Intent(MainActivity.this, AdminActivity.class));
-            }
-        }
-
-        initialize();
-        setEvent();
-        // get share preferences value
-        SharedPreferences sharePref = this.getPreferences(Context.MODE_PRIVATE);
-        int loginStatus = sharePref.getInt("session", 0); // if 0 => user is not in session, 1 => in session
-        int role = sharePref.getInt("role", 0); // 0: user, 1: admin
-
-        if (loginStatus == 0) {
-            initialize();
-            setEvent();
-        }else {
+            // get user
+            systemUserid = sharePref.getInt("userid", 0);
+            System.out.println("User id: " + systemUserid);
+            new readJSON().execute();
             if (role == 0) {
                 startActivity(new Intent(MainActivity.this, HomePage.class));
             }else {
@@ -469,6 +460,9 @@ public class MainActivity extends AppCompatActivity {
                     SharedPreferences sharePref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharePref.edit();
                     editor.putInt("session", 1);
+                    editor.putInt("userid", userVerify.getInt("id"));
+                    systemUserid = userVerify.getInt("id");
+                    new readJSON().execute();
                     if (userVerify.getString("role").equals("USER")) {
                         startActivityForResult(new Intent(MainActivity.this, HomePage.class), 109);
                         editor.putInt("role", 0);
@@ -540,7 +534,7 @@ public class MainActivity extends AppCompatActivity {
 
                         object.put("img", userImgBase64);
                         RegisterUser registerUser = new RegisterUser();
-                        registerUser.execute(ROOT_API + "/user/infomation");
+                        registerUser.execute(ROOT_API + "/user/information");
                     }
                 }
 
@@ -611,5 +605,37 @@ public class MainActivity extends AppCompatActivity {
         byte[] b = baos.toByteArray();
         String encImage = Base64.encodeToString(b, Base64.DEFAULT);
         return encImage;
+    }
+
+    public class readJSON extends AsyncTask<Void, Void, String>{
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            return HttpHandler.getMethod(MainActivity.ROOT_API + "/user/information?id=" + systemUserid);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (s != null) {
+                try {
+                    JSONObject obj = new JSONObject(s);
+                    user = new User(obj.getInt("ID"),
+                            obj.getString("NAME"),
+                            obj.getString("ADDRESS"),
+                            obj.getString("PHONE_NUMBER"),
+                            obj.getString("GENDER"),
+                            obj.getString("DATE_OF_BIRTH"),
+                            obj.getInt("POINT"),
+                            obj.getString("PASSWORD"),
+                            obj.getString("ROLE"),
+                            obj.getString("EMAIL"),
+                            obj.getString("PICTURE"));
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

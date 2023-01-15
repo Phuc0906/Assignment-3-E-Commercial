@@ -88,7 +88,7 @@ public class OrderActivity extends AppCompatActivity{
         paymentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userOder = new Order(MainActivity.appUser.getUserId(), totalProductPrice + Integer.parseInt(costText.getText().toString().split(" ")[0]), receiveOption, (googlePayBox.isChecked()) ? 1 : 0, (shippingBox.isChecked()) ? placeView.getText().toString() : "");
+                userOder = new Order(MainActivity.user.getId(), totalProductPrice + Integer.parseInt(costText.getText().toString().split(" ")[0]), receiveOption, (googlePayBox.isChecked()) ? 1 : 0, (shippingBox.isChecked()) ? placeView.getText().toString() : "");
                 if (googlePayBox.isChecked()) {
                     Intent intent = new Intent(OrderActivity.this, OrderSuccessActivity.class);
                     startActivityForResult(intent, 30);
@@ -189,7 +189,7 @@ public class OrderActivity extends AppCompatActivity{
                 String[] values = s.split(",");
                 totalBilling += Double.parseDouble(values[4]) * Integer.parseInt(values[5]);
                 sneakerList.add(new CheckoutSneaker(Integer.parseInt(values[0]), values[1],
-                        values[2], values[3], Integer.parseInt(values[4]),
+                        values[2], values[3], Double.parseDouble(values[4]),
                         Integer.parseInt(values[5]), Double.parseDouble(values[6])));
             }
         }

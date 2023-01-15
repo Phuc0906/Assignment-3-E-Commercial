@@ -86,7 +86,7 @@ public class CartFragment extends Fragment {
 
 
         DownloadCartProduct downloadCartProduct = new DownloadCartProduct();
-        downloadCartProduct.execute(MainActivity.ROOT_API + "/product/cart?userid=" + "1");
+        downloadCartProduct.execute(MainActivity.ROOT_API + "/product/cart?userid=" + MainActivity.user.getId());
 
         //set up seek bar listener
         cartSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

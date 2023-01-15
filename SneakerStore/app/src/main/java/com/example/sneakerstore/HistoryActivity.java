@@ -60,7 +60,7 @@ public class HistoryActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... voids) {
-            return HttpHandler.getMethod(MainActivity.ROOT_API + "/product/billing/history?userid=1");
+            return HttpHandler.getMethod(MainActivity.ROOT_API + "/product/billing/history?userid=" + MainActivity.user.getId());
         }
 
         @Override

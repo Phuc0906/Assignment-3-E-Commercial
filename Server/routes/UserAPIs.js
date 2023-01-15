@@ -34,6 +34,7 @@ router.get("/login", async (req, res) => {
                 
                 res.send({
                     verify: 1,
+                    id: result[0].ID,
                     role: result[0].ROLE,
                 });
             } else {
@@ -68,7 +69,7 @@ router.get('/email', (req, res) => {
     })
 })
 
-router.get("/infomation", (req, res) => {
+router.get("/information", (req, res) => {
     const id = req.query.id;
     const queryCommand = `SELECT * FROM USER WHERE ID = '${id}'`;
     db.query(queryCommand, (err, result) => {
@@ -82,7 +83,7 @@ router.get("/infomation", (req, res) => {
     });
 });
 
-router.post("/infomation", (req, res) => {
+router.post("/information", (req, res) => {
     const reqBody = req.body;
     const queryCommand = `
     INSERT INTO USER(ID, NAME, ADDRESS, PHONE_NUMBER, GENDER, DATE_OF_BIRTH, POINT, PASSWORD, ROLE, EMAIL)
@@ -93,10 +94,6 @@ router.post("/infomation", (req, res) => {
         transferData.replace(/^data:image\/\w+;base64,/, ""),
         "base64"
     );
-
-    
-
-    
     
     db.query(queryCommand, (err, result) => {
         if (err) {
@@ -122,6 +119,13 @@ router.post("/infomation", (req, res) => {
                         }
                         console.log(`File uploaded successfully`);
                     });
+
+                    const updateCommand = `UPDATE USER SET PICTURE = 'user_${userImgId}.png' WHERE ID = ${userImgId}`;
+                    db.query(updateCommand, (upErr, upResult) => {
+                        if (err) {
+                            res.send(upErr);
+                        }
+                    })
                 }
             })
             res.send(result);

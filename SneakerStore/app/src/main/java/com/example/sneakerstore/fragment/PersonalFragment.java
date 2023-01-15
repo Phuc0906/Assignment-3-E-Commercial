@@ -71,11 +71,15 @@ public class PersonalFragment extends Fragment {
         logoutLayout = view.findViewById(R.id.logout_layout);
         con = view.findViewById(R.id.container);
         progressBar = view.findViewById(R.id.progressBar);
-        //testing userID
-        userID = "1";
 
-        //reading json
-        new readJSON().execute();
+        userName.setText(MainActivity.user.getName());
+        userRank.setText(getRank(MainActivity.user.getPoint()));
+        userPoint.setText(String.valueOf(MainActivity.user.getPoint()));
+        con.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+        new HttpHandler.DownloadImageFromInternet(userImage).execute(MainActivity.ROOT_IMG + MainActivity.user.getImage());
+
+
 
         //set event
         historyLayout.setOnClickListener(new View.OnClickListener() {
@@ -103,42 +107,7 @@ public class PersonalFragment extends Fragment {
         }
     }
 
-    public class readJSON extends AsyncTask<Void, Void, String>{
 
-        @Override
-        protected String doInBackground(Void... voids) {
-            return HttpHandler.getMethod(MainActivity.ROOT_API + "/user/infomation?id=" + userID);
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            if (s != null) {
-                try {
-                    JSONObject obj = new JSONObject(s);
-                    user = new User(obj.getInt("ID"),
-                            obj.getString("NAME"),
-                            obj.getString("ADDRESS"),
-                            obj.getString("PHONE_NUMBER"),
-                            obj.getString("GENDER"),
-                            obj.getString("DATE_OF_BIRTH"),
-                            obj.getInt("POINT"),
-                            obj.getString("PASSWORD"),
-                            obj.getString("ROLE"),
-                            obj.getString("EMAIL"),
-                            obj.getString("PICTURE"));
-
-                    userName.setText(user.getName());
-                    userRank.setText(getRank(user.getPoint()));
-                    userPoint.setText(String.valueOf(user.getPoint()));
-                    con.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
