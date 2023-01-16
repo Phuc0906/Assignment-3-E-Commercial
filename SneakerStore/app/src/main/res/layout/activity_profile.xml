@@ -7,9 +7,9 @@
     tools:context=".ProfileActivity">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/circleImageView"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:id="@+id/userProfileImageView"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:layout_marginTop="16dp"
         android:src="@drawable/banner2"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/circleImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/userProfileImageView" />
 
     <EditText
         android:id="@+id/profile_email"
@@ -44,28 +44,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_name" />
-
-    <Spinner
-        android:id="@+id/profile_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/profile_dob" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_name"
+        android:editable="false"/>
 
     <EditText
-        android:id="@+id/profile_dob"
+        android:id="@+id/profile_phone"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:ems="10"
-        android:hint="Date of birth"
-        android:inputType="textPersonName"
+        android:hint="Phone number"
+        android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/profile_spinner"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_email" />
 
     <EditText
@@ -80,10 +74,10 @@
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_dob" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_phone" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/profileCancelButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -94,7 +88,7 @@
         app:layout_constraintTop_toBottomOf="@+id/profile_address" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/profileSubmitButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"

@@ -63,6 +63,7 @@
             android:textSize="13sp"/>
 
         <LinearLayout
+            android:id="@+id/quantityBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/cartProductSize"
@@ -111,6 +112,17 @@
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="20dp"/>
+
+        <TextView
+            android:id="@+id/quantityAnnouncement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quantity announcement"
+            android:layout_below="@+id/quantityBox"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="5dp"
+            android:textColor="@color/red"
+            />
 
 
     </RelativeLayout>

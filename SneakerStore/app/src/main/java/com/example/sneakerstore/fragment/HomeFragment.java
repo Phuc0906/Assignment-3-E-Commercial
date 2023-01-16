@@ -115,7 +115,6 @@ public class HomeFragment extends Fragment {
         DownloadLatestProduct downloadLatestProduct = new DownloadLatestProduct();
         downloadLatestProduct.execute(MainActivity.ROOT_API + "/product/latest");
 
-
         List<Category> list = new ArrayList<>();
         list.add(new Category("Latest", sneakerList));
         adapter.setData(list);

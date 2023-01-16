@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.sneakerstore.HomePage;
@@ -117,18 +118,25 @@ public class CartFragment extends Fragment {
                 if (val < seekBar.getMax()) {
                     seekBar.setProgress(0);
                 } else {
+                    Handler handler = new Handler();
+
                     // load order page
                     String[] arr = new String[cartItemList.size()];
                     for (int i = 0; i < cartItemList.size(); i++) {
                         arr[i] = cartItemList.get(i).toString();
                     }
-                    Intent intent = new Intent(getContext(), OrderActivity.class);
 
-                    intent.putExtra("product_in_cart", arr);
-                    startActivityForResult(intent, 900);
-                    Handler handler = new Handler();
-                    UpdateCartData updateCartData = new UpdateCartData();
-                    updateCartData.execute(MainActivity.ROOT_API + "/product/cart");
+                    if (adapter.isAbleToOrder()) {
+                        Intent intent = new Intent(getContext(), OrderActivity.class);
+
+                        intent.putExtra("product_in_cart", arr);
+                        startActivityForResult(intent, 900);
+                    }
+
+
+
+
+
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -140,29 +148,7 @@ public class CartFragment extends Fragment {
         });
     }
 
-    public class UpdateCartData extends AsyncTask<String, Void, String> {
 
-        @Override
-        protected String doInBackground(String... urls) {
-            JSONArray jsonArray = new JSONArray();
-            for (int i = 0; i < cartItemList.size(); i++) {
-                JSONArray itemData = new JSONArray();
-                try {
-                    // when user move to order page => update the cart
-                    itemData.put(cartItemList.get(i).getQuantity());
-                    itemData.put(1);
-                    itemData.put(cartItemList.get(i).getSneakerId());
-                    itemData.put(cartItemList.get(i).getSize());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                jsonArray.put(itemData);
-            }
-
-            return HttpHandler.updateCart(urls[0], jsonArray);
-        }
-
-    }
 
     public class DownloadCartProduct extends AsyncTask<String, Void, String> {
 

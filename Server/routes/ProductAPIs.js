@@ -75,22 +75,13 @@ router.get("/search/category", (req, res) => {
 
 // search by name
 router.get("/search/name", (req, res) => {
-    const queryCommand = `SELECT * FROM PRODUCT`;
+    const nameSearch = req.query.searchname;
+    const queryCommand = `SELECT PR.ID, PR.NAME, PR.DESCRIPTION, PR.PRICE, PR.PICTURE, BR.NAME as brand, CATE.NAME as category FROM PRODUCT PR, BRAND BR, CATEGORY CATE WHERE BR.ID = PR.BRAND AND PR.CATEGORY = CATE.ID AND LOWER(PR.NAME) LIKE '%${nameSearch}%'`;
     db.query(queryCommand, (err, result) => {
         if (err) {
             res.send(err);
         } else {
-            var resArr = [];
-            for (let i = 0; i < result.length; i++) {
-                if (
-                    result[i].NAME.toLowerCase().includes(
-                        req.query.name.toLowerCase()
-                    )
-                ) {
-                    resArr.push(result[i]);
-                }
-            }
-            res.send(resArr);
+            res.send(result);
         }
     });
 });
@@ -396,6 +387,26 @@ router.delete("/cart", (req, res) => {
     });
 });
 
+router.get('/cart/check', (req, res) => {
+    const checkStockQuery = `SELECT * FROM STOCK WHERE PRODUCT_ID = ${req.query.productid} AND SIZE = ${req.query.size} AND QUANTITY < ${req.query.quantity}`
+    db.query(checkStockQuery, (stkErr, stkRes) => {
+        if (stkErr ) {
+            res.send(stkErr);
+        }else {
+            if (stkRes.length > 0) {
+                res.send({
+                    verify: 0,
+                    quantity: stkRes[0].QUANTITY
+                })
+            }else {
+                res.send({
+                    verify: 1
+                })
+            }
+        }
+    })
+})
+
 router.patch("/cart", (req, res) => {
     const bodyValues = req.body;
 
@@ -412,6 +423,28 @@ router.patch("/cart", (req, res) => {
         }
     });
 });
+
+
+router.get('/stock/update', (req, res) => {
+    const queryCommand = `SELECT * FROM BUY_HISTORY WHERE BUYID IN (SELECT MAX(BUYID) FROM BUY_HISTORY);`;
+    db.query(queryCommand, (err, result) => {
+        if (err) {
+            res.send(err);
+        }else {
+            var updateStock = ``;
+            for (var i = 0; i < result.length; i++) {
+                updateStock += `UPDATE STOCK SET QUANTITY = QUANTITY - ${result[i].QUANTITY} WHERE PRODUCT_ID = ${result[i].PRODUCT_ID} AND SIZE = ${result[i].SIZE};`
+            }
+            db.query(updateStock, (stockErr, stockResult) => {
+                if (stockErr) {
+                    res.send(stockErr);
+                }else {
+                    res.send(stockResult);
+                }
+            })
+        }
+    })
+})
 
 router.post('/billing', (req, res) => {
     const reqBody = req.body;
@@ -439,11 +472,13 @@ router.post('/billing', (req, res) => {
                                 if (carErr) {
                                     res.send(carErr);
                                 }else {
-                                    const pointQuery = `UPDATE USER SET POINT = POINT + ${reqBody.totalPrice / 100} WHERE ID = ${reqBody.userid}`;
+                                    const pointQuery = `UPDATE USER SET POINT = POINT + ${reqBody.totalPrice / 10} WHERE ID = ${reqBody.userid}`;
                                     db.query(pointQuery, (pointErr, pointRes) => {
                                         if (pointErr) {
                                             res.send(pointErr);
                                         }else {
+                                            var updateStock = ``
+
                                             res.send({
                                                 resultRespone: resultRespone,
                                                 purResponse: purResponse,

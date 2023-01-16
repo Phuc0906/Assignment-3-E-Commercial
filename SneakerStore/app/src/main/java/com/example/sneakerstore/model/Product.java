@@ -100,7 +100,7 @@ public class Product {
         @Override
         protected String doInBackground(Void... voids) {
             try {
-                return HttpHandler.postMethod(MainActivity.ROOT_API + "/product/wishlist?userid=1&productid=" + id, null);
+                return HttpHandler.postMethod(MainActivity.ROOT_API + "/product/wishlist?userid=" + MainActivity.user.getId() + "&productid=" + id, null);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -112,7 +112,7 @@ public class Product {
         @Override
         protected String doInBackground(Void... voids) {
             try {
-                return HttpHandler.deleteMethod(MainActivity.ROOT_API + "/product/wishlist?userid=1&productid=" + id, null);
+                return HttpHandler.deleteMethod(MainActivity.ROOT_API + "/product/wishlist?userid=" + MainActivity.user.getId() + "&productid=" + id, null);
             } catch (IOException e) {
                 e.printStackTrace();
             }

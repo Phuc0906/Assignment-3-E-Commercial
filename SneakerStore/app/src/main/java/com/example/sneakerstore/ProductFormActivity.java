@@ -403,6 +403,9 @@ public class ProductFormActivity extends AppCompatActivity {
             priceInput.setText("0.0");
             desInput.setText("");
 
+            if (intent.getIntExtra("status", 0) == 0) {
+                finish();
+            }
         }
     }
 

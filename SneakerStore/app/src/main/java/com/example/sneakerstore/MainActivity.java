@@ -237,11 +237,9 @@ public class MainActivity extends AppCompatActivity {
         DownloadBrand downloadBrand = new DownloadBrand();
         downloadBrand.execute(ROOT_API + "/product/brand");
 
-        if (loginStatus == 0) {
-            initialize();
-            setEvent();
-        }else {
-            // get user
+        initialize();
+        setEvent();
+        if (loginStatus != 0) {
             systemUserid = sharePref.getInt("userid", 0);
             System.out.println("User id: " + systemUserid);
             new readJSON().execute();
@@ -250,6 +248,7 @@ public class MainActivity extends AppCompatActivity {
             }else {
                 startActivity(new Intent(MainActivity.this, AdminActivity.class));
             }
+
         }
 
     }
@@ -573,13 +572,10 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 email.setText("");
                 password.setText("");
-                System.out.println("Kill activity-----------------------------------------------------------------------");
-                SharedPreferences sharePref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharePref.edit();
-                editor.remove("session");
-                editor.putInt("session", 0);
-                editor.apply();
-                editor.commit();
+                initialize();
+                setEvent();
+            }else if (resultCode == -2) {
+                finish();
             }
         }else if (requestCode == 1000) {
             if (resultCode == RESULT_OK) {

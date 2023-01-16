@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.sneakerstore.model.HttpHandler;
+
 import org.json.JSONObject;
 
 import java.io.DataOutputStream;
@@ -80,7 +82,23 @@ public class OrderSuccessActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-
+            MainActivity.user.reload();
+            new UpdateStock().execute(MainActivity.ROOT_API + "/product/stock/update");
         }
     }
+
+    public class UpdateStock extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            return HttpHandler.getMethod(urls[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+    }
+
+
 }

@@ -6,6 +6,7 @@ public class CartSneaker extends Sneaker implements Serializable{
     private int quantity;
     private double price;
     private double size;
+    private boolean isValidToPurchase;
 
     public CartSneaker(int sneakerId, String resourceImage, String brand, String name, int quantity, double price, double size) {
         super(sneakerId, resourceImage, brand, name);
@@ -34,5 +35,13 @@ public class CartSneaker extends Sneaker implements Serializable{
         return getSneakerId() + "," + getResourceImage() + ","
                 + getBrand() + "," + getName() + "," + this.price + ","
                 + this.quantity+ "," + this.size;
+    }
+
+    public void setValidToPurchase(boolean validToPurchase) {
+        isValidToPurchase = validToPurchase;
+    }
+
+    public boolean isValidToPurchase() {
+        return isValidToPurchase;
     }
 }

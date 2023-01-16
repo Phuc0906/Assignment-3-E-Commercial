@@ -84,11 +84,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductI
                     Intent intent = null;
                     if (role == 0) { // load product detail activity
                         intent = new Intent(context, ProductDetailActivity.class);
+                        intent.putExtra("product_id", Integer.toString(product.getId()));
                     }else { // load product form for admin
                         intent = new Intent(context, ProductFormActivity.class);
+                        intent.putExtra("product_id", product.getId());
                     }
                     System.out.println("PRODUCT ID: " + product.getId());
-                    intent.putExtra("product_id", Integer.toString(product.getId()));
+
 
                     context.startActivity(intent);
                 }

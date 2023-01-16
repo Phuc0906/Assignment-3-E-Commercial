@@ -1,5 +1,13 @@
 package com.example.sneakerstore.model;
 
+import android.os.AsyncTask;
+
+import com.example.sneakerstore.MainActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.io.Serializable;
 
 public class User implements Serializable {
@@ -14,6 +22,8 @@ public class User implements Serializable {
     private String Role;
     private String Email;
     private String image;
+    private JSONObject object;
+    private String pictureData;
 
     public User(int id, String name, String address, String phone, String gender, String DOB, int point, String password, String role, String email, String image) {
         this.id = id;
@@ -115,5 +125,57 @@ public class User implements Serializable {
 
     public void setEmail(String email) {
         Email = email;
+    }
+
+    public void updateUser(boolean isPictureChange) throws JSONException {
+        object = new JSONObject();
+        object.put("userid", id);
+        object.put("name", name);
+        object.put("address", address);
+        object.put("phone", phone);
+        if (isPictureChange) {
+            object.put("picture", pictureData);
+        }
+        new UpdateUserInformation().execute();
+    }
+
+    public void setPictureData(String pictureData) {
+        this.pictureData = pictureData;
+    }
+
+    public void reload() {
+        new ReloadUser().execute();
+    }
+
+    public class ReloadUser extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... voids) {
+            return HttpHandler.getMethod(MainActivity.ROOT_API + "/user/information?id=" + id);
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            JSONObject object = null;
+            try {
+                object = new JSONObject(s);
+                point = object.getInt("POINT");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public class UpdateUserInformation extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                return HttpHandler.patchMethod(MainActivity.ROOT_API + "/user/information", object);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return "";
+        }
     }
 }

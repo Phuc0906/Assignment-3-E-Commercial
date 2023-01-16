@@ -1,6 +1,7 @@
 package com.example.sneakerstore.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,6 +28,7 @@ import com.example.sneakerstore.model.HttpHandler;
 import com.example.sneakerstore.sneaker.CartSneaker;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -34,6 +36,15 @@ import java.util.List;
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
     private Context context;
     private List<CartSneaker> cartSneakerList;
+
+    public boolean isAbleToOrder() {
+        for (int i = 0; i < cartSneakerList.size(); i++) {
+            if (!cartSneakerList.get(i).isValidToPurchase()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public CartAdapter(Context context) {
         this.context = context;
@@ -57,8 +68,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
         CartSneaker cartSneaker = cartSneakerList.get(position);
 
         if (cartSneaker != null) {
-            System.out.println(cartSneaker.getResourceImage());
-
+            cartSneaker.setValidToPurchase(true);
             new HttpHandler.DownloadImageFromInternet(holder.itemImg).execute(MainActivity.ROOT_IMG + cartSneaker.getResourceImage());
             holder.brandText.setText(cartSneaker.getBrand());
 
@@ -73,6 +83,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
                     cartSneaker.setQuantity(cartSneaker.getQuantity() + 1);
                     int currentTotalPrice = Integer.parseInt(CartFragment.totalPrice.getText().toString().split(" ")[0]);
                     currentTotalPrice += cartSneaker.getPrice();
+
+                    holder.checkCart(cartSneaker);
                     notifyDataSetChanged();
                     CartFragment.totalPrice.setText(Integer.toString(currentTotalPrice) + " $");
 
@@ -86,6 +98,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
                         cartSneaker.setQuantity(cartSneaker.getQuantity() - 1);
                         int currentTotalPrice = Integer.parseInt(CartFragment.totalPrice.getText().toString().split(" ")[0]);
                         currentTotalPrice -= cartSneaker.getPrice();
+
+                        holder.checkCart(cartSneaker);
                         notifyDataSetChanged();
                         CartFragment.totalPrice.setText(Integer.toString(currentTotalPrice) + " $");
 
@@ -101,7 +115,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
                     notifyDataSetChanged();
 
                     DeleteProduct deleteProduct = new DeleteProduct();
-                    deleteProduct.execute(MainActivity.ROOT_API + "/product/cart?userid=" + "1" + "&productid=" + cartSneaker.getSneakerId() + "&size=" + cartSneaker.getSize());
+                    deleteProduct.execute(MainActivity.ROOT_API + "/product/cart?userid=" + "1" + "&productid=" + cartSneaker.getSneakerId() + "&size=" + cartSneaker.getSize() + "&quantity=" + cartSneaker.getQuantity());
                 }
             });
         }
@@ -122,6 +136,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
         private TextView quantityText;
         private ImageButton addButton, minusButton;
         private Button cartDeleteBtn;
+        private TextView announcement;
 
         public cartHolder(@NonNull View itemView) {
             super(itemView);
@@ -133,7 +148,49 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
             minusButton = itemView.findViewById(R.id.minusButton);
             sizeText = itemView.findViewById(R.id.cartProductSize);
             cartDeleteBtn = itemView.findViewById(R.id.cartItemDeleteBtn);
+            announcement = itemView.findViewById(R.id.quantityAnnouncement);
+            announcement.setVisibility(View.INVISIBLE);
+        }
 
+
+        public void checkCart(CartSneaker cartSneaker) {
+            CheckCart checkCart = new CheckCart(cartSneaker);
+            checkCart.execute(MainActivity.ROOT_API + "/product/cart/check?productid=" + cartSneaker.getSneakerId() + "&size=" + cartSneaker.getSize() + "&quantity=" + cartSneaker.getQuantity());
+        }
+
+        public class CheckCart extends AsyncTask<String, Void, String> {
+            CartSneaker cartSneaker;
+
+            public CheckCart(CartSneaker cartSneaker) {
+                this.cartSneaker = cartSneaker;
+            }
+
+            @Override
+            protected String doInBackground(String... urls) {
+
+                return HttpHandler.getMethod(urls[0]);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                System.out.println(s);
+                try {
+                    JSONObject object = new JSONObject(s);
+                    if (object.getInt("verify") == 0) {
+                        announcement.setText("Only " + object.getInt("quantity") + " items in stock");
+                        announcement.setVisibility(View.VISIBLE);
+                        this.cartSneaker.setValidToPurchase(false);
+                    }else {
+                        UpdateCartData updateCartData = new UpdateCartData();
+                        updateCartData.execute(MainActivity.ROOT_API + "/product/cart");
+                        announcement.setVisibility(View.INVISIBLE);
+                        cartSneaker.setValidToPurchase(true);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -156,4 +213,37 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
             }
         }
     }
+
+    public class UpdateCartData extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            System.out.println("Updating");
+            JSONArray jsonArray = new JSONArray();
+            for (int i = 0; i < cartSneakerList.size(); i++) {
+                JSONArray itemData = new JSONArray();
+                try {
+                    // when user move to order page => update the cart
+                    itemData.put(cartSneakerList.get(i).getQuantity());
+                    itemData.put(MainActivity.user.getId());
+                    itemData.put(cartSneakerList.get(i).getSneakerId());
+                    itemData.put(cartSneakerList.get(i).getSize());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                jsonArray.put(itemData);
+            }
+
+            return HttpHandler.updateCart(urls[0], jsonArray);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+
+        }
+    }
+
+
 }

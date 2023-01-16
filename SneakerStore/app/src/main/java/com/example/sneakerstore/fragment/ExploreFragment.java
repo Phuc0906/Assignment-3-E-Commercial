@@ -10,6 +10,8 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,7 @@ public class ExploreFragment extends Fragment {
     CircleIndicator3 indicator3;
     private static List<Product> productList = new ArrayList<>();
     ArrayList<Integer> wishlist;
+    private String apiURL;
 
 
     private Handler handler = new Handler(Looper.getMainLooper());
@@ -63,6 +66,7 @@ public class ExploreFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_explore, container, false);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        apiURL = MainActivity.ROOT_API + "/product/latest";
         new getWishlist().execute();
         // initialize
         itemListView = view.findViewById(R.id.productList);
@@ -82,6 +86,34 @@ public class ExploreFragment extends Fragment {
         viewPager2.setAdapter(bannerAdapter);
         indicator3.setViewPager(viewPager2);
 
+
+        searchView.addTextChangedListener(new TextWatcher() {
+            // Initializing delay for search bar
+            Handler handler = new Handler(Looper.getMainLooper() /*UI thread*/);
+            Runnable workRunnable;
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                handler.removeCallbacks(workRunnable);
+                workRunnable = () -> searchingProduct(editable.toString().trim().replaceAll("\\s+", "%"));
+                handler.postDelayed(workRunnable, 800 /*delay*/);
+            }
+
+            private void searchingProduct(String searchValue) {
+                apiURL = MainActivity.ROOT_API + "/product/search/name?searchname=" + searchValue;
+                new readJSON().execute();
+            }
+        });
 
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -106,7 +138,7 @@ public class ExploreFragment extends Fragment {
     public class getWishlist extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... voids) {
-            return HttpHandler.getMethod(MainActivity.ROOT_API + "/product/wishlist?userid=1"); // modify id here
+            return HttpHandler.getMethod(MainActivity.ROOT_API + "/product/wishlist?userid=" + MainActivity.user.getId()); // modify id here
         }
 
         @Override
@@ -132,7 +164,7 @@ public class ExploreFragment extends Fragment {
     public class readJSON extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... voids) {
-           return HttpHandler.getMethod(MainActivity.ROOT_API + "/product/latest");
+           return HttpHandler.getMethod(apiURL);
         }
 
         @Override
@@ -142,6 +174,7 @@ public class ExploreFragment extends Fragment {
                 try {
                     JSONArray jsonArray =new JSONArray(s);
                     System.out.println(jsonArray);
+                    productList.clear();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject object = jsonArray.getJSONObject(i);
                         int isWish = 0;

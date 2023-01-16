@@ -83,6 +83,46 @@ router.get("/information", (req, res) => {
     });
 });
 
+router.patch('/information', (req, res) => {
+    const reqBody = req.body;
+    var updateCommand = ``;
+    if (reqBody.picture == undefined) {
+        updateCommand = `UPDATE USER 
+        SET NAME = '${reqBody.name}', ADDRESS = '${reqBody.address}', PHONE_NUMBER = '${reqBody.phone}' WHERE ID = ${reqBody.userid}`;
+    }else {
+        const transferData = "data:image/png;base64," + reqBody.picture;
+        var buf = Buffer.from(
+            transferData.replace(/^data:image\/\w+;base64,/, ""),
+            "base64"
+        );
+        updateCommand = `UPDATE USER 
+        SET NAME = '${reqBody.name}', ADDRESS = '${reqBody.address}', PHONE_NUMBER = '${reqBody.phone}' , PICTURE = 'user_${reqBody.userid}.png' WHERE ID = ${reqBody.userid}`;
+        const params = {
+            Bucket: "ass3-android-bucket",
+            Key: `user_${reqBody.userid}.png`, // File name you want to save as in S3
+            Body: buf,
+            ContentEncoding: "base64",
+            ContentType: "image/png",
+        };
+    
+        s3.upload(params, function (err, data) {
+            if (err) {
+                throw err;
+            }
+            console.log(`File uploaded successfully`);
+        });
+    }
+
+    db.query(updateCommand, (err, result) => {
+        if (err) {
+            res.send(err);
+        }else {
+            
+            res.send(result);
+        }
+    })
+})
+
 router.post("/information", (req, res) => {
     const reqBody = req.body;
     const queryCommand = `
@@ -134,13 +174,12 @@ router.post("/information", (req, res) => {
 });
 
 router.patch("/password", (req, res) => {
-    const oldPass = req.query.oldPass;
     const newPass = req.query.newPass;
     const id = req.query.id;
 
     const queryCommand = `UPDATE USER 
                             SET PASSWORD = '${newPass}' 
-                            WHERE ID = ${id} &&  PASSWORD = '${oldPass}'`;
+                            WHERE ID = ${id}`;
     db.query(queryCommand, (err, result) => {
         if (err) {
             res.send(err);
