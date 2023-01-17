@@ -6,10 +6,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     Button cancelButton, registerButton;
     EditText registerName, registerAddress, registerPhone, registerEmail, registerPassword, registerConfirmPassword;
     TextView emailAlert, passwordAlert;
+    MyReceiver receiver;
     int val;
     ConstraintLayout registerLayout;
     JSONObject object;
@@ -82,8 +85,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-
-
         userImgBase64 = "";
         categoriesHashMap = new HashMap<>();
         categories = new ArrayList<>();
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         emailAlert = findViewById(R.id.emailAlert);
         passwordAlert = findViewById(R.id.passwordAlert);
         userRegisterImg = findViewById(R.id.user_register_img);
-
+        receiver = new MyReceiver();
 
         userRegisterImg.setImageResource(R.drawable.user_icon);
 
@@ -251,6 +252,18 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(receiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
     }
 
     private void initialize() {
