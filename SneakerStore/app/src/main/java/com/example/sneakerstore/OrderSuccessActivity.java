@@ -1,8 +1,13 @@
 package com.example.sneakerstore;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.app.Notification;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,6 +44,7 @@ public class OrderSuccessActivity extends AppCompatActivity {
 
         UpdateBilling updateBilling = new UpdateBilling();
         updateBilling.execute(MainActivity.ROOT_API + "/product/billing");
+
     }
 
     public class UpdateBilling extends AsyncTask<String, Void, String> {
@@ -86,6 +92,14 @@ public class OrderSuccessActivity extends AppCompatActivity {
             super.onPostExecute(s);
             MainActivity.user.reload();
             new UpdateStock().execute(MainActivity.ROOT_API + "/product/stock/update");
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_sneaker);
+            Notification notification = new NotificationCompat.Builder(OrderSuccessActivity.this, MyApplication.CHANEL_ID)
+                    .setSmallIcon(R.drawable.icon_success)
+                    .setContentTitle("Successful Order")
+                    .setContentText("Thank you for shopping at Sneaker Store we will prepare your order as soon as possible")
+                    .setLargeIcon(bitmap).build();
+            NotificationManagerCompat managerCompat = NotificationManagerCompat.from(OrderSuccessActivity.this);
+            managerCompat.notify(1, notification);
         }
     }
 
