@@ -39,14 +39,13 @@ public class ProductDetailActivity extends AppCompatActivity {
     ScrollView scrollView;
     ConstraintLayout constraintLayout;
     ProgressBar progressBar;
-    String productID;
+    String productID, detailCate, url, resourceImage, sizeSelected, brandName, what;
     TextView detailName, detailDes, detailPrice;
     ImageView detailImage;
     RecyclerView detailSize, suggestView;
     Button addBtn, buyBtn;
-    String url, resourceImage, sizeSelected, brandName;
     SizeAdapter sizeAdapter;
-    List<Sneaker> sneakerList;
+    List<Sneaker> sneakerList, sameBrandList, sameCategoryList;
     List<Category> categoryList;
     CategoryAdapter categoryAdapter;
 
@@ -70,6 +69,9 @@ public class ProductDetailActivity extends AppCompatActivity {
         categoryList = new ArrayList<Category>();
         sizeAdapter = new SizeAdapter(this);
         sneakerList = new ArrayList<>();
+        sameBrandList = new ArrayList<>();
+        sameCategoryList = new ArrayList<>();
+
         progressBar = findViewById(R.id.progressBar);
         categoryAdapter = new CategoryAdapter(this);
         scrollView = findViewById(R.id.scrollView3);
@@ -84,9 +86,14 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         // set up for suggest Recyclerview
         new DownloadLatestProduct().execute();
+        new DownloadSameAttribute().execute(MainActivity.ROOT_API + "/product/search/category?category=1", "category");
+        new DownloadSameAttribute().execute(MainActivity.ROOT_API + "/product/search/brand?brand=1", "brand");
+
         LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        categoryList.add(new Category("Relevant Product", sneakerList));
-        categoryList.add(new Category("Other Product", sneakerList));
+        categoryList.add(new Category("Latest", sneakerList));
+        categoryList.add(new Category("Same Category", sameCategoryList));
+        categoryList.add(new Category("Same Brand", sameBrandList));
+
         categoryAdapter.setData(categoryList);
         suggestView.setLayoutManager(linearLayoutManager1);
         suggestView.setAdapter(categoryAdapter);
@@ -158,6 +165,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                     detailName.setText(object.getString("Name"));
                     detailDes.setText(object.getString("Description"));
                     detailPrice.setText(object.getString("Price"));
+                    detailCate = object.getString("Category");
                     resourceImage = object.getString("Picture");
                     brandName = object.getString("Brand");
                     new HttpHandler.DownloadImageFromInternet(detailImage).execute(MainActivity.ROOT_IMG + resourceImage);
@@ -207,13 +215,50 @@ public class ProductDetailActivity extends AppCompatActivity {
                 JSONArray jsonArray = new JSONArray(s);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject object = jsonArray.getJSONObject(i);
-                    sneakerList.add(new Sneaker(object.getInt("ID"),
+                    sneakerList.add(0, new Sneaker(object.getInt("ID"),
                             MainActivity.ROOT_IMG + object.getString("PICTURE"),
                             object.getString("brand"),
                             object.getString("NAME")));
                 }
                 categoryAdapter.notifyDataSetChanged();
 
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    public class DownloadSameAttribute extends AsyncTask<String, Void, String> {
+
+
+        @Override
+        protected String doInBackground(String... strings) {
+            what = strings[1];
+            return HttpHandler.getMethod(strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONArray jsonArray = new JSONArray(s);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject object = jsonArray.getJSONObject(i);
+                    if (what.equals("brand")) {
+                        sameBrandList.add(new Sneaker(object.getInt("ID"),
+                                MainActivity.ROOT_IMG + object.getString("PICTURE"),
+                                object.getString("brand"),
+                                object.getString("NAME")));
+                    } else {
+                        sameCategoryList.add(new Sneaker(object.getInt("ID"),
+                                MainActivity.ROOT_IMG + object.getString("PICTURE"),
+                                object.getString("brand"),
+                                object.getString("NAME")));
+                    }
+                }
+                categoryAdapter.notifyDataSetChanged();
 
             } catch (JSONException e) {
                 e.printStackTrace();

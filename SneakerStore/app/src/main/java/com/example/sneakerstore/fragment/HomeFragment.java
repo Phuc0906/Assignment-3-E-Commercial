@@ -13,7 +13,6 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,10 +34,6 @@ import com.github.ybq.android.spinkit.style.CubeGrid;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +47,7 @@ public class HomeFragment extends Fragment {
     ImageView img;
     Handler handler = new Handler(Looper.getMainLooper());
     final int startPosition = 1;
-    List<Sneaker> sneakerList;
+    List<Sneaker> latestSneakers, runningSneakers, footballSneakers, tennisSneakers, basketballSneaker, trainingSneaker;
     Runnable lRunnable = new Runnable() {
         @Override
         public void run() {
@@ -90,7 +85,12 @@ public class HomeFragment extends Fragment {
         viewPager2.setClipToPadding(false);
         viewPager2.setClipChildren(false);
 
-        sneakerList = new ArrayList<>();
+        latestSneakers = new ArrayList<>();
+        runningSneakers = new ArrayList<>();
+        footballSneakers = new ArrayList<>();
+        trainingSneaker = new ArrayList<>();
+        basketballSneaker = new ArrayList<>();
+        tennisSneakers = new ArrayList<>();
 
         CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
         viewPager2.setPageTransformer(compositePageTransformer);
@@ -114,9 +114,20 @@ public class HomeFragment extends Fragment {
 
         DownloadLatestProduct downloadLatestProduct = new DownloadLatestProduct();
         downloadLatestProduct.execute(MainActivity.ROOT_API + "/product/latest");
+        new DownloadByCategory().execute(MainActivity.ROOT_API + "/product/search/category?category=1");
+        new DownloadByCategory().execute(MainActivity.ROOT_API + "/product/search/category?category=2");
+        new DownloadByCategory().execute(MainActivity.ROOT_API + "/product/search/category?category=3");
+        new DownloadByCategory().execute(MainActivity.ROOT_API + "/product/search/category?category=4");
+        new DownloadByCategory().execute(MainActivity.ROOT_API + "/product/search/category?category=5");
+
 
         List<Category> list = new ArrayList<>();
-        list.add(new Category("Latest", sneakerList));
+        list.add(new Category("Latest", latestSneakers));
+        list.add(new Category("Running", runningSneakers));
+        list.add(new Category("Football", footballSneakers));
+        list.add(new Category("Training", trainingSneaker));
+        list.add(new Category("Tennis", tennisSneakers));
+        list.add(new Category("Basketball", basketballSneaker));
         adapter.setData(list);
         adapter.notifyDataSetChanged();
         rcList.setAdapter(adapter);
@@ -171,12 +182,12 @@ public class HomeFragment extends Fragment {
             super.onPostExecute(s);
             try {
                 System.out.println(s);
-                sneakerList.clear();
+                latestSneakers.clear();
                 JSONArray jsonArr = new JSONArray(s);
                 System.out.println(jsonArr);
                 for (int i = 0; i < jsonArr.length(); i++) {
                     JSONObject sneakerObj = jsonArr.getJSONObject(i);
-                    sneakerList.add(new Sneaker(sneakerObj.getInt("ID") ,MainActivity.ROOT_IMG + sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
+                    latestSneakers.add(0, new Sneaker(sneakerObj.getInt("ID") ,MainActivity.ROOT_IMG + sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
                 }
                 adapter.notifyDataSetChanged();
 
@@ -186,6 +197,46 @@ public class HomeFragment extends Fragment {
                 viewPager2.setVisibility(View.VISIBLE);
                 rcList.setVisibility(View.VISIBLE);
                 } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public class DownloadByCategory extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            return HttpHandler.getMethod(urls[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                System.out.println(s);
+                JSONArray jsonArr = new JSONArray(s);
+                for (int i = 0; i < jsonArr.length(); i++) {
+                    JSONObject sneakerObj = jsonArr.getJSONObject(i);
+                    if (sneakerObj.getString("category").equals("Running")) {
+                        runningSneakers.add(new Sneaker(sneakerObj.getInt("ID") ,MainActivity.ROOT_IMG + sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
+                    } else if (sneakerObj.getString("category").equals("Football")) {
+                        footballSneakers.add(new Sneaker(sneakerObj.getInt("ID") ,MainActivity.ROOT_IMG + sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
+                    } else if (sneakerObj.getString("category").equals("Training")) {
+                        trainingSneaker.add(new Sneaker(sneakerObj.getInt("ID") ,MainActivity.ROOT_IMG + sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
+                    } else if (sneakerObj.getString("category").equals("Tennis")) {
+                        tennisSneakers.add(new Sneaker(sneakerObj.getInt("ID") ,MainActivity.ROOT_IMG + sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
+                    } else if (sneakerObj.getString("category").equals("Basketball")) {
+                        basketballSneaker.add(new Sneaker(sneakerObj.getInt("ID") ,MainActivity.ROOT_IMG + sneakerObj.getString("PICTURE"), sneakerObj.getString("brand"), sneakerObj.getString("NAME")));
+                    }
+                }
+                adapter.notifyDataSetChanged();
+
+                progressBar.setVisibility(View.GONE);
+                searchView.setVisibility(View.VISIBLE);
+                img.setVisibility(View.VISIBLE);
+                viewPager2.setVisibility(View.VISIBLE);
+                rcList.setVisibility(View.VISIBLE);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

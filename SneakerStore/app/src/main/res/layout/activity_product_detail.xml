@@ -23,6 +23,7 @@
             android:paddingHorizontal="8dp">
 
             <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginTop="5dp"
                 android:layout_below="@+id/detail_size_list"
                 android:id="@+id/recyclerList"
                 android:layout_width="match_parent"

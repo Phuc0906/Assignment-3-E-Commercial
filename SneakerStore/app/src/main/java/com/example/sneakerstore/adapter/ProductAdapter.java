@@ -1,5 +1,6 @@
 package com.example.sneakerstore.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -59,6 +60,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductI
     }
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ProductAdapter.ProductItemHolder holder, int position) {
         Product product = list.get(position);
@@ -70,7 +72,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductI
             holder.brandName.setText(product.getBrand());
             holder.shoesName.setText(product.getName());
             new HttpHandler.DownloadImageFromInternet(holder.imageView).execute(product.getPicture());
-            holder.shoesPrice.setText(Double.toString(product.getPrice()) + " $");
+            holder.shoesPrice.setText(String.valueOf(Math.round(product.getPrice())) + " $");
 
             if (product.getIsWish() == 1) {
                 holder.wishlistHeart.setImageResource(R.drawable.black_heart);
