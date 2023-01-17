@@ -15,9 +15,9 @@ public class MyReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
             if (isNetWorkAvailable(context)) {
-                Toast.makeText(context, "Connected", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Network is connected", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(context, "Connected is not available!", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Network is changed or reconnected", Toast.LENGTH_LONG).show();
             }
         }
     }
