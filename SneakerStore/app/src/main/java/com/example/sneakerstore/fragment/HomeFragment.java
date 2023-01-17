@@ -84,7 +84,7 @@ public class HomeFragment extends Fragment {
         rcList = view.findViewById(R.id.recyclerList);
         adapter = new CategoryAdapter(getContext());
         viewPager2 = view.findViewById(R.id.viewPager2);
-        logoAdapter = new LogoAdapter(getLogoList());
+        logoAdapter = new LogoAdapter(getLogoList(), getContext());
 
         viewPager2.setOffscreenPageLimit(3);
         viewPager2.setClipToPadding(false);
@@ -125,14 +125,14 @@ public class HomeFragment extends Fragment {
 
     private List<Logo> getLogoList() {
         List<Logo> photoList = new ArrayList<>();
-        photoList.add(new Logo(R.drawable.adidas_logo));
-        photoList.add(new Logo(R.drawable.nike_logo));
-        photoList.add(new Logo(R.drawable.asics_logo));
-        photoList.add(new Logo(R.drawable.puma_logo));
-        photoList.add(new Logo(R.drawable.adidas_logo));
-        photoList.add(new Logo(R.drawable.nike_logo));
-        photoList.add(new Logo(R.drawable.asics_logo));
-        photoList.add(new Logo(R.drawable.puma_logo));
+        photoList.add(new Logo(R.drawable.adidas_logo, "Adidas"));
+        photoList.add(new Logo(R.drawable.nike_logo, "Nike"));
+        photoList.add(new Logo(R.drawable.underarmour, "Under Armour"));
+        photoList.add(new Logo(R.drawable.puma_logo, "Puma"));
+        photoList.add(new Logo(R.drawable.adidas_logo, "Adidas"));
+        photoList.add(new Logo(R.drawable.nike_logo, "Nike"));
+        photoList.add(new Logo(R.drawable.underarmour, "Under Armour"));
+        photoList.add(new Logo(R.drawable.puma_logo, "Puma"));
         return photoList;
     }
 

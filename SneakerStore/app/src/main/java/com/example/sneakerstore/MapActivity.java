@@ -45,14 +45,14 @@ import java.util.Locale;
 public class MapActivity extends AppCompatActivity {
 
     GoogleMap googleMap;
-    ImageButton searchBtn;
     Button enterBtn;
     ListView locationList;
 
 
-
-    double shopLatitude;
-    double shopLongitude;
+    private double rmitLatitude = 10.729413599999999;
+    private double rmitLongtitude = 106.6927826;
+    double userLatitude;
+    double userLongitude;
 
     SupportMapFragment supportMapFragment;
     FusedLocationProviderClient client;
@@ -79,6 +79,7 @@ public class MapActivity extends AppCompatActivity {
                 System.out.println("COOR: " + placeName);
 
                 Toast.makeText(this, placeName, Toast.LENGTH_LONG);
+                searchPosition();
             }else if (requestCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
                 System.out.println("IN ERROR");
@@ -102,8 +103,10 @@ public class MapActivity extends AppCompatActivity {
 
         locationInfo = findViewById(R.id.locationInfo);
         locationCoordinator = new LatLng(0, 0);
+        userLatitude = locationCoordinator.latitude;
+        userLongitude = locationCoordinator.longitude;
 
-        searchBtn = findViewById(R.id.searchBtn);
+
         enterBtn = findViewById(R.id.enterButton);
         addressDistance = 0;
         placeName = "";
@@ -120,7 +123,7 @@ public class MapActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(MapActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
         }
 
-        Places.initialize(getApplicationContext(), "AIzaSyACyCwpxpzeZqDNnNuao0PTZdcSHSxfNXI");
+        Places.initialize(getApplicationContext(), "");
 
         locationInfo.setFocusable(false);
 
@@ -141,37 +144,6 @@ public class MapActivity extends AppCompatActivity {
 
 
 
-        searchBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String insertedPlaced = locationInfo.getText().toString();
-                if (insertedPlaced == null) {
-                    Toast.makeText(MapActivity.this, "You need to enter your place", Toast.LENGTH_LONG);
-                }else {
-                    Geocoder geocoder = new Geocoder(MapActivity.this, Locale.getDefault());
-                    List<Address> addresses = null;
-                    try {
-                        addresses = geocoder.getFromLocation(locationCoordinator.latitude, locationCoordinator.longitude, 1);
-                        if (addresses.size() > 0) {
-                            float results[] = new float[10];
-                            Location.distanceBetween(shopLatitude, shopLongitude, addresses.get(0).getLatitude(), addresses.get(0).getLongitude(), results);
-                            System.out.println("Distance: " + results[0] + " m");
-                            LatLng searchlg = new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude());
-                            pointToPos(searchlg);
-
-                            placeName = addresses.get(0).getAddressLine(0);
-                            addressDistance = results[0];
-
-
-
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-        });
 
         enterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,6 +163,33 @@ public class MapActivity extends AppCompatActivity {
 
 
 
+    }
+
+    private void searchPosition() {
+        String insertedPlaced = locationInfo.getText().toString();
+        if (insertedPlaced == null) {
+            Toast.makeText(MapActivity.this, "You need to enter your place", Toast.LENGTH_LONG);
+        }else {
+            Geocoder geocoder = new Geocoder(MapActivity.this, Locale.getDefault());
+            List<Address> addresses = null;
+            try {
+                addresses = geocoder.getFromLocation(locationCoordinator.latitude, locationCoordinator.longitude, 1);
+                if (addresses.size() > 0) {
+                    float results[] = new float[10];
+                    Location.distanceBetween(rmitLatitude, rmitLongtitude, userLatitude,userLongitude, results);
+                    System.out.println("Distance: " + results[0] + " m");
+                    LatLng searchlg = new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude());
+                    pointToPos(searchlg);
+                    System.out.println("LAT: " + addresses.get(0).getLatitude() + " - LONG: " + addresses.get(0).getLongitude());
+                    placeName = addresses.get(0).getAddressLine(0);
+                    addressDistance = results[0];
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
     private void pointToPos(LatLng latLng) {
@@ -224,8 +223,11 @@ public class MapActivity extends AppCompatActivity {
                     supportMapFragment.getMapAsync(new OnMapReadyCallback() {
                         @Override
                         public void onMapReady(@NonNull GoogleMap googleMap) {
-                            shopLatitude = location.getLatitude();
-                            shopLongitude = location.getLongitude();
+                            userLatitude= location.getLatitude();
+                            userLongitude = location.getLongitude();
+                            float results[] = new float[10];
+                            Location.distanceBetween(rmitLatitude, rmitLongtitude, userLatitude,userLongitude, results);
+                            addressDistance = results[0];
                             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                             MarkerOptions options = new MarkerOptions().position(latLng).title("I am there");
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 30));

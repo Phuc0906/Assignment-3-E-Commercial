@@ -163,18 +163,17 @@
                     android:id="@+id/pickUpAtStoreText"
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/shippingAddress"
                     android:layout_marginLeft="11dp"
                     android:layout_marginBottom="12dp"
-                    android:layout_below="@+id/shippingAddress"
-                    app:layout_constraintStart_toEndOf="@+id/pickUpCheckBox"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     android:padding="5dp"
-                    app:layout_goneMarginBottom="10dp"
                     android:text="Pick Up at store"
-                    android:layout_marginTop="20dp"
                     android:textColor="#484A4B"
+                    android:textSize="12sp"
 
-                    android:textSize="12sp" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/pickUpCheckBox"
+                    app:layout_goneMarginBottom="10dp" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

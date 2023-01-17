@@ -115,7 +115,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
                     notifyDataSetChanged();
 
                     DeleteProduct deleteProduct = new DeleteProduct();
-                    deleteProduct.execute(MainActivity.ROOT_API + "/product/cart?userid=" + "1" + "&productid=" + cartSneaker.getSneakerId() + "&size=" + cartSneaker.getSize() + "&quantity=" + cartSneaker.getQuantity());
+                    deleteProduct.execute(MainActivity.ROOT_API + "/product/cart?userid=" + MainActivity.user.getId() + "&productid=" + cartSneaker.getSneakerId() + "&size=" + cartSneaker.getSize() + "&quantity=" + cartSneaker.getQuantity());
                 }
             });
         }
