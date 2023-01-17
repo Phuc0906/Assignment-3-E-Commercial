@@ -6,13 +6,13 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/logo_image"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="12dp"
         android:scaleType="centerCrop"
         android:src="@drawable/asics_logo"
-        app:civ_circle_background_color="#E1E1E1"
-        android:layout_centerHorizontal="true"/>
+        app:civ_circle_background_color="#E1E1E1" />
 
 </RelativeLayout>

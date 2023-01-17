@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.sneakerstore.adapter.ProductAdapter;
+import com.example.sneakerstore.fragment.ExploreFragment;
 import com.example.sneakerstore.model.HttpHandler;
 import com.example.sneakerstore.model.Product;
 
@@ -29,6 +30,7 @@ public class ProductListActivity extends AppCompatActivity {
     ImageButton backBtn, loadButton;
     private static List<Product> productList = new ArrayList<>();
     private String APIEndPoint;
+    private ArrayList<Integer> wishlist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,17 +42,21 @@ public class ProductListActivity extends AppCompatActivity {
         categoryView = findViewById(R.id.categoryLayoutView);
         backBtn = findViewById(R.id.productListBackBtn);
         loadButton = findViewById(R.id.reloadButton);
+        wishlist = new ArrayList<>();
 
         Intent intent = getIntent();
+        int role = intent.getIntExtra("role", 0);
         if (intent.getIntExtra("id", 0) == 0) {
             APIEndPoint = "/latest";
+        }else if (intent.getIntExtra("id", 0) == -1) {
+            APIEndPoint = "/search/brand?brand=" + intent.getIntExtra("brand", 1);
         }else {
             APIEndPoint = "/search/category?category=" + intent.getIntExtra("id", 1);
         }
 
         categoryView.setText(intent.getStringExtra("cat"));
 
-        adapter = new ProductAdapter(this, 1);
+        adapter = new ProductAdapter(this, role);
         adapter.setData(productList);
         productListView.setLayoutManager(gridLayoutManager);
         productListView.setAdapter(adapter);
@@ -70,7 +76,37 @@ public class ProductListActivity extends AppCompatActivity {
             }
         });
 
-        new readJSON().execute();
+        if (role == 1) {
+            new readJSON().execute();
+        }else {
+            new getWishlist().execute();
+        }
+    }
+
+    public class getWishlist extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... voids) {
+            return HttpHandler.getMethod(MainActivity.ROOT_API + "/product/wishlist?userid=" + MainActivity.user.getId()); // modify id here
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (s != null) {
+                try {
+                    JSONArray jsonArray = new JSONArray(s);
+                    wishlist.clear();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        wishlist.add(object.getInt("PRODUCT_ID"));
+                    }
+
+                    new readJSON().execute();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 
@@ -90,13 +126,21 @@ public class ProductListActivity extends AppCompatActivity {
                     productList.clear();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject object = jsonArray.getJSONObject(i);
+                        int isWish = 0;
+                        for (int j = 0; j < wishlist.size(); j++) {
+                            if (object.getInt("ID") == wishlist.get(j)) {
+                                isWish = 1;
+                                break;
+                            }
+                        }
+
                         productList.add(new Product(object.getInt("ID"),
                                 object.getString("NAME"),
                                 object.getString("DESCRIPTION"),
                                 object.getDouble("PRICE"),
                                 object.getString("category"),
                                 object.getString("brand"),
-                                object.getString("PICTURE"), 0));
+                                object.getString("PICTURE"), isWish));
                     }
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {

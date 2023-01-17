@@ -89,7 +89,7 @@ router.get("/search/name", (req, res) => {
 // search by brand
 router.get("/search/brand", (req, res) => {
     const queryCommand =
-        `SELECT * FROM PRODUCT WHERE BRAND = ` + req.query.brand;
+        `SELECT PR.ID, PR.NAME, PR.DESCRIPTION, PR.PRICE, PR.PICTURE, BR.NAME as brand, CATE.NAME as category FROM PRODUCT PR, BRAND BR, CATEGORY CATE WHERE BR.ID = PR.BRAND AND PR.CATEGORY = CATE.ID AND PR.BRAND = ${req.query.brand}`;
     db.query(queryCommand, (err, result) => {
         if (err) {
             res.send(err);
