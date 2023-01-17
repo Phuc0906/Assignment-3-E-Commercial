@@ -1,6 +1,7 @@
 package com.example.sneakerstore.fragment;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,15 +45,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CartFragment extends Fragment {
-    RecyclerView cartRc;
+    public static TextView totalPrice;
+    public static ImageView cartEmpty;
+    private int val;
+    public static TextView cartEmptyText;
+    public static RelativeLayout trackingContainer;
+    public static RecyclerView cartRc;
     CartAdapter adapter;
     List<CartSneaker> cartItemList;
-    public static TextView totalPrice;
-
     SeekBar cartSeekbar;
     TextView cartSlideText;
     ImageView cartArrow;
-    private int val;
 
 
     @Override
@@ -65,6 +69,9 @@ public class CartFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         cartRc = view.findViewById(R.id.cartList);
+        cartEmpty = view.findViewById(R.id.cart_empty_image);
+        cartEmptyText = view.findViewById(R.id.cart_emptyText);
+        trackingContainer = view.findViewById(R.id.relative_tracking);
         adapter = new CartAdapter(getContext());
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -133,10 +140,6 @@ public class CartFragment extends Fragment {
                         startActivityForResult(intent, 900);
                     }
 
-
-
-
-
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -165,13 +168,21 @@ public class CartFragment extends Fragment {
                 int totalProductPrice = 0;
                 JSONArray productArr = new JSONArray(s);
                 // update user's cart
-                for (int i = 0; i < productArr.length(); i++) {
-                    JSONObject object = productArr.getJSONObject(i);
-                    cartItemList.add(new CartSneaker(object.getInt("PRODUCT_ID"), object.getString("PICTURE"), object.getString("BRAND"), object.getString("PRODUCT_NAME"), object.getInt("QUANTITY"), object.getInt("PRICE"), object.getDouble("SIZE")));
-                    totalProductPrice += object.getInt("QUANTITY") * object.getInt("PRICE");
+                if (productArr.length() > 0) {
+                    cartRc.setVisibility(View.VISIBLE);
+                    cartEmptyText.setVisibility(View.GONE);
+                    cartEmpty.setVisibility(View.GONE);
+                    trackingContainer.setVisibility(View.VISIBLE);
+
+                    for (int i = 0; i < productArr.length(); i++) {
+                        JSONObject object = productArr.getJSONObject(i);
+                        cartItemList.add(new CartSneaker(object.getInt("PRODUCT_ID"), object.getString("PICTURE"), object.getString("BRAND"), object.getString("PRODUCT_NAME"), object.getInt("QUANTITY"), object.getInt("PRICE"), object.getDouble("SIZE")));
+                        totalProductPrice += object.getInt("QUANTITY") * object.getInt("PRICE");
+                    }
+                    totalPrice.setText(Integer.toString(totalProductPrice) + " $");
+                    adapter.notifyDataSetChanged();
                 }
-                totalPrice.setText(Integer.toString(totalProductPrice) + " $");
-                adapter.notifyDataSetChanged();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

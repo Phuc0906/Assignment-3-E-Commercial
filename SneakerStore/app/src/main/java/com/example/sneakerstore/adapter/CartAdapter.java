@@ -111,6 +111,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
             holder.cartDeleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    CartSneaker c = cartSneakerList.get(position);
+                    int currentPrice = Integer.parseInt(CartFragment.totalPrice.getText().toString().split(" ")[0]);
+                    currentPrice -= (c.getPrice() * c.getQuantity());
+                    CartFragment.totalPrice.setText(String.valueOf(currentPrice));
+
                     cartSneakerList.remove(position);
                     notifyDataSetChanged();
 
@@ -205,9 +210,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.cartHolder> {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-
             try {
+                if (cartSneakerList.size() == 0) {
+                    CartFragment.cartRc.setVisibility(View.GONE);
+                    CartFragment.cartEmptyText.setVisibility(View.VISIBLE);
+                    CartFragment.cartEmpty.setVisibility(View.VISIBLE);
+                    CartFragment.trackingContainer.setVisibility(View.GONE);
 
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
