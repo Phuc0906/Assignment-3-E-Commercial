@@ -56,15 +56,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/searchBtn"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:background="@null"
-        android:paddingLeft="5dp"
-        app:layout_constraintBottom_toTopOf="@+id/resultPreview"
-        app:layout_constraintStart_toStartOf="@+id/locationInfo"
-        app:layout_constraintTop_toTopOf="@+id/locationInfo"
-        app:srcCompat="@drawable/search_icon" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
