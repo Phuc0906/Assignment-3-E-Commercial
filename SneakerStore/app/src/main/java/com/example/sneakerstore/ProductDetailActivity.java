@@ -170,9 +170,8 @@ public class ProductDetailActivity extends AppCompatActivity {
                     brandName = object.getString("Brand");
                     new HttpHandler.DownloadImageFromInternet(detailImage).execute(MainActivity.ROOT_IMG + resourceImage);
                     String[] sizeArr = object.getString("Quantity").split(",");
-
                     for (double i = 5; i < 10; i += 0.5) {
-                        int index = (int) (i - 5) * 2;
+                        int index = (int) (i - 5 > 0 ? (i - 5) * 2 : (i - 5));
                         if (Integer.parseInt(sizeArr[index]) > 0) {
                             sizeList.add(new SneakerSize(String.valueOf(i), false));
                         }
