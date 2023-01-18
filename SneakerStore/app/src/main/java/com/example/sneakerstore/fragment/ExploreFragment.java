@@ -35,6 +35,10 @@ import java.util.List;
 import me.relex.circleindicator.CircleIndicator3;
 
 public class ExploreFragment extends Fragment {
+    private static List<Product> productList = new ArrayList<>();
+    List<Product> searchList;
+    private String apiURL;
+
     ProgressBar progressBar;
     EditText searchView;
     RecyclerView itemListView;
@@ -42,10 +46,7 @@ public class ExploreFragment extends Fragment {
     BannerAdapter bannerAdapter;
     ViewPager2 viewPager2;
     CircleIndicator3 indicator3;
-    private static List<Product> productList = new ArrayList<>();
     ArrayList<Integer> wishlist;
-    private String apiURL;
-
 
     private Handler handler = new Handler(Looper.getMainLooper());
     private Runnable runnable = new Runnable() {
@@ -80,7 +81,7 @@ public class ExploreFragment extends Fragment {
         itemListView.setLayoutManager(gridLayoutManager);
         itemListView.setAdapter(adapter);
         wishlist = new ArrayList<>();
-
+        searchList = new ArrayList<>();
         //set up for viewPaper
         bannerAdapter = new BannerAdapter(getBannerList());
         viewPager2.setAdapter(bannerAdapter);
@@ -121,6 +122,23 @@ public class ExploreFragment extends Fragment {
                 super.onPageSelected(position);
                 handler.removeCallbacks(runnable);
                 handler.postDelayed(runnable, 3000);
+            }
+        });
+
+        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                String searchText = searchView.getText().toString();
+                if (!hasFocus && !searchText.equals("")) {
+                   for (int i = 0; i < productList.size(); i++) {
+                       if (productList.get(i).getName().contains(searchText)) {
+                           searchList.add(productList.get(i));
+                       }
+                   }
+                   adapter.setData(searchList);
+                } else {
+                    adapter.setData(productList);
+                }
             }
         });
         return view;
@@ -164,7 +182,7 @@ public class ExploreFragment extends Fragment {
     public class readJSON extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... voids) {
-           return HttpHandler.getMethod(apiURL);
+            return HttpHandler.getMethod(apiURL);
         }
 
         @Override
@@ -205,6 +223,8 @@ public class ExploreFragment extends Fragment {
             }
         }
     }
+
+
 
     @Override
     public void onResume() {

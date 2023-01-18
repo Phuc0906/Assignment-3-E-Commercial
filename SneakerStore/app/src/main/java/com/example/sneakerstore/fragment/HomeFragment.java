@@ -23,6 +23,8 @@ import android.widget.ProgressBar;
 
 import com.example.sneakerstore.MainActivity;
 import com.example.sneakerstore.R;
+import com.example.sneakerstore.banner.Banner;
+import com.example.sneakerstore.banner.BannerAdapter;
 import com.example.sneakerstore.logo.Logo;
 import com.example.sneakerstore.logo.LogoAdapter;
 import com.example.sneakerstore.model.HttpHandler;
@@ -37,14 +39,17 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.relex.circleindicator.CircleIndicator3;
+
 public class HomeFragment extends Fragment {
-    EditText searchView;
     ProgressBar progressBar;
     RecyclerView rcList;
     CategoryAdapter adapter;
-    ViewPager2 viewPager2;
+    BannerAdapter bannerAdapter;
+    ViewPager2 viewPager2, viewPager22;
+    CircleIndicator3 circleIndicator3;
     LogoAdapter logoAdapter;
-    ImageView img;
+
     Handler handler = new Handler(Looper.getMainLooper());
     final int startPosition = 1;
     List<Sneaker> latestSneakers, runningSneakers, footballSneakers, tennisSneakers, basketballSneaker, trainingSneaker;
@@ -75,10 +80,12 @@ public class HomeFragment extends Fragment {
 
         progressBar = view.findViewById(R.id.progressBar);
         progressBar.setIndeterminateDrawable(new CubeGrid());
-        searchView = view.findViewById(R.id.edt_search);
         rcList = view.findViewById(R.id.recyclerList);
         adapter = new CategoryAdapter(getContext());
         viewPager2 = view.findViewById(R.id.viewPager2);
+        viewPager22 = view.findViewById(R.id.viewPager22);
+        circleIndicator3 = view.findViewById(R.id.indicator);
+        bannerAdapter = new BannerAdapter(getBannerList());
         logoAdapter = new LogoAdapter(getLogoList(), getContext());
 
         viewPager2.setOffscreenPageLimit(3);
@@ -96,7 +103,6 @@ public class HomeFragment extends Fragment {
         viewPager2.setPageTransformer(compositePageTransformer);
         viewPager2.setAdapter(logoAdapter);
 
-        img = view.findViewById(R.id.imageView4);
 
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -120,7 +126,6 @@ public class HomeFragment extends Fragment {
         new DownloadByCategory().execute(MainActivity.ROOT_API + "/product/search/category?category=4");
         new DownloadByCategory().execute(MainActivity.ROOT_API + "/product/search/category?category=5");
 
-
         List<Category> list = new ArrayList<>();
         list.add(new Category("Latest", latestSneakers));
         list.add(new Category("Running", runningSneakers));
@@ -132,6 +137,18 @@ public class HomeFragment extends Fragment {
         adapter.notifyDataSetChanged();
         rcList.setAdapter(adapter);
 
+        //set up for viewPager
+        viewPager22.setAdapter(bannerAdapter);
+        circleIndicator3.setViewPager(viewPager22);
+    }
+
+    private List<Banner> getBannerList() {
+        List<Banner> list = new ArrayList<>();
+        list.add(new Banner(R.drawable.banner1));
+        list.add(new Banner(R.drawable.banner2));
+        list.add(new Banner(R.drawable.banner3));
+        list.add(new Banner(R.drawable.banner4));
+        return list;
     }
 
     private List<Logo> getLogoList() {
@@ -192,10 +209,10 @@ public class HomeFragment extends Fragment {
                 adapter.notifyDataSetChanged();
 
                 progressBar.setVisibility(View.GONE);
-                searchView.setVisibility(View.VISIBLE);
-                img.setVisibility(View.VISIBLE);
                 viewPager2.setVisibility(View.VISIBLE);
                 rcList.setVisibility(View.VISIBLE);
+                viewPager22.setVisibility(View.VISIBLE);
+                circleIndicator3.setVisibility(View.VISIBLE);
                 } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -232,8 +249,6 @@ public class HomeFragment extends Fragment {
                 adapter.notifyDataSetChanged();
 
                 progressBar.setVisibility(View.GONE);
-                searchView.setVisibility(View.VISIBLE);
-                img.setVisibility(View.VISIBLE);
                 viewPager2.setVisibility(View.VISIBLE);
                 rcList.setVisibility(View.VISIBLE);
             } catch (Exception e) {
